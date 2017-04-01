@@ -9,20 +9,23 @@ EOF = 'EOF'
 
 
 def msg(txt, val=''):
-    print('\t{:<30}: {}'.format(txt, val))
+    print('\t{}: {}'.format(txt, val))
 
 class Token:
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
+        msg('token found:')
+        msg(self)
 
     def __str__(self):
-        self_string = ('Token:'
+        self_string = (
+            'Token:'
             '\ttype: {type_}'
-            '\tvalue: {value}')
-        self_string = self_string.format(
+            '\tvalue: {value}'.format(
             type_=self.type_,
             value=self.value,
+            )
         )
         return self_string
 

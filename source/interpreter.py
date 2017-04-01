@@ -5,6 +5,7 @@ for lexical analysis
 """
 INTEGER = 'INTEGER'
 PLUS = 'PLUS'
+MINUS = 'MINUS'
 EOF = 'EOF'
 
 
@@ -39,37 +40,56 @@ class Interpreter:
         # --> Index of self.text
         self.pos = 0
         self.current_token = None
+        self.current_char = self.text[self.pos]
 
     def error(self):
         raise Exception('Error parsing code')
+
+    def advance(self):
+        self.pos += 1
+        if self.pos > len(self.text) - 1:
+            self.current_char = None
+        else:
+            self.current_char = self.text[self.pos]
+
+    def skip_whitespace(self):
+        while self.current_char is not None and self.current_char.isspace():
+            self.advance()
+
+    def integer(self):
+        result = ''
+        while self.current_char is not None and self.current_char.isdigit():
+            result += self.current_char
+            self.advance()
+
+        return int(result)
+
 
     def get_next_token(self):
         """
         Lexical analyzer / tokenizer
         breakes code into tokens
         """
+        while self.current_char is not None:
+            if self.current_char.isspace():
+                self.skip_whitespace()
+                continue
 
-        text = self.text
-        print ('\t..text:', self.text)
+            if self.current_char.isdigit():
+                return Token(INTEGER, self.integer())
 
-        if self.pos > len(text) - 1:
-            msg('EOF expression')
-            return Token(EOF, None)
+            if self.current_char == '+':
+                self.advance()
+                return Token(PLUS, '+')
 
-        current_char = text[self.pos]
+            if self.current_char == '-':
+                self.advance()
+                return Token(MINUS, '-')
 
-        if current_char.isdigit():
-            msg('digit found', current_char)
-            token = Token(INTEGER, int(current_char))
-            self.pos += 1
-            return token
+            self.error()
 
-        if current_char == '+':
-            token = Token(PLUS, current_char)
-            self.pos += 1
-            return token
+        return Token(EOF, None)
 
-        self.error()
 
     def eat(self, token_type):
         if self.current_token.type_ == token_type:
@@ -78,17 +98,32 @@ class Interpreter:
             self.error()
 
     def expr(self):
+        """
+        Perser / interpreter
+
+        expr: INTEGER PLUS INTEGER
+        expr: INTEGER MINUS INTEGER
+        """
         self.current_token = self.get_next_token()
+
         left = self.current_token
         self.eat(INTEGER)
 
         op = self.current_token
-        self.eat(PLUS)
+
+        if op.type_ == PLUS:
+            self.eat(PLUS)
+        else:
+            self.eat(MINUS)
 
         right = self.current_token
         self.eat(INTEGER)
 
-        result = left.value + right.value
+        if op.type_ == PLUS:
+            result = left.value + right.value
+        else:
+            result = left.value - right.value
+
         return result
 
 

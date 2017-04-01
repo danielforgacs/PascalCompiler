@@ -6,6 +6,8 @@ for lexical analysis
 INTEGER = 'INTEGER'
 PLUS = 'PLUS'
 MINUS = 'MINUS'
+MULTIPLY = 'MULTIPLY'
+DIVISION = 'DIVISION'
 EOF = 'EOF'
 
 
@@ -86,6 +88,14 @@ class Interpreter:
                 self.advance()
                 return Token(MINUS, '-')
 
+            if self.current_char == '*':
+                self.advance()
+                return Token(MULTIPLY, '*')
+
+            if self.current_char == '/':
+                self.advance()
+                return Token(DIVISION, self.current_char)
+
             self.error()
 
         return Token(EOF, None)
@@ -113,16 +123,29 @@ class Interpreter:
 
         if op.type_ == PLUS:
             self.eat(PLUS)
-        else:
+        elif op.type_ == MINUS:
             self.eat(MINUS)
+        elif op.type_ == MULTIPLY:
+            self.eat(MULTIPLY)
+        elif op.type_ == DIVISION:
+            self.eat(DIVISION)
+        else:
+            self.error()
 
         right = self.current_token
         self.eat(INTEGER)
 
         if op.type_ == PLUS:
             result = left.value + right.value
-        else:
+        elif op.type_ == MINUS:
             result = left.value - right.value
+        elif op.type_ == MULTIPLY:
+            result = left.value * right.value
+        elif op.type_ == DIVISION:
+            result = left.value / right.value
+
+        else:
+            self.error()
 
         return result
 

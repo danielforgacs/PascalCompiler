@@ -57,7 +57,7 @@ class Interpreter:
 
         if current_char.isdigit():
             msg('digit found', current_char)
-            token = Token(INTEGER, current_char)
+            token = Token(INTEGER, int(current_char))
             self.pos += 1
             return token
 

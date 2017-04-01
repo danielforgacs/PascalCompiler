@@ -11,17 +11,53 @@ sys.path.append(
 import source.interpreter as itpr
 
 
+
 @pytest.mark.parametrize('userinput, result', [
     ['{0}+{1}'.format(k, i), k+i] for k in range(10) for i in range(10)
 ])
 def test_interpreter_adds_singledigit_integers_no_whitespace(userinput, result):
     assert result == itpr.Interpreter(userinput).expr()
 
+
+
 @pytest.mark.parametrize('userinput, result', [
     ['{0} + {1}'.format(k, i), k+i] for k in range(10) for i in range(10)
 ])
 def test_interpreter_adds_singledigit_integers_with_whitespace(userinput, result):
     assert result == itpr.Interpreter(userinput).expr()
+
+
+
+@pytest.mark.parametrize('userinput, result', [
+    ['{0}   +     {1}'.format(k, i), k+i] for k in range(10) for i in range(10)
+])
+def test_interpreter_adds_singledigit_integers_with_whitespace_2(userinput, result):
+    assert result == itpr.Interpreter(userinput).expr()
+
+
+
+@pytest.mark.parametrize('userinput, result', [
+    ['{0}+{1}'.format(k, i), k+i] for k in range(90, 100) for i in range(90, 100)
+])
+def test_interpreter_adds_multidigit_integers_no_whitespace(userinput, result):
+    assert result == itpr.Interpreter(userinput).expr()
+
+
+
+@pytest.mark.parametrize('userinput, result', [
+    ['{0} + {1}'.format(k, i), k+i] for k in range(90, 100) for i in range(90, 100)
+])
+def test_interpreter_adds_multidigit_integers_with_whitespace(userinput, result):
+    assert result == itpr.Interpreter(userinput).expr()
+
+
+
+@pytest.mark.parametrize('userinput, result', [
+    ['{0}   +   {1}'.format(k, i), k+i] for k in range(90, 100) for i in range(90, 100)
+])
+def test_interpreter_adds_multidigit_integers_with_whitespace_2(userinput, result):
+    assert result == itpr.Interpreter(userinput).expr()
+
 
 
 if __name__ == '__main__':

@@ -44,23 +44,30 @@ class Interpreter:
         self.current_token = None
         self.current_char = self.text[self.pos]
 
+# ##########################
+# --> LEXER
+# ##########################
+
     def error(self):
         raise Exception('Error parsing code')
 
+
     def advance(self):
         self.pos += 1
+
         if self.pos > len(self.text) - 1:
             self.current_char = None
         else:
             self.current_char = self.text[self.pos]
 
     def skip_whitespace(self):
-        while self.current_char is not None and self.current_char.isspace():
+        while self.current_char and self.current_char.isspace():
             self.advance()
 
     def integer(self):
         result = ''
-        while self.current_char is not None and self.current_char.isdigit():
+
+        while self.current_char and self.current_char.isdigit():
             result += self.current_char
             self.advance()
 

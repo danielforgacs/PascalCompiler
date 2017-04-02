@@ -1,3 +1,5 @@
+import pdb
+
 """
 token types:
 EOF: indicates no more input
@@ -44,23 +46,30 @@ class Interpreter:
         self.current_token = None
         self.current_char = self.text[self.pos]
 
+# ##########################
+# --> LEXER
+# ##########################
+
     def error(self):
         raise Exception('Error parsing code')
 
+
     def advance(self):
         self.pos += 1
+
         if self.pos > len(self.text) - 1:
             self.current_char = None
         else:
             self.current_char = self.text[self.pos]
 
     def skip_whitespace(self):
-        while self.current_char is not None and self.current_char.isspace():
+        while self.current_char and self.current_char.isspace():
             self.advance()
 
     def integer(self):
         result = ''
-        while self.current_char is not None and self.current_char.isdigit():
+
+        while self.current_char and self.current_char.isdigit():
             result += self.current_char
             self.advance()
 
@@ -101,11 +110,24 @@ class Interpreter:
         return Token(EOF, None)
 
 
+# ##########################################
+# --> PARSER
+# ##########################################
+
+
     def eat(self, token_type):
         if self.current_token.type_ == token_type:
             self.current_token = self.get_next_token()
+            msg('eating current tokeb', self.current_token)
         else:
             self.error()
+
+
+    def term(self):
+        token = self.current_token
+        self.eat(INTEGER)
+        return token.value
+
 
     def expr(self):
         """
@@ -114,38 +136,34 @@ class Interpreter:
         expr: INTEGER PLUS INTEGER
         expr: INTEGER MINUS INTEGER
         """
+        # pdb.set_trace()
         self.current_token = self.get_next_token()
 
-        left = self.current_token
-        self.eat(INTEGER)
 
-        op = self.current_token
+        result = self.term()
 
-        if op.type_ == PLUS:
-            self.eat(PLUS)
-        elif op.type_ == MINUS:
-            self.eat(MINUS)
-        elif op.type_ == MULTIPLY:
-            self.eat(MULTIPLY)
-        elif op.type_ == DIVISION:
-            self.eat(DIVISION)
-        else:
-            self.error()
+        while self.current_token.type_ in (PLUS, MINUS, MULTIPLY, DIVISION):
+            token = self.current_token
+            msg('expression loop', token)
 
-        right = self.current_token
-        self.eat(INTEGER)
+            if token.type_ == PLUS:
+                self.eat(PLUS)
+                result = result + self.term()
 
-        if op.type_ == PLUS:
-            result = left.value + right.value
-        elif op.type_ == MINUS:
-            result = left.value - right.value
-        elif op.type_ == MULTIPLY:
-            result = left.value * right.value
-        elif op.type_ == DIVISION:
-            result = left.value / right.value
+            elif token.type_ == MINUS:
+                self.eat(MINUS)
+                result = result - self.term()
 
-        else:
-            self.error()
+            elif token.type_ == MULTIPLY:
+                self.eat(MULTIPLY)
+                result = result * self.term()
+
+            elif token.type_ == DIVISION:
+                self.eat(DIVISION)
+                result = result / self.term()
+
+            # else:
+            #     break
 
         return result
 

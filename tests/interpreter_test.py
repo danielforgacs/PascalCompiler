@@ -84,6 +84,35 @@ def test_interpreter_divides_multidigit_integers_with_whitespace(userinput, resu
 
 
 
+@pytest.mark.parametrize('expr, result', [
+    ['1+1+1', 1+1+1],
+    ['1+1+1+1', 1+1+1+1],
+    ['1+1+1+1+1+1+1', 1+1+1+1+1+1+1],
+])
+def test_handles_multiple_integers(expr, result):
+    assert itpr.Interpreter(expr).expr() == result
+
+
+
+@pytest.mark.parametrize('expr, result', [
+    ['1 + 1 + 1 +    1', 1+1+1+1],
+    ['2 + 4   +   5 +    9', 2+4+5+9],
+])
+def test_handles_multiple_integers(expr, result):
+    assert itpr.Interpreter(expr).expr() == result
+
+
+
+# @pytest.mark.parametrize('expr, result', [
+#     ['2 * 3 * 5', 2*3*5],
+#     ['2  *   3   *   5', 2*3*5],
+#     ['2 *5 +3   *2', 2*5+3*2],
+# ])
+# def test_01(expr, result):
+#     assert itpr.Interpreter(expr).expr() == result
+
+
+
 if __name__ == '__main__':
     args = [
         os.path.basename(__file__),

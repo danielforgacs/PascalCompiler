@@ -17,15 +17,14 @@ class Token:
         self.value = value
 
 
-class Interpreter:
+class Lexer:
     def __init__(self, text):
         self.text = text
         self.pos = 0
-        self.current_token = None
         self.current_char = self.text[self.pos]
 
     def error(self):
-        raise Exception('Error parsing code')
+        raise Exception('++> INVALID CHARACHTER')
 
     def advance(self):
         self.pos += 1
@@ -35,28 +34,21 @@ class Interpreter:
         else:
             self.current_char = self.text[self.pos]
 
-
-    def skip_whitespace(self):
-        while self.current_char is not None and self.current_char.isspace():
+    def skip(self):
+        while self.current_char and self.current_char.isspace():
             self.advance()
-
 
     def integer(self):
         result = ''
 
-        while self.current_char is not None and self.current_char.isdigit():
+        while self.current_char and self.current_char.isdigit():
             result += self.current_char
             self.advance()
 
-        return int(result)
-
+        return result
 
     def get_next_token(self):
-        """
-        Lexical analyzer / tokenizer
-        breakes code into tokens
-        """
-        while self.current_char is not None:
+        while self.current_char:
             if self.current_char.isspace():
                 self.skip_whitespace()
                 continue
@@ -64,78 +56,53 @@ class Interpreter:
             if self.current_char.isdigit():
                 return Token(INTEGER, self.integer())
 
-            if self.current_char == '+':
-                self.advance()
-                return Token(PLUS, '+')
-
-            if self.current_char == '-':
-                self.advance()
-                return Token(MINUS, '-')
-
             if self.current_char == '*':
                 self.advance()
                 return Token(MULT, '*')
 
             if self.current_char == '/':
                 self.advance()
-                return Token(DIV, self.current_char)
+                return Token(DIV, '/')
 
             self.error()
 
         return Token(EOF, None)
 
 
+class Interpreter:
+    def __init__(self, lexer):
+        self.lexer = lexer
+        self.current_token = self.lexer.get_next_token()
+
+    def error(self):
+        raise Exception('++> INVALID SYNTAX')
+
     def eat(self, token_type):
         if self.current_token.type_ == token_type:
-            self.current_token = self.get_next_token()
+            self.current_token = self.lexer.get_next_token()
         else:
             self.error()
+
+    def factor(self):
+        token = self.current_token
+        self.eat(INTEGER)
+        return token.value
 
     def expr(self):
-        """
-        Perser / interpreter
+        result = self.factor()
 
-        expr: INTEGER PLUS INTEGER
-        expr: INTEGER MINUS INTEGER
-        """
-        self.current_token = self.get_next_token()
+        while self.current_token.type_ in (MULT, DIV):
+            token = self.current_token
 
-        left = self.current_token
-        self.eat(INTEGER)
+            if token.type_ == MULT:
+                self.eat(MULT)
+                result = result * self.factor()
 
-        op = self.current_token
-
-        if op.type_ == PLUS:
-            self.eat(PLUS)
-        elif op.type_ == MINUS:
-            self.eat(MINUS)
-        elif op.type_ == MULT:
-            self.eat(MULT)
-        elif op.type_ == DIV:
-            self.eat(DIV)
-        else:
-            self.error()
-
-        right = self.current_token
-        self.eat(INTEGER)
-
-        if op.type_ == PLUS:
-            result = left.value + right.value
-
-        elif op.type_ == MINUS:
-            result = left.value - right.value
-
-        elif op.type_ == MULT:
-            result = left.value * right.value
-
-        elif op.type_ == DIV:
-            result = left.value / right.value
-
-        else:
-            self.error()
+            elif token.type_ == DIV:
+                self.eat(DIV)
+                result = result / self.factor()
 
         return result
-
 
 
 def main():
@@ -148,7 +115,8 @@ def main():
         if not text:
             break
 
-        interpreter = Interpreter(text)
+        lexer = Lexer(text)
+        interpreter = Interpreter(lexer)
         result = interpreter.expr()
         print(result)
 

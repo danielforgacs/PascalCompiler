@@ -6,40 +6,20 @@ for lexical analysis
 INTEGER = 'INTEGER'
 PLUS = 'PLUS'
 MINUS = 'MINUS'
-MULTIPLY = 'MULTIPLY'
-DIVISION = 'DIVISION'
+MULT = 'MULT'
+DIV = 'DIV'
 EOF = 'EOF'
 
-
-def msg(txt, val=''):
-    print('\t{}: {}'.format(txt, val))
 
 class Token:
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
-        msg('token found:')
-        msg(self)
-
-    def __str__(self):
-        self_string = (
-            'Token:'
-            '\ttype: {type_}'
-            '\tvalue: {value}'.format(
-            type_=self.type_,
-            value=self.value,
-            )
-        )
-        return self_string
-
-    def __repr__(self):
-        return self.__str__()
 
 
 class Interpreter:
     def __init__(self, text):
         self.text = text
-        # --> Index of self.text
         self.pos = 0
         self.current_token = None
         self.current_char = self.text[self.pos]
@@ -49,17 +29,21 @@ class Interpreter:
 
     def advance(self):
         self.pos += 1
+
         if self.pos > len(self.text) - 1:
             self.current_char = None
         else:
             self.current_char = self.text[self.pos]
 
+
     def skip_whitespace(self):
         while self.current_char is not None and self.current_char.isspace():
             self.advance()
 
+
     def integer(self):
         result = ''
+
         while self.current_char is not None and self.current_char.isdigit():
             result += self.current_char
             self.advance()
@@ -90,11 +74,11 @@ class Interpreter:
 
             if self.current_char == '*':
                 self.advance()
-                return Token(MULTIPLY, '*')
+                return Token(MULT, '*')
 
             if self.current_char == '/':
                 self.advance()
-                return Token(DIVISION, self.current_char)
+                return Token(DIV, self.current_char)
 
             self.error()
 
@@ -125,10 +109,10 @@ class Interpreter:
             self.eat(PLUS)
         elif op.type_ == MINUS:
             self.eat(MINUS)
-        elif op.type_ == MULTIPLY:
-            self.eat(MULTIPLY)
-        elif op.type_ == DIVISION:
-            self.eat(DIVISION)
+        elif op.type_ == MULT:
+            self.eat(MULT)
+        elif op.type_ == DIV:
+            self.eat(DIV)
         else:
             self.error()
 
@@ -137,11 +121,14 @@ class Interpreter:
 
         if op.type_ == PLUS:
             result = left.value + right.value
+
         elif op.type_ == MINUS:
             result = left.value - right.value
-        elif op.type_ == MULTIPLY:
+
+        elif op.type_ == MULT:
             result = left.value * right.value
-        elif op.type_ == DIVISION:
+
+        elif op.type_ == DIV:
             result = left.value / right.value
 
         else:
@@ -152,7 +139,6 @@ class Interpreter:
 
 
 def main():
-    msg('START')
     while True:
         try:
             text = input('calc >')
@@ -162,9 +148,7 @@ def main():
         if not text:
             break
 
-        msg('starting interpreter')
         interpreter = Interpreter(text)
-        msg('interpreter expr()')
         result = interpreter.expr()
         print(result)
 

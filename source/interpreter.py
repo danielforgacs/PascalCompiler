@@ -34,18 +34,18 @@ class Lexer:
         else:
             self.current_char = self.text[self.pos]
 
-    def skip(self):
+    def skip_whitespace(self):
         while self.current_char and self.current_char.isspace():
             self.advance()
 
     def integer(self):
-        result = ''
+        int_chars = ''
 
         while self.current_char and self.current_char.isdigit():
-            result += self.current_char
+            int_chars += self.current_char
             self.advance()
 
-        return result
+        return int(int_chars)
 
     def get_next_token(self):
         while self.current_char:
@@ -55,6 +55,14 @@ class Lexer:
 
             if self.current_char.isdigit():
                 return Token(INTEGER, self.integer())
+
+            if self.current_char == '+':
+                self.advance()
+                return Token(PLUS, '+')
+
+            if self.current_char == '-':
+                self.advance()
+                return Token(MINUS, '-')
 
             if self.current_char == '*':
                 self.advance()
@@ -72,6 +80,9 @@ class Lexer:
 class Interpreter:
     def __init__(self, lexer):
         self.lexer = lexer
+        print ('#'*8)
+        print (type(self.lexer))
+        print ('#'*8)
         self.current_token = self.lexer.get_next_token()
 
     def error(self):
@@ -93,6 +104,14 @@ class Interpreter:
 
         while self.current_token.type_ in (MULT, DIV):
             token = self.current_token
+
+            if token.type_ == PLUS:
+                self.eat(PLUS)
+                result = result + self.factor()
+
+            if token.type_ == MINUS:
+                self.eat(MINUS)
+                result = result - self.factor()
 
             if token.type_ == MULT:
                 self.eat(MULT)

@@ -24,6 +24,12 @@ def test_interpreter_03():
 def test_interpreter_04():
     assert  6 * 0 == itpr.Interpreter(itpr.Lexer('6 * 0')).expr()
 
+def test_interpreter_05():
+    assert  10 * 22 == itpr.Interpreter(itpr.Lexer('10 * 22')).expr()
+
+def test_interpreter_06():
+    assert  123 * 456 == itpr.Interpreter(itpr.Lexer('123   *  456')).expr()
+
 
 
 if __name__ == '__main__':

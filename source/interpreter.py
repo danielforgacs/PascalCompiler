@@ -1,49 +1,34 @@
 # Token types
-#
 # EOF (end-of-file) token is used to indicate that
 # there is no more input left for lexical analysis
-INTEGER, MUL, DIV, EOF = 'INTEGER', 'MUL', 'DIV', 'EOF'
+INTEGER = 'INTEGER'
+MUL = 'MUL'
+DIV = 'DIV'
+EOF = 'EOF'
 
 
 class Token(object):
     def __init__(self, type, value):
-        # token type: INTEGER, MUL, DIV, or EOF
         self.type = type
         # token value: non-negative integer value, '*', '/', or None
         self.value = value
-
-    def __str__(self):
-        """String representation of the class instance.
-
-        Examples:
-            Token(INTEGER, 3)
-            Token(MUL, '*')
-        """
-        return 'Token({type}, {value})'.format(
-            type=self.type,
-            value=repr(self.value)
-        )
-
-    def __repr__(self):
-        return self.__str__()
-
 
 class Lexer(object):
     def __init__(self, text):
         # client string input, e.g. "3 * 5", "12 / 3 * 4", etc
         self.text = text
-        # self.pos is an index into self.text
         self.pos = 0
         self.current_char = self.text[self.pos]
 
     def error(self):
-        raise Exception('Invalid character')
+        raise Exception('++>INVALID CHARACTER')
 
     def advance(self):
         """Advance the `pos` pointer and set the `current_char` variable."""
         self.pos += 1
         if self.pos > len(self.text) - 1:
-            self.current_char = None  # Indicates end of input
+            # Indicates end of input
+            self.current_char = None
         else:
             self.current_char = self.text[self.pos]
 
@@ -60,8 +45,8 @@ class Lexer(object):
         return int(result)
 
     def get_next_token(self):
-        """Lexical analyzer (also known as scanner or tokenizer)
-
+        """
+        Lexical analyzer (also known as scanner or tokenizer)
         This method is responsible for breaking a sentence
         apart into tokens. One token at a time.
         """
@@ -107,8 +92,8 @@ class Interpreter(object):
             self.error()
 
     def factor(self):
-        """Return an INTEGER token value.
-
+        """
+        Return an INTEGER token value.
         factor : INTEGER
         """
         token = self.current_token
@@ -116,8 +101,8 @@ class Interpreter(object):
         return token.value
 
     def expr(self):
-        """Arithmetic expression parser / interpreter.
-
+        """
+        Arithmetic expression parser / interpreter.
         expr   : factor ((MUL | DIV) factor)*
         factor : INTEGER
         """
@@ -125,9 +110,11 @@ class Interpreter(object):
 
         while self.current_token.type in (MUL, DIV):
             token = self.current_token
+
             if token.type == MUL:
                 self.eat(MUL)
                 result = result * self.factor()
+
             elif token.type == DIV:
                 self.eat(DIV)
                 result = result / self.factor()
@@ -138,8 +125,6 @@ class Interpreter(object):
 def main():
     while True:
         try:
-            # To run under Python3 replace 'raw_input' call
-            # with 'input'
             # text = raw_input('calc> ')
             text = input('calc> ')
         except EOFError:

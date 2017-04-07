@@ -12,8 +12,17 @@ import source.interpreter as itpr
 
 
 
-def test_interpreter_adds_singledigit_integers_no_whitespace():
-    assert  1 * 1== itpr.Interpreter(itpr.Lexer('1*1')).expr()
+def test_interpreter_01():
+    assert  1 * 1 == itpr.Interpreter(itpr.Lexer('1*1')).expr()
+
+def test_interpreter_02():
+    assert  1 * 1 == itpr.Interpreter(itpr.Lexer('1   *    1')).expr()
+
+def test_interpreter_03():
+    assert  6 * 8 == itpr.Interpreter(itpr.Lexer('6 * 8')).expr()
+
+def test_interpreter_04():
+    assert  6 * 0 == itpr.Interpreter(itpr.Lexer('6 * 0')).expr()
 
 
 

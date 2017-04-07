@@ -8,42 +8,21 @@ for lexical analysis
 INTEGER = 'INTEGER'
 PLUS = 'PLUS'
 MINUS = 'MINUS'
-MULTIPLY = 'MULTIPLY'
-DIVISION = 'DIVISION'
+MULT = 'MULT'
+DIV = 'DIV'
 EOF = 'EOF'
 
-
-def msg(txt, val=''):
-    print('\t{}: {}'.format(txt, val))
 
 class Token:
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
-        msg('token found:')
-        msg(self)
-
-    def __str__(self):
-        self_string = (
-            'Token:'
-            '\ttype: {type_}'
-            '\tvalue: {value}'.format(
-            type_=self.type_,
-            value=self.value,
-            )
-        )
-        return self_string
-
-    def __repr__(self):
-        return self.__str__()
 
 
-class Interpreter:
+class Lexer:
     def __init__(self, text):
         self.text = text
-        # --> Index of self.text
         self.pos = 0
-        self.current_token = None
         self.current_char = self.text[self.pos]
 
 # ##########################
@@ -51,7 +30,7 @@ class Interpreter:
 # ##########################
 
     def error(self):
-        raise Exception('Error parsing code')
+        raise Exception('++> INVALID CHARACHTER')
 
 
     def advance(self):
@@ -62,7 +41,11 @@ class Interpreter:
         else:
             self.current_char = self.text[self.pos]
 
+<<<<<<< HEAD
     def skip_whitespace(self):
+=======
+    def skip(self):
+>>>>>>> 2c551fe705ee6d0cf362b4ecfc801209d8616d60
         while self.current_char and self.current_char.isspace():
             self.advance()
 
@@ -73,15 +56,10 @@ class Interpreter:
             result += self.current_char
             self.advance()
 
-        return int(result)
-
+        return result
 
     def get_next_token(self):
-        """
-        Lexical analyzer / tokenizer
-        breakes code into tokens
-        """
-        while self.current_char is not None:
+        while self.current_char:
             if self.current_char.isspace():
                 self.skip_whitespace()
                 continue
@@ -89,27 +67,20 @@ class Interpreter:
             if self.current_char.isdigit():
                 return Token(INTEGER, self.integer())
 
-            if self.current_char == '+':
-                self.advance()
-                return Token(PLUS, '+')
-
-            if self.current_char == '-':
-                self.advance()
-                return Token(MINUS, '-')
-
             if self.current_char == '*':
                 self.advance()
-                return Token(MULTIPLY, '*')
+                return Token(MULT, '*')
 
             if self.current_char == '/':
                 self.advance()
-                return Token(DIVISION, self.current_char)
+                return Token(DIV, '/')
 
             self.error()
 
         return Token(EOF, None)
 
 
+<<<<<<< HEAD
 # ##########################################
 # --> PARSER
 # ##########################################
@@ -164,13 +135,45 @@ class Interpreter:
 
             # else:
             #     break
+=======
+class Interpreter:
+    def __init__(self, lexer):
+        self.lexer = lexer
+        self.current_token = self.lexer.get_next_token()
+
+    def error(self):
+        raise Exception('++> INVALID SYNTAX')
+
+    def eat(self, token_type):
+        if self.current_token.type_ == token_type:
+            self.current_token = self.lexer.get_next_token()
+        else:
+            self.error()
+
+    def factor(self):
+        token = self.current_token
+        self.eat(INTEGER)
+        return token.value
+
+    def expr(self):
+        result = self.factor()
+
+        while self.current_token.type_ in (MULT, DIV):
+            token = self.current_token
+
+            if token.type_ == MULT:
+                self.eat(MULT)
+                result = result * self.factor()
+
+            elif token.type_ == DIV:
+                self.eat(DIV)
+                result = result / self.factor()
+>>>>>>> 2c551fe705ee6d0cf362b4ecfc801209d8616d60
 
         return result
 
 
-
 def main():
-    msg('START')
     while True:
         try:
             text = input('calc >')
@@ -180,9 +183,8 @@ def main():
         if not text:
             break
 
-        msg('starting interpreter')
-        interpreter = Interpreter(text)
-        msg('interpreter expr()')
+        lexer = Lexer(text)
+        interpreter = Interpreter(lexer)
         result = interpreter.expr()
         print(result)
 

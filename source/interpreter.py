@@ -21,7 +21,7 @@ class Lexer(object):
         self.current_char = self.text[self.pos]
 
     def error(self):
-        raise Exception('++>INVALID CHARACTER')
+        raise Exception('++> INVALID CHARACTER')
 
     def advance(self):
         """Advance the `pos` pointer and set the `current_char` variable."""
@@ -79,7 +79,7 @@ class Interpreter(object):
         self.current_token = self.lexer.get_next_token()
 
     def error(self):
-        raise Exception('Invalid syntax')
+        raise Exception('++> INVALID SYNTAX')
 
     def eat(self, token_type):
         # compare the current token type with the passed token

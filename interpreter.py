@@ -37,7 +37,10 @@ class Interpreter:
         else:
             self.error()
 
-
+    def eat(self, tokentype):
+        if self.currenttoken.type != tokentype:
+            self.error()
+        self.currenttoken = self.get_next_token()
 
 
 if __name__ == '__main__':

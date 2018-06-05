@@ -62,9 +62,8 @@ def main():
             text = input()
         except EOFError:
             break
-
         if not text:
-            continue
+            break
 
         interpreter = Interpreter(text=text)
         result = interpreter.expr()

@@ -22,7 +22,7 @@ class Interpreter:
         text = self.text
 
         if self.pos > len(text)-1:
-            return Token(type=EOF, value=None)
+            return Token(type_=EOF, value=None)
 
         currentchar = text[self.pos]
 
@@ -38,9 +38,24 @@ class Interpreter:
             self.error()
 
     def eat(self, tokentype):
-        if self.currenttoken.type != tokentype:
+        if self.currenttoken.type_ != tokentype:
             self.error()
         self.currenttoken = self.get_next_token()
+
+
+    def expr(self):
+        self.currenttoken = self.get_next_token()
+        left = self.currenttoken
+        self.eat(INTEGER)
+        op = self.currenttoken
+        self.eat(PLUS)
+        left = self.currenttoken
+        self.eat(INTEGER)
+        result = left.value + rigth.value
+
+        return result
+
+
 
 
 if __name__ == '__main__':

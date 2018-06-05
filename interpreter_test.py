@@ -20,6 +20,20 @@ def test_get_next_token_returns_token_02():
     assert token3.type_ == interpreter.INTEGER
 
 
+def test_eat():
+    code = interpreter.Interpreter(text='1+4')
+    code.currenttoken = code.get_next_token()
+    assert code.currenttoken.value == 1
+    assert code.currenttoken.type_ == interpreter.INTEGER
+    code.eat(tokentype=interpreter.INTEGER)
+    assert code.currenttoken.value == '+'
+    assert code.currenttoken.type_ == interpreter.PLUS
+    code.eat(tokentype=interpreter.PLUS)
+    assert code.currenttoken.value == 4
+    assert code.currenttoken.type_ == interpreter.INTEGER
+    code.eat(tokentype=interpreter.INTEGER)
+
+
 
 if __name__ == '__main__':
     pytest.main([

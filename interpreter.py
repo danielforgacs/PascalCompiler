@@ -56,13 +56,22 @@ class Interpreter:
         return result
 
 
+def main():
+    while True:
+        try:
+            text = input()
+        except EOFError:
+            break
+
+        if not text:
+            continue
+
+        interpreter = Interpreter(text=text)
+        result = interpreter.expr()
+        print(result)
+
 
 
 if __name__ == '__main__':
     pass
-
-    interp = Interpreter('1+2')
-
-    print(interp.get_next_token().value)
-    print(interp.get_next_token().value)
-    print(interp.get_next_token().value)
+    main()

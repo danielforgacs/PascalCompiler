@@ -49,9 +49,9 @@ class Interpreter:
         self.eat(INTEGER)
         op = self.currenttoken
         self.eat(PLUS)
-        left = self.currenttoken
+        right = self.currenttoken
         self.eat(INTEGER)
-        result = left.value + rigth.value
+        result = left.value + right.value
 
         return result
 

@@ -34,6 +34,10 @@ def test_eat():
     code.eat(tokentype=interpreter.INTEGER)
 
 
+def test_expr():
+    code = interpreter.Interpreter(text='1+4')
+    result = code.expr()
+    assert result == 5
 
 if __name__ == '__main__':
     pytest.main([

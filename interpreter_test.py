@@ -39,6 +39,29 @@ def test_expr():
     result = code.expr()
     assert result == 5
 
+
+@pytest.mark.parametrize('codetext, expected', (
+    ('0+0', 0),
+    ('1+2', 3),
+    ('8+7', 15),
+    ))
+def test_can_add_single_digit_no_space(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
+
+@pytest.mark.parametrize('codetext, expected', (
+    ('0-0', 0),
+    ('9-4', 5),
+    ('1-2', -1),
+    ('8-7', 1),
+    ))
+def test_can_subtract_single_digit_no_space(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
 if __name__ == '__main__':
     pytest.main([
         __file__,

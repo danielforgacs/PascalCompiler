@@ -1,5 +1,6 @@
 INTEGER = 'INTEGER'
 PLUS = 'PLUS'
+MINUS = 'MINUS'
 EOF = 'EOF'
 
 
@@ -14,28 +15,50 @@ class Interpreter:
         self.text =  text
         self.pos = 0
         self.currenttoken = None
+        self.currentchar = self.text[self.pos]
 
     def error(self):
         raise Exception('::: error parsing :::')
 
-    def get_next_token(self):
-        text = self.text
-
-        if self.pos > len(text)-1:
-            return Token(type_=EOF, value=None)
-
-        currentchar = text[self.pos]
-
-        if currentchar.isdigit():
-            self.pos += 1
-            return Token(type_=INTEGER, value=int(currentchar))
-
-        elif currentchar == '+':
-            self.pos += 1
-            return Token(type_=PLUS, value=currentchar)
-
+    def advance(self):
+        self.pos += 1
+        if self.pos > len(self.text)-1:
+            self.currentchar = None
         else:
+            self.currentchar = self.text[self.pos]
+
+    def skip_whitespace(self):
+        while self.currentchar and self.currentchar.isspace():
+            self.advace()
+
+    def integer(self):
+        result = ''
+        while self.currentchar and self.currentchar.isdigit():
+            result += self.currentchar
+            self.advance()
+        return int(result)
+
+    def get_next_token(self):
+        while self.currentchar:
+            if self.currentchar.isspace():
+                self.skip_whitespace()
+                continue
+
+            if self.currentchar.isdigit():
+                return Token(INTEGER, self.integer())
+
+            if self.currentchar == '+':
+                self.advance()
+                return Token(PLUS, '+')
+
+            if self.currentchar == '-':
+                self.advance()
+                return Token(MINUS, '-')
+
             self.error()
+
+        return Token(EOF, None)
+
 
     def eat(self, tokentype):
         if self.currenttoken.type_ != tokentype:
@@ -48,10 +71,16 @@ class Interpreter:
         left = self.currenttoken
         self.eat(INTEGER)
         op = self.currenttoken
-        self.eat(PLUS)
+        if op.type_ == 'PLUS':
+            self.eat(PLUS)
+        else:
+            self.eat(MINUS)
         right = self.currenttoken
         self.eat(INTEGER)
-        result = left.value + right.value
+        if op.type_ == 'PLUS':
+            result = left.value + right.value
+        else:
+            result = left.value - right.value
 
         return result
 

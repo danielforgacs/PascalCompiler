@@ -29,7 +29,7 @@ class Interpreter:
 
     def skip_whitespace(self):
         while self.currentchar and self.currentchar.isspace():
-            self.advace()
+            self.advance()
 
     def integer(self):
         result = ''
@@ -45,19 +45,19 @@ class Interpreter:
                 continue
 
             if self.currentchar.isdigit():
-                return Token(INTEGER, self.integer())
+                return Token(type_=INTEGER, value=self.integer())
 
             if self.currentchar == '+':
                 self.advance()
-                return Token(PLUS, '+')
+                return Token(type_=PLUS, value='+')
 
             if self.currentchar == '-':
                 self.advance()
-                return Token(MINUS, '-')
+                return Token(type_=MINUS, value='-')
 
             self.error()
 
-        return Token(EOF, None)
+        return Token(type_=EOF, value=None)
 
 
     def eat(self, tokentype):

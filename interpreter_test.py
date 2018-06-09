@@ -104,8 +104,22 @@ def test_multidigit_works(codetext, expected):
     ('2*2', 2*2),
     ('0*2', 0*2),
     ('123*456', 123*456),
+    ('123  *   456', 123*456),
     ))
 def test_can_multiply(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
+
+@pytest.mark.parametrize('codetext, expected', (
+    ('1/1', 1/1),
+    ('1  /  1', 1/1),
+    ('10  /  1', 10/1),
+    ('1  /  10', 1/10),
+    ('66  /  22', 66/22),
+    ))
+def test_can_divide(codetext, expected):
     program = interpreter.Interpreter(text=codetext)
     result = program.expr()
     assert result == expected

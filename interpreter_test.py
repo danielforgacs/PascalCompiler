@@ -74,6 +74,20 @@ def test_can_subtract_single_digit_with_space(codetext, expected):
     result = program.expr()
     assert result == expected
 
+
+@pytest.mark.parametrize('codetext, expected', (
+    ('20 - 20', 0),
+    ('200 - 200', 0),
+    ('1000   +    200', 1200),
+    ('1000   -    200', 800),
+    ('0   -    200', -200),
+    ('1   -    200', -199),
+    ))
+def test_multidigit_works(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
 if __name__ == '__main__':
     pytest.main([
         __file__,

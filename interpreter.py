@@ -71,12 +71,15 @@ class Interpreter:
         left = self.currenttoken
         self.eat(INTEGER)
         op = self.currenttoken
+
         if op.type_ == 'PLUS':
             self.eat(PLUS)
         else:
             self.eat(MINUS)
+
         right = self.currenttoken
         self.eat(INTEGER)
+
         if op.type_ == 'PLUS':
             result = left.value + right.value
         else:

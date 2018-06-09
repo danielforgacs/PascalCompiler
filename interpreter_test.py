@@ -13,26 +13,29 @@ def test_python_version_ok():
 
 
 def test_get_next_token_returns_token_01():
-    result = interpreter.Interpreter(text='1').get_next_token()
-    assert isinstance(result, interpreter.Token)
+    token = interpreter.Lexer(text='1').get_next_token()
+    assert isinstance(token, interpreter.Token)
 
 
+@pytest.mark.skip('CAN`T ADD YET')
 def test_get_next_token_returns_token_02():
-    code = interpreter.Interpreter(text='1+4')
+    code = interpreter.Lexer(text='1+4')
     token1 = code.get_next_token()
     assert token1.value == 1
-    assert token1.type_ == interpreter.INTEGER
+    assert token1.type == interpreter.INTEGER
     token2 = code.get_next_token()
     assert token2.value == '+'
-    assert token2.type_ == interpreter.PLUS
+    assert token2.type == interpreter.PLUS
     token3 = code.get_next_token()
     assert token3.value == 4
-    assert token3.type_ == interpreter.INTEGER
+    assert token3.type == interpreter.INTEGER
 
 
+@pytest.mark.skip('CAN`T ADD YET')
 def test_eat():
-    code = interpreter.Interpreter(text='1+4')
-    code.currenttoken = code.get_next_token()
+    lexer = interpreter.Lexer(text='1+4')
+    interpr = interpreter.Interpreter(lexer=lexer)
+    interpr.currenttoken = interpr.lexer.get_next_token()
     assert code.currenttoken.value == 1
     assert code.currenttoken.type_ == interpreter.INTEGER
     code.eat(tokentype=interpreter.INTEGER)
@@ -44,12 +47,15 @@ def test_eat():
     code.eat(tokentype=interpreter.INTEGER)
 
 
+@pytest.mark.skip('CAN`T ADD YET')
 def test_expr():
-    code = interpreter.Interpreter(text='1+4')
+    lexer = interpreter.Lexer(text='1+4')
+    code = interpreter.Interpreter(lexer=lexer)
     result = code.expr()
     assert result == 5
 
 
+@pytest.mark.skip('CAN`T ADD YET')
 @pytest.mark.parametrize('codetext, expected', (
     ('0+0', 0),
     ('1+2', 3),
@@ -61,6 +67,7 @@ def test_can_add_single_digit_no_space(codetext, expected):
     assert result == expected
 
 
+@pytest.mark.skip('CAN`T ADD YET')
 @pytest.mark.parametrize('codetext, expected', (
     ('0-0', 0),
     ('9-4', 5),
@@ -73,6 +80,7 @@ def test_can_subtract_single_digit_no_space(codetext, expected):
     assert result == expected
 
 
+@pytest.mark.skip('CAN`T ADD YET')
 @pytest.mark.parametrize('codetext, expected', (
     ('0 - 0', 0),
     ('9  - 4', 5),
@@ -85,6 +93,7 @@ def test_can_subtract_single_digit_with_space(codetext, expected):
     assert result == expected
 
 
+@pytest.mark.skip('CAN`T ADD YET')
 @pytest.mark.parametrize('codetext, expected', (
     ('20 - 20', 0),
     ('200 - 200', 0),
@@ -108,7 +117,8 @@ def test_multidigit_works(codetext, expected):
     ('123  *   456', 123*456),
     ))
 def test_can_multiply(codetext, expected):
-    program = interpreter.Interpreter(text=codetext)
+    lexer = interpreter.Lexer(text=codetext)
+    program = interpreter.Interpreter(lexer=lexer)
     result = program.expr()
     assert result == expected
 
@@ -122,11 +132,13 @@ def test_can_multiply(codetext, expected):
     ('66  /  22', 66/22),
     ))
 def test_can_divide(codetext, expected):
-    program = interpreter.Interpreter(text=codetext)
+    lexer = interpreter.Lexer(text=codetext)
+    program = interpreter.Interpreter(lexer=lexer)
     result = program.expr()
     assert result == expected
 
 
+@pytest.mark.skip('CAN`T ADD YET')
 @pytest.mark.parametrize('codetext, expected', (
     ('1-1-1', 1-1-1),
     ('1-1-1-1-1-1', 1-1-1-1-1-1),
@@ -135,7 +147,8 @@ def test_can_divide(codetext, expected):
     ('123  -1987+   14- 156-0   +1', 123  -1987+   14- 156-0   +1),
     ))
 def test_can_repeat_add_sub(codetext, expected):
-    program = interpreter.Interpreter(text=codetext)
+    lexer = interpreter.Lexer(text=codetext)
+    program = interpreter.Interpreter(lexer=lexer)
     result = program.expr()
     assert result == expected
 
@@ -150,7 +163,8 @@ def test_can_repeat_add_sub(codetext, expected):
     ('123  /1987*   14/ 156/10   *1', 123  /1987*   14/ 156/10   *1),
     ))
 def test_can_repeat_add_sub_mult_div_spaced(codetext, expected):
-    program = interpreter.Interpreter(text=codetext)
+    lexer = interpreter.Lexer(text=codetext)
+    program = interpreter.Interpreter(lexer=lexer)
     result = program.expr()
     assert result == expected
 

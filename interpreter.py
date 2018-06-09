@@ -36,8 +36,8 @@ class Lexer(object):
         self.pos = 0
         self.current_char = self.text[self.pos]
 
-    def error(self):
-        raise Exception('Invalid character')
+    # def error(self):
+    #     raise Exception('Invalid character')
 
     def advance(self):
         """Advance the `pos` pointer and set the `current_char` variable."""
@@ -82,7 +82,8 @@ class Lexer(object):
                 self.advance()
                 return Token(DIV, '/')
 
-            self.error()
+            # self.error()
+            raise Exception('LEXER GET NEXT TOKEN ERROR!')
 
         return Token(EOF, None)
 
@@ -93,8 +94,8 @@ class Interpreter(object):
         # set current token to the first token taken from the input
         self.current_token = self.lexer.get_next_token()
 
-    def error(self):
-        raise Exception('Invalid syntax')
+    # def error(self):
+    #     raise Exception('Invalid syntax')
 
     def eat(self, token_type):
         # compare the current token type with the passed token
@@ -104,7 +105,8 @@ class Interpreter(object):
         if self.current_token.type == token_type:
             self.current_token = self.lexer.get_next_token()
         else:
-            self.error()
+            # self.error()
+            raise Exception('INTERPRETER EAT ERROR!')
 
     def factor(self):
         """Return an INTEGER token value.

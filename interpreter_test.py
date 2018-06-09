@@ -99,6 +99,7 @@ def test_multidigit_works(codetext, expected):
     assert result == expected
 
 
+@pytest.mark.skip()
 @pytest.mark.parametrize('codetext, expected', (
     ('1*1', 1),
     ('2*2', 2*2),
@@ -112,6 +113,7 @@ def test_can_multiply(codetext, expected):
     assert result == expected
 
 
+@pytest.mark.skip()
 @pytest.mark.parametrize('codetext, expected', (
     ('1/1', 1/1),
     ('1  /  1', 1/1),
@@ -120,6 +122,19 @@ def test_can_multiply(codetext, expected):
     ('66  /  22', 66/22),
     ))
 def test_can_divide(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
+
+@pytest.mark.parametrize('codetext, expected', (
+    ('1-1-1', 1-1-1),
+    ('1-1-1-1-1-1', 1-1-1-1-1-1),
+    ('1-1+1-1+1-1+1-1+1-1', 1-1+1-1+1-1+1-1+1-1),
+    ('1  - 1 +1- 1+1-1  +1-1+1-1', 1-1   +1-  1+1-   1+1-1+1-1),
+    ('123  -1987+   14- 156-0   +1', 123  -1987+   14- 156-0   +1),
+    ))
+def test_can_repeat_add_sub(codetext, expected):
     program = interpreter.Interpreter(text=codetext)
     result = program.expr()
     assert result == expected

@@ -98,6 +98,19 @@ def test_multidigit_works(codetext, expected):
     result = program.expr()
     assert result == expected
 
+
+@pytest.mark.parametrize('codetext, expected', (
+    ('1*1', 1),
+    ('2*2', 2*2),
+    ('0*2', 0*2),
+    ('123*456', 123*456),
+    ))
+def test_can_multiply(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
+
 if __name__ == '__main__':
     pytest.main([
         __file__,

@@ -1,6 +1,7 @@
 INTEGER = 'INTEGER'
 PLUS = 'PLUS'
 MINUS = 'MINUS'
+MULT = 'MULT'
 EOF = 'EOF'
 
 
@@ -55,6 +56,10 @@ class Interpreter:
                 self.advance()
                 return Token(type_=MINUS, value='-')
 
+            if self.currentchar == '*':
+                self.advance()
+                return Token(type_=MULT, value='*')
+
             self.error()
 
         return Token(type_=EOF, value=None)
@@ -74,16 +79,20 @@ class Interpreter:
 
         if op.type_ == 'PLUS':
             self.eat(PLUS)
-        else:
+        elif op.type_ == 'MINUS':
             self.eat(MINUS)
+        elif op.type_ == 'MULT':
+            self.eat(MULT)
 
         right = self.currenttoken
         self.eat(INTEGER)
 
         if op.type_ == 'PLUS':
             result = left.value + right.value
-        else:
+        elif op.type_ == 'MINUS':
             result = left.value - right.value
+        elif op.type_ == 'MULT':
+            result = left.value * right.value
 
         return result
 

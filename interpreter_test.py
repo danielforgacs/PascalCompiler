@@ -1,5 +1,15 @@
 import interpreter
 import pytest
+import sys
+
+
+PYTHON_VERIONS_MAJOR = (3,)
+PYTHON_VERIONS_MINOR = (5,)
+
+
+def test_python_version_ok():
+    assert sys.version_info.major in PYTHON_VERIONS_MAJOR
+    assert sys.version_info.minor in PYTHON_VERIONS_MINOR
 
 
 def test_get_next_token_returns_token_01():
@@ -38,6 +48,55 @@ def test_expr():
     code = interpreter.Interpreter(text='1+4')
     result = code.expr()
     assert result == 5
+
+
+@pytest.mark.parametrize('codetext, expected', (
+    ('0+0', 0),
+    ('1+2', 3),
+    ('8+7', 15),
+    ))
+def test_can_add_single_digit_no_space(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
+
+@pytest.mark.parametrize('codetext, expected', (
+    ('0-0', 0),
+    ('9-4', 5),
+    ('1-2', -1),
+    ('8-7', 1),
+    ))
+def test_can_subtract_single_digit_no_space(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
+
+@pytest.mark.parametrize('codetext, expected', (
+    ('0 - 0', 0),
+    ('9  - 4', 5),
+    ('1-    2', -1),
+    ('   8-7    ', 1),
+    ))
+def test_can_subtract_single_digit_with_space(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
+
+@pytest.mark.parametrize('codetext, expected', (
+    ('20 - 20', 0),
+    ('200 - 200', 0),
+    ('1000   +    200', 1200),
+    ('1000   -    200', 800),
+    ('0   -    200', -200),
+    ('1   -    200', -199),
+    ))
+def test_multidigit_works(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
 
 if __name__ == '__main__':
     pytest.main([

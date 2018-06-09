@@ -88,7 +88,7 @@ class Interpreter:
         self.currenttoken = self.get_next_token()
         result = self.term()
 
-        while self.currenttoken.type_ in (PLUS, MINUS):
+        while self.currenttoken.type_ in (PLUS, MINUS, MULT, DIV):
             token = self.currenttoken
 
             if token.type_ == PLUS:
@@ -97,6 +97,12 @@ class Interpreter:
             elif token.type_ == MINUS:
                 self.eat(MINUS)
                 result = result - self.term()
+            elif token.type_ == MULT:
+                self.eat(MULT)
+                result = result * self.term()
+            elif token.type_ == DIV:
+                self.eat(DIV)
+                result = result / self.term()
 
         return result
 

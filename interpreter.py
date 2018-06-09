@@ -19,8 +19,8 @@ class Interpreter:
         self.currenttoken = None
         self.currentchar = self.text[self.pos]
 
-    def error(self):
-        raise Exception('::: error parsing :::')
+    # def error(self):
+    #     raise Exception('::: error parsing :::')
 
     def advance(self):
         self.pos += 1
@@ -65,14 +65,16 @@ class Interpreter:
                 self.advance()
                 return Token(type_=DIV, value='/')
 
-            self.error()
+            # self.error()
+            raise Exception('GET NEXT TOKEN ERROR!')
 
         return Token(type_=EOF, value=None)
 
 
     def eat(self, tokentype):
         if self.currenttoken.type_ != tokentype:
-            self.error()
+            # self.error()
+            raise Exception('EAT ERROR!')
         self.currenttoken = self.get_next_token()
 
 

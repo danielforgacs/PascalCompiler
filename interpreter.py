@@ -12,11 +12,11 @@ class Token:
         self.value = value
 
 
-class Interpreter:
+class Lexer:
     def __init__(self, text):
         self.text =  text
         self.pos = 0
-        self.currenttoken = None
+        # self.currenttoken = None
         self.currentchar = self.text[self.pos]
 
     # def error(self):
@@ -71,38 +71,45 @@ class Interpreter:
         return Token(type_=EOF, value=None)
 
 
+
+class Interpreter:
+    def __init__(self, lexer):
+        self.lexer = lexer
+        self.currenttoken = self.lexer.get_next_token()
+
+
     def eat(self, tokentype):
         if self.currenttoken.type_ != tokentype:
             # self.error()
             raise Exception('EAT ERROR!')
-        self.currenttoken = self.get_next_token()
+        self.currenttoken = self.lexer.get_next_token()
 
 
-    def term(self):
+    def factor(self):
         token = self.currenttoken
         self.eat(INTEGER)
         return token.value
 
 
     def expr(self):
-        self.currenttoken = self.get_next_token()
-        result = self.term()
+        self.currenttoken = self.lexer.get_next_token()
+        result = self.factor()
 
         while self.currenttoken.type_ in (PLUS, MINUS, MULT, DIV):
             token = self.currenttoken
 
             if token.type_ == PLUS:
                 self.eat(PLUS)
-                result = result + self.term()
+                result = result + self.factor()
             elif token.type_ == MINUS:
                 self.eat(MINUS)
-                result = result - self.term()
+                result = result - self.factor()
             elif token.type_ == MULT:
                 self.eat(MULT)
-                result = result * self.term()
+                result = result * self.factor()
             elif token.type_ == DIV:
                 self.eat(DIV)
-                result = result / self.term()
+                result = result / self.factor()
 
         return result
 
@@ -110,13 +117,14 @@ class Interpreter:
 def main():
     while True:
         try:
-            text = input()
+            text = input('calc> ')
         except EOFError:
             break
         if not text:
             break
 
-        interpreter = Interpreter(text=text)
+        lexer = Lexer(text=text)
+        interpreter = Interpreter(lexer=lexer)
         result = interpreter.expr()
         print(result)
 

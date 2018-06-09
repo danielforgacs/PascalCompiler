@@ -98,6 +98,63 @@ def test_multidigit_works(codetext, expected):
     result = program.expr()
     assert result == expected
 
+
+# @pytest.mark.skip()
+@pytest.mark.parametrize('codetext, expected', (
+    ('1*1', 1),
+    ('2*2', 2*2),
+    ('0*2', 0*2),
+    ('123*456', 123*456),
+    ('123  *   456', 123*456),
+    ))
+def test_can_multiply(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
+
+# @pytest.mark.skip()
+@pytest.mark.parametrize('codetext, expected', (
+    ('1/1', 1/1),
+    ('1  /  1', 1/1),
+    ('10  /  1', 10/1),
+    ('1  /  10', 1/10),
+    ('66  /  22', 66/22),
+    ))
+def test_can_divide(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
+
+@pytest.mark.parametrize('codetext, expected', (
+    ('1-1-1', 1-1-1),
+    ('1-1-1-1-1-1', 1-1-1-1-1-1),
+    ('1-1+1-1+1-1+1-1+1-1', 1-1+1-1+1-1+1-1+1-1),
+    ('1  - 1 +1- 1+1-1  +1-1+1-1', 1-1   +1-  1+1-   1+1-1+1-1),
+    ('123  -1987+   14- 156-0   +1', 123  -1987+   14- 156-0   +1),
+    ))
+def test_can_repeat_add_sub(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
+
+@pytest.mark.parametrize('codetext, expected', (
+    ('2*2*2', 2*2*2),
+    ('2*2*2*2*2*2', 2*2*2*2*2*2),
+    ('2/2/2', 2/2/2),
+    ('2/2/2/2/2/2', 2/2/2/2/2/2),
+    ('3*3/3*3/3*3/3*3/3*3', 3*3/3*3/3*3/3*3/3*3),
+    ('3  / 3 *3/ 3*3/3  *3/3*3/3', 3/3   *3/  3*3/   3*3/3*3/3),
+    ('123  /1987*   14/ 156/10   *1', 123  /1987*   14/ 156/10   *1),
+    ))
+def test_can_repeat_add_sub_mult_div_spaced(codetext, expected):
+    program = interpreter.Interpreter(text=codetext)
+    result = program.expr()
+    assert result == expected
+
+
 if __name__ == '__main__':
     pytest.main([
         __file__,

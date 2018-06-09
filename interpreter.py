@@ -1,6 +1,8 @@
 INTEGER = 'INTEGER'
 PLUS = 'PLUS'
 MINUS = 'MINUS'
+MULT = 'MULT'
+DIV = 'DIV'
 EOF = 'EOF'
 
 
@@ -17,8 +19,8 @@ class Interpreter:
         self.currenttoken = None
         self.currentchar = self.text[self.pos]
 
-    def error(self):
-        raise Exception('::: error parsing :::')
+    # def error(self):
+    #     raise Exception('::: error parsing :::')
 
     def advance(self):
         self.pos += 1
@@ -55,35 +57,52 @@ class Interpreter:
                 self.advance()
                 return Token(type_=MINUS, value='-')
 
-            self.error()
+            if self.currentchar == '*':
+                self.advance()
+                return Token(type_=MULT, value='*')
+
+            if self.currentchar == '/':
+                self.advance()
+                return Token(type_=DIV, value='/')
+
+            # self.error()
+            raise Exception('GET NEXT TOKEN ERROR!')
 
         return Token(type_=EOF, value=None)
 
 
     def eat(self, tokentype):
         if self.currenttoken.type_ != tokentype:
-            self.error()
+            # self.error()
+            raise Exception('EAT ERROR!')
         self.currenttoken = self.get_next_token()
+
+
+    def term(self):
+        token = self.currenttoken
+        self.eat(INTEGER)
+        return token.value
 
 
     def expr(self):
         self.currenttoken = self.get_next_token()
-        left = self.currenttoken
-        self.eat(INTEGER)
-        op = self.currenttoken
+        result = self.term()
 
-        if op.type_ == 'PLUS':
-            self.eat(PLUS)
-        else:
-            self.eat(MINUS)
+        while self.currenttoken.type_ in (PLUS, MINUS, MULT, DIV):
+            token = self.currenttoken
 
-        right = self.currenttoken
-        self.eat(INTEGER)
-
-        if op.type_ == 'PLUS':
-            result = left.value + right.value
-        else:
-            result = left.value - right.value
+            if token.type_ == PLUS:
+                self.eat(PLUS)
+                result = result + self.term()
+            elif token.type_ == MINUS:
+                self.eat(MINUS)
+                result = result - self.term()
+            elif token.type_ == MULT:
+                self.eat(MULT)
+                result = result * self.term()
+            elif token.type_ == DIV:
+                self.eat(DIV)
+                result = result / self.term()
 
         return result
 

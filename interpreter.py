@@ -14,30 +14,15 @@ class Token(object):
         # token value: non-negative integer value, '+', '-', '*', '/', or None
         self.value = value
 
-    def __str__(self):
-        """String representation of the class instance.
-
-        Examples:
-            Token(INTEGER, 3)
-            Token(PLUS, '+')
-            Token(MUL, '*')
-        """
-        return 'Token({type}, {value})'.format(
-            type=self.type,
-            value=repr(self.value)
-        )
-
-    def __repr__(self):
-        return self.__str__()
-
 
 class Lexer(object):
     def __init__(self, text):
         # client string input, e.g. "3 * 5", "12 / 3 * 4", etc
         self.text = text
         # self.pos is an index into self.text
-        self.pos = 0
-        self.current_char = self.text[self.pos]
+        self.pos = -1
+        # self.current_char = self.text[self.pos]
+        self.advance()
 
     def error(self):
         raise Exception('Invalid character')

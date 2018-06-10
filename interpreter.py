@@ -2,14 +2,16 @@
 #
 # EOF (end-of-file) token is used to indicate that
 # there is no more input left for lexical analysis
-INTEGER, MUL, DIV, EOF = 'INTEGER', 'MUL', 'DIV', 'EOF'
+INTEGER, PLUS, MINUS, MUL, DIV, EOF = (
+    'INTEGER', 'PLUS', 'MINUS', 'MUL', 'DIV', 'EOF'
+)
 
 
 class Token(object):
     def __init__(self, type, value):
-        # token type: INTEGER, MUL, DIV, or EOF
+        # token type: INTEGER, PLUS, MINUS, MUL, DIV, or EOF
         self.type = type
-        # token value: non-negative integer value, '*', '/', or None
+        # token value: non-negative integer value, '+', '-', '*', '/', or None
         self.value = value
 
     def __str__(self):
@@ -17,6 +19,7 @@ class Token(object):
 
         Examples:
             Token(INTEGER, 3)
+            Token(PLUS, '+')
             Token(MUL, '*')
         """
         return 'Token({type}, {value})'.format(
@@ -36,8 +39,8 @@ class Lexer(object):
         self.pos = 0
         self.current_char = self.text[self.pos]
 
-    # def error(self):
-    #     raise Exception('Invalid character')
+    def error(self):
+        raise Exception('Invalid character')
 
     def advance(self):
         """Advance the `pos` pointer and set the `current_char` variable."""
@@ -74,6 +77,14 @@ class Lexer(object):
             if self.current_char.isdigit():
                 return Token(INTEGER, self.integer())
 
+            if self.current_char == '+':
+                self.advance()
+                return Token(PLUS, '+')
+
+            if self.current_char == '-':
+                self.advance()
+                return Token(MINUS, '-')
+
             if self.current_char == '*':
                 self.advance()
                 return Token(MUL, '*')
@@ -82,8 +93,7 @@ class Lexer(object):
                 self.advance()
                 return Token(DIV, '/')
 
-            # self.error()
-            raise Exception('LEXER GET NEXT TOKEN ERROR!')
+            self.error()
 
         return Token(EOF, None)
 
@@ -94,8 +104,8 @@ class Interpreter(object):
         # set current token to the first token taken from the input
         self.current_token = self.lexer.get_next_token()
 
-    # def error(self):
-    #     raise Exception('Invalid syntax')
+    def error(self):
+        raise Exception('Invalid syntax')
 
     def eat(self, token_type):
         # compare the current token type with the passed token
@@ -105,24 +115,16 @@ class Interpreter(object):
         if self.current_token.type == token_type:
             self.current_token = self.lexer.get_next_token()
         else:
-            # self.error()
-            raise Exception('INTERPRETER EAT ERROR!')
+            self.error()
 
     def factor(self):
-        """Return an INTEGER token value.
-
-        factor : INTEGER
-        """
+        """factor : INTEGER"""
         token = self.current_token
         self.eat(INTEGER)
         return token.value
 
-    def expr(self):
-        """Arithmetic expression parser / interpreter.
-
-        expr   : factor ((MUL | DIV) factor)*
-        factor : INTEGER
-        """
+    def term(self):
+        """term : factor ((MUL | DIV) factor)*"""
         result = self.factor()
 
         while self.current_token.type in (MUL, DIV):
@@ -133,6 +135,29 @@ class Interpreter(object):
             elif token.type == DIV:
                 self.eat(DIV)
                 result = result / self.factor()
+
+        return result
+
+    def expr(self):
+        """Arithmetic expression parser / interpreter.
+
+        calc>  14 + 2 * 3 - 6 / 2
+        17
+
+        expr   : term ((PLUS | MINUS) term)*
+        term   : factor ((MUL | DIV) factor)*
+        factor : INTEGER
+        """
+        result = self.term()
+
+        while self.current_token.type in (PLUS, MINUS):
+            token = self.current_token
+            if token.type == PLUS:
+                self.eat(PLUS)
+                result = result + self.term()
+            elif token.type == MINUS:
+                self.eat(MINUS)
+                result = result - self.term()
 
         return result
 

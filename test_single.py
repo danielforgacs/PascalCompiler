@@ -13,6 +13,8 @@ def test_python_version_ok():
 
 
 @pytest.mark.parametrize('codetext, expected', (
+    ('5', 5),
+
     ('2*3', 2*3),
     ('2/3', 2/3),
 

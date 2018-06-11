@@ -4,7 +4,7 @@ import sys
 
 
 PYTHON_VERIONS_MAJOR = (3,)
-PYTHON_VERIONS_MINOR = (5,)
+PYTHON_VERIONS_MINOR = (5, 6)
 
 
 def test_python_version_ok():

@@ -45,7 +45,7 @@ def test_python_version_ok():
     ('2 +  3 * 5+ 8/ 2 *3 *4  - 1+2', 2+3*5+8/2*3*4-1+2),
 
     ('(2 +  3) * 5+ 8/ 2 *(3 *4)  - 1+2', (2+3)*5+8/2*(3*4)-1+2),
-    ('(2 +  3) * (5+ 8/ 2 *(3 *4)  - 1)+2', (2+3)*(5+8/2*(3*4)-1)+2),
+    ('(2 +  3) * (5+ 8/ 2 *(3 z*4)  - 1)+2', (2+3)*(5+8/2*(3*4)-1)+2),
     ))
 def test_can_add_single_digit_no_space(codetext, expected):
     lexer = interpreter.Lexer(text=codetext)

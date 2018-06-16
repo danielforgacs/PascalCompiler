@@ -69,31 +69,47 @@ def calculator(source):
     term   : factor ((MUL | DIV) factor)*
     factor : INTEGER | LPAREN expr RPAREN
     """
+    result = ''
     pos = 0
-    result = get_next_token(source=source, pos=pos)
-    return ''
+    token, pos = get_next_token(source=source, pos=pos)
+
+    if token.typ == INT:
+        result = 0
+
+
+    while token.typ != EOF:
+        token, pos = get_next_token(source=source, pos=pos)
+
+        if token.typ == INT:
+            result += expr(text=source, pos=pos)
 
 
 
-# def expr(text):
-#     pos = 0
-#     pos = skip_space(text=text, pos=pos)
-#     token, pos = get_integer(text=text, pos=pos)
-#     result = token.value
 
-#     while pos < len(text)-1:
-#         pos = skip_space(text=text, pos=pos)
-#         op = text[pos]
-#         pos += 1
-#         pos = skip_space(text=text, pos=pos)
-#         token, pos = get_integer(text=text, pos=pos)
 
-#         if op == '+':
-#             result += token.value
-#         elif op == '-':
-#             result -= token.value
 
-#     return result
+    return result
+
+
+
+def expr(text, pos):
+    pos = skip_space(text=text, pos=pos)
+    token, pos = get_integer(text=text, pos=pos)
+    result = token.value
+
+    while pos < len(text)-1:
+        pos = skip_space(text=text, pos=pos)
+        op = text[pos]
+        pos += 1
+        pos = skip_space(text=text, pos=pos)
+        token, pos = get_integer(text=text, pos=pos)
+
+        if op == '+':
+            result += token.value
+        elif op == '-':
+            result -= token.value
+
+    return result
 
 @pytest.mark.parametrize('args, expected', (
     (('1', 0, 1), Token(INT, 1)),
@@ -125,6 +141,7 @@ def test_skip_space(kwargs, expected):
 
 @pytest.mark.parametrize('text, expected', (
     ('', ''),
+    # ('1', 1),
     ))
 def test_calculator(text, expected):
     assert calculator(source=text) == expected

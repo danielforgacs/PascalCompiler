@@ -4,6 +4,9 @@
 expr: INT ((+|-) INT)*
 """
 
+INT = 'INT'
+PLUS = '+'
+
 
 import pytest
 
@@ -24,7 +27,7 @@ def get_integer(text, pos):
 			break
 		counter += 1
 
-	return Token('INT', int(result)), counter
+	return Token(INT, int(result)), counter
 
 
 def skip_space(text, pos):
@@ -47,7 +50,11 @@ def expr(text):
         pos += 1
         pos = skip_space(text=text, pos=pos)
         token, pos = get_integer(text=text, pos=pos)
-        result += token.value
+
+        if op == '+':
+            result += token.value
+        elif op == '-':
+            result -= token.value
 
     return result
 
@@ -65,6 +72,7 @@ def expr(text):
     ('1+1+1+1+1', 1+1+1+1+1),
     ('1  +  1   + 1  +  1  +  1', 1+1+1+1+1),
     ('123  +  3331   + 133333  +  111  +  121', 123+3331+133333+111+121),
+    ('123  -  3331   + 133333  +  111  -  121', 123-3331+133333+111-121),
     ))
 def test_expr_01(source, expected):
     assert expr(text=source) == expected

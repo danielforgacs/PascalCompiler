@@ -37,6 +37,7 @@ def skip_space(text, pos):
 
 def expr(text):
     pos = 0
+    pos = skip_space(text=text, pos=pos)
     token, pos = get_integer(text=text, pos=pos)
     result = token.value
 
@@ -59,6 +60,9 @@ def expr(text):
     ('123+654', 123+654),
     ('123  +654', 123+654),
     ('123  + 654', 123+654),
+    ('     123  + 654', 123+654),
+    ('1+1+1', 1+1+1),
+    ('1+1+1+1+1', 1+1+1+1+1),
     ))
 def test_expr_01(source, expected):
     assert expr(text=source) == expected

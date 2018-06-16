@@ -8,6 +8,7 @@ PLUS = '+'
 MINUS = '-'
 MUL = '*'
 DIV = '/'
+EOF = 'EOF'
 
 
 
@@ -20,17 +21,16 @@ class Token:
         self.value = value
 
 
-# def get_integer(text, pos):
-#   result = ''
-#   counter = pos
+def get_integer(text, pos):
+  result = ''
 
-#   while text[counter] in '0123456789':
-#       result += text[counter]
-#       if counter == len(text)-1:
-#           break
-#       counter += 1
+  while text[pos] in '0123456789':
+      result += text[pos]
+      if pos == len(text)-1:
+          break
+      pos += 1
 
-#   return Token(INT, int(result)), counter
+  return Token(INT, int(result)), pos
 
 
 def skip_space(text, pos):
@@ -44,7 +44,20 @@ def skip_space(text, pos):
 
 
 def get_next_token(source, pos):
-    return pos
+    token = Token(typ=EOF, value='EOF')
+
+    while pos < len(source):
+        pos = skip_space(text=source, pos=pos)
+
+        if source[pos] in '0123456789':
+            token, pos = get_integer(text=source, pos=pos)
+        elif source[pos] in '+':
+            token = Token(PLUS, '+')
+            pos += 1
+
+        pos += 1
+
+    return token, pos
 
 
 def calculator(source):
@@ -78,6 +91,20 @@ def calculator(source):
 #             result -= token.value
 
 #     return result
+
+@pytest.mark.parametrize('args, expected', (
+    (('1', 0), Token(INT, 1)),
+    (('123', 0), Token(INT, 123)),
+    (('    123', 4), Token(INT, 123)),
+    (('    123', 5), Token(INT, 23)),
+    (('    +', 0), Token(PLUS, '+')),
+    (('    +', 4), Token(PLUS, '+')),
+    ))
+def test_get_next_token(args, expected):
+    token, pos = get_next_token(*args)
+    assert token.typ == expected.typ
+    assert token.value == expected.value
+
 
 
 @pytest.mark.parametrize('kwargs, expected', (

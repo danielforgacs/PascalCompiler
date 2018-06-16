@@ -1,7 +1,7 @@
 """
-1+2+3
-
-expr: INT ((+|-) INT)*
+expr   : term ((PLUS | MINUS) term)*
+term   : factor ((MUL | DIV) factor)*
+factor : INTEGER | LPAREN expr RPAREN
 """
 
 INT = 'INT'

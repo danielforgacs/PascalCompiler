@@ -1,7 +1,7 @@
 """
 1+2+3
 
-INT ((+|-) INT)*
+expr: INT ((+|-) INT)*
 """
 
 
@@ -27,18 +27,28 @@ def get_integer(text, pos):
 	return Token('INT', int(result)), counter
 
 
+def skip_space(text, pos):
+    while text[pos] == ' ':
+        pos += 1
+
+    return pos
+
+
 
 def expr(text):
     pos = 0
+    token, pos = get_integer(text=text, pos=pos)
+    result = token.value
 
-    # while pos < len(text):
-    token1, pos = get_integer(text=text, pos=pos)
-    # pos += 1
-    op = text[pos]
-    pos += 1
-    token2, pos = get_integer(text=text, pos=pos)
+    while pos < len(text)-1:
+        pos = skip_space(text=text, pos=pos)
+        op = text[pos]
+        pos += 1
+        pos = skip_space(text=text, pos=pos)
+        token, pos = get_integer(text=text, pos=pos)
+        result += token.value
 
-    return token1.value + token2.value 
+    return result
 
 
 
@@ -47,6 +57,8 @@ def expr(text):
     ('1+1', 1+1),
     ('11+1', 11+1),
     ('123+654', 123+654),
+    ('123  +654', 123+654),
+    ('123  + 654', 123+654),
     ))
 def test_expr_01(source, expected):
     assert expr(text=source) == expected

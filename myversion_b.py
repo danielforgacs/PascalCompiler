@@ -74,7 +74,7 @@ def calculator(source):
     token, pos = get_next_token(source=source, pos=pos)
 
     if token.typ == INT:
-        result = 0
+        result = token.value
 
 
     while token.typ != EOF:
@@ -82,11 +82,6 @@ def calculator(source):
 
         if token.typ == INT:
             result += expr(text=source, pos=pos)
-
-
-
-
-
 
     return result
 
@@ -141,7 +136,8 @@ def test_skip_space(kwargs, expected):
 
 @pytest.mark.parametrize('text, expected', (
     ('', ''),
-    # ('1', 1),
+    ('1', 1),
+    ('11', 11),
     ))
 def test_calculator(text, expected):
     assert calculator(source=text) == expected

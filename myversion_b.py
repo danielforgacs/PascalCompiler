@@ -5,7 +5,13 @@ factor : INTEGER | LPAREN expr RPAREN
 """
 
 INT = 'INT'
+LPAREN = '('
+RPAREN = ')'
 PLUS = '+'
+MINUS = '-'
+MUL = '*'
+DIV = '/'
+
 
 
 import pytest

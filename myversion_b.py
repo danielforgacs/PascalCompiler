@@ -53,7 +53,6 @@ def get_next_token(source, pos):
             token, pos = get_integer(text=source, pos=pos)
         elif source[pos] in '+':
             token = Token(PLUS, '+')
-            pos += 1
 
         pos += 1
 
@@ -93,18 +92,18 @@ def calculator(source):
 #     return result
 
 @pytest.mark.parametrize('args, expected', (
-    (('1', 0), Token(INT, 1)),
-    (('123', 0), Token(INT, 123)),
-    (('    123', 4), Token(INT, 123)),
-    (('    123', 5), Token(INT, 23)),
-    (('    +', 0), Token(PLUS, '+')),
-    (('    +', 4), Token(PLUS, '+')),
+    (('1', 0, 1), Token(INT, 1)),
+    (('123', 0, 3), Token(INT, 123)),
+    (('    123', 4, 7), Token(INT, 123)),
+    (('    123', 5, 7), Token(INT, 23)),
+    (('    +', 0, 5), Token(PLUS, '+')),
+    (('    +', 4, 5), Token(PLUS, '+')),
     ))
 def test_get_next_token(args, expected):
-    token, pos = get_next_token(*args)
+    token, pos = get_next_token(*args[:2])
     assert token.typ == expected.typ
     assert token.value == expected.value
-
+    assert pos == args[2]
 
 
 @pytest.mark.parametrize('kwargs, expected', (

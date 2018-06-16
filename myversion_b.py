@@ -51,8 +51,12 @@ def get_next_token(source, pos):
 
         if source[pos] in '0123456789':
             token, pos = get_integer(text=source, pos=pos)
+
         elif source[pos] in '+':
             token = Token(PLUS, '+')
+
+        elif source[pos] in '-':
+            token = Token(MINUS, '-')
 
         pos += 1
 
@@ -98,6 +102,7 @@ def calculator(source):
     (('    123', 5, 7), Token(INT, 23)),
     (('    +', 0, 5), Token(PLUS, '+')),
     (('    +', 4, 5), Token(PLUS, '+')),
+    (('    -', 4, 5), Token(MINUS, '-')),
     ))
 def test_get_next_token(args, expected):
     token, pos = get_next_token(*args[:2])

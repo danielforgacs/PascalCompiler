@@ -149,12 +149,12 @@ def test_skip_space(kwargs, expected):
     assert pos == expected
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('text, expected', (
     # ('', ''),
-    # ('1', 1),
-    # ('11', 11),
-    ('1+1', 1+1),
+    ('1', 1),
+    ('11', 11),
+    # ('1+1', 1+1),
     ))
 def test_calculator(text, expected):
     assert calculator(source=text) == expected
@@ -166,5 +166,5 @@ if __name__ == '__main__':
 
     pytest.main([
         __file__,
-        '-s'
+        # '-s'
     ])

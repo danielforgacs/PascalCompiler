@@ -154,10 +154,21 @@ def test_skip_space(kwargs, expected):
     # ('', ''),
     ('1', 1),
     ('11', 11),
-    # ('1+1', 1+1),
+    # ('1+2', 1+2),
     ))
 def test_calculator(text, expected):
     assert calculator(source=text) == expected
+
+
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('text, expected', (
+    # ('', ''),
+    ('1', 1),
+    ('11', 11),
+    # ('1+2', 1+2),
+    ))
+def test_expression(args, expected):
+    assert expression
 
 
 

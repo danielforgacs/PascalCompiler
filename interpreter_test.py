@@ -17,7 +17,7 @@ def test_get_next_token_returns_token_01():
     assert isinstance(token, interpreter.Token)
 
 
-@pytest.mark.skip('CAN`T ADD YET')
+# @pytest.mark.skip('CAN`T ADD YET')
 def test_get_next_token_returns_token_02():
     code = interpreter.Lexer(text='1+4')
     token1 = code.get_next_token()
@@ -31,23 +31,23 @@ def test_get_next_token_returns_token_02():
     assert token3.type == interpreter.INTEGER
 
 
-@pytest.mark.skip('CAN`T ADD YET')
+# @pytest.mark.skip('CAN`T ADD YET')
 def test_eat():
     lexer = interpreter.Lexer(text='1+4')
     interpr = interpreter.Interpreter(lexer=lexer)
-    interpr.currenttoken = interpr.lexer.get_next_token()
-    assert code.currenttoken.value == 1
-    assert code.currenttoken.type_ == interpreter.INTEGER
-    code.eat(tokentype=interpreter.INTEGER)
-    assert code.currenttoken.value == '+'
-    assert code.currenttoken.type_ == interpreter.PLUS
-    code.eat(tokentype=interpreter.PLUS)
-    assert code.currenttoken.value == 4
-    assert code.currenttoken.type_ == interpreter.INTEGER
-    code.eat(tokentype=interpreter.INTEGER)
+    assert isinstance(interpr.current_token, interpreter.Token)
+    assert interpr.current_token.value == 1
+    assert interpr.current_token.type == interpreter.INTEGER
+    interpr.current_token = interpr.lexer.get_next_token()
+    assert interpr.current_token.value == '+'
+    assert interpr.current_token.type == interpreter.PLUS
+    interpr.eat(token_type=interpreter.PLUS)
+    assert interpr.current_token.value == 4
+    assert interpr.current_token.type == interpreter.INTEGER
+    interpr.eat(token_type=interpreter.INTEGER)
 
 
-@pytest.mark.skip('CAN`T ADD YET')
+# @pytest.mark.skip('CAN`T ADD YET')
 def test_expr():
     lexer = interpreter.Lexer(text='1+4')
     code = interpreter.Interpreter(lexer=lexer)
@@ -55,19 +55,20 @@ def test_expr():
     assert result == 5
 
 
-@pytest.mark.skip('CAN`T ADD YET')
+# @pytest.mark.skip('CAN`T ADD YET')
 @pytest.mark.parametrize('codetext, expected', (
     ('0+0', 0),
-    ('1+2', 3),
-    ('8+7', 15),
+    ('1+2', 1+2),
+    ('8+7', 8+7),
     ))
 def test_can_add_single_digit_no_space(codetext, expected):
-    program = interpreter.Interpreter(text=codetext)
+    lexer = interpreter.Lexer(text=codetext)
+    program = interpreter.Interpreter(lexer=lexer)
     result = program.expr()
     assert result == expected
 
 
-@pytest.mark.skip('CAN`T ADD YET')
+# @pytest.mark.skip('CAN`T ADD YET')
 @pytest.mark.parametrize('codetext, expected', (
     ('0-0', 0),
     ('9-4', 5),
@@ -75,12 +76,13 @@ def test_can_add_single_digit_no_space(codetext, expected):
     ('8-7', 1),
     ))
 def test_can_subtract_single_digit_no_space(codetext, expected):
-    program = interpreter.Interpreter(text=codetext)
+    lexer = interpreter.Lexer(text=codetext)
+    program = interpreter.Interpreter(lexer=lexer)
     result = program.expr()
     assert result == expected
 
 
-@pytest.mark.skip('CAN`T ADD YET')
+# @pytest.mark.skip('CAN`T ADD YET')
 @pytest.mark.parametrize('codetext, expected', (
     ('0 - 0', 0),
     ('9  - 4', 5),
@@ -88,12 +90,13 @@ def test_can_subtract_single_digit_no_space(codetext, expected):
     ('   8-7    ', 1),
     ))
 def test_can_subtract_single_digit_with_space(codetext, expected):
-    program = interpreter.Interpreter(text=codetext)
+    lexer = interpreter.Lexer(text=codetext)
+    program = interpreter.Interpreter(lexer=lexer)
     result = program.expr()
     assert result == expected
 
 
-@pytest.mark.skip('CAN`T ADD YET')
+# @pytest.mark.skip('CAN`T ADD YET')
 @pytest.mark.parametrize('codetext, expected', (
     ('20 - 20', 0),
     ('200 - 200', 0),
@@ -103,7 +106,8 @@ def test_can_subtract_single_digit_with_space(codetext, expected):
     ('1   -    200', -199),
     ))
 def test_multidigit_works(codetext, expected):
-    program = interpreter.Interpreter(text=codetext)
+    lexer = interpreter.Lexer(text=codetext)
+    program = interpreter.Interpreter(lexer=lexer)
     result = program.expr()
     assert result == expected
 
@@ -138,7 +142,7 @@ def test_can_divide(codetext, expected):
     assert result == expected
 
 
-@pytest.mark.skip('CAN`T ADD YET')
+# @pytest.mark.skip('CAN`T ADD YET')
 @pytest.mark.parametrize('codetext, expected', (
     ('1-1-1', 1-1-1),
     ('1-1-1-1-1-1', 1-1-1-1-1-1),

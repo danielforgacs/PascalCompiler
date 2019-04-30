@@ -13,6 +13,9 @@ class Token:
     def __repr__(self):
         return '[%s]:[%s]' % (self.type_, self.value)
 
+    def __eq__(self, other):
+        return (self.type_ == other.type_) and (self.value == other.value)
+
 
 
 class Interpreter:
@@ -63,7 +66,7 @@ class Interpreter:
         return result
 
 
-src = ''
-interp = Interpreter(text=src)
-result  = interp.exp()
-assert result == 3+5
+# src = ''
+# interp = Interpreter(text=src)
+# result  = interp.exp()
+# assert result == 3+5

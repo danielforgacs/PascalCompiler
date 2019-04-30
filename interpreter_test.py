@@ -37,3 +37,15 @@ def test_get_next_token_subtract():
     assert interp.get_next_token() == interpreter.Token(interpreter.MINUS, '-')
     assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 5)
     assert interp.get_next_token() == interpreter.Token(interpreter.EOF, None)
+
+
+@pytest.mark.skip('')
+@pytest.mark.parametrize('src, expected', [
+    ['31+5', 31+5],
+    ['12+0', 12],
+    ['5+32', 5+32],
+    ['12345+54321', 12345+54321],
+])
+def test_calculator_can_add_single_digits_without_space(src, expected):
+    result = interpreter.Interpreter(src).exp()
+    assert result == expected

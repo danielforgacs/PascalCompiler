@@ -24,14 +24,13 @@ class Interpreter:
         self.text = text
         self.pos = 0
         self.current_token = None
+        self.current_char = self.text[self.pos]
 
     def get_next_token(self):
-        text = self.text
-
-        if self.pos > len(text)-1:
+        if self.pos > len(self.text)-1:
             return Token(EOF, None)
 
-        char = text[self.pos]
+        char = self.text[self.pos]
 
         if char.isdigit():
             token = Token(INTEGER, int(char))

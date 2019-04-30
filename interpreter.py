@@ -35,6 +35,10 @@ class Interpreter:
             self.current_char = self.text[self.pos]
 
 
+    def skip_whitespace(self):
+        while self.current_char and (self.current_char == ' '):
+            self.advance()
+
     def get_next_token(self):
         if self.pos > len(self.text)-1:
             return Token(EOF, None)

@@ -10,6 +10,9 @@ class Token:
         # None, 0123456789, '+'
         self.value = value
 
+    def __repr__(self):
+        return '[%s]:[%s]' % (self.type_, self.value)
+
 
 
 class Interpreter:
@@ -60,7 +63,7 @@ class Interpreter:
         return result
 
 
-src = '3+5'
+src = ''
 interp = Interpreter(text=src)
 result  = interp.exp()
 assert result == 3+5

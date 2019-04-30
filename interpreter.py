@@ -39,33 +39,35 @@ class Interpreter:
         while self.current_char and (self.current_char == ' '):
             self.advance()
 
+
+    def integer(self):
+        result = ''
+        while self.current_char and self.current_char.isdigit():
+            result += self.current_char
+            self.advance()
+        return int(result)
+
+
     def get_next_token(self):
-        if self.pos > len(self.text)-1:
-            return Token(EOF, None)
+        while self.current_char:
+            if self.current_char == ' ':
+                self.skip_whitespace()
+                continue
 
-        char = self.text[self.pos]
+            if self.current_char.isdigit():
+                return Token(INTEGER, self.integer())
 
-        if char.isdigit():
-            token = Token(INTEGER, int(char))
-            self.pos += 1
+            if self.current_char == '+':
+                self.advance()
+                return Token(PLUS, '+')
 
-            return token
+            if self.current_char == '-':
+                self.advance()
+                return Token(MINUS, '-')
 
-        if char == '+':
-            token = Token(PLUS, '+')
-            self.pos += 1
+            raise Exception('NEXT TOKEN ERROR')
 
-            return token
-
-        if char == '-':
-            token = Token(MINUS, '-')
-            self.pos += 1
-
-            return token
-
-
-
-        raise Exception('CAN`T GET TOKEN')
+        return Token(EOF, None)
 
 
     def eat(self, token_type):

@@ -83,8 +83,3 @@ class Interpreter:
 
         return result
 
-
-src = '3+5'
-interp = Interpreter(text=src)
-result  = interp.exp()
-assert result == 3+5

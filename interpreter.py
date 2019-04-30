@@ -66,7 +66,7 @@ class Interpreter:
         return result
 
 
-# src = ''
-# interp = Interpreter(text=src)
-# result  = interp.exp()
-# assert result == 3+5
+src = '3+5'
+interp = Interpreter(text=src)
+result  = interp.exp()
+assert result == 3+5

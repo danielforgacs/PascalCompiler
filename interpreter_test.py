@@ -4,9 +4,10 @@ import pytest
 
 @pytest.mark.parametrize('src, expected', [
     ['3+5', 3+5],
-    # ['', None]
+    ['0+0', 0],
+    ['9+9', 18],
 ])
-def test_calculator_01(src, expected):
+def test_calculator_can_add_single_digits_without_space(src, expected):
     result = interpreter.Interpreter(src).exp()
     assert result == expected
 

@@ -26,6 +26,15 @@ class Interpreter:
         self.current_token = None
         self.current_char = self.text[self.pos]
 
+
+    def advance(self):
+        self.pos += 1
+        if self.pos == len(self.text):
+            self.current_char = None
+        else:
+            self.current_char = self.text[self.pos]
+
+
     def get_next_token(self):
         if self.pos > len(self.text)-1:
             return Token(EOF, None)

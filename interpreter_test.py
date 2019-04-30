@@ -39,7 +39,7 @@ def test_get_next_token_subtract():
     assert interp.get_next_token() == interpreter.Token(interpreter.EOF, None)
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', [
     ['31+5', 31+5],
     ['12+0', 12],

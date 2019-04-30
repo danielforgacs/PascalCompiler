@@ -14,9 +14,9 @@ def test_calculator_can_add_single_digits_without_space(src, expected):
 
 @pytest.mark.parametrize('src, expected', [
     ['3-5', 3-5],
-    # ['0-0', 0],
-    # ['9-9', 9-9],
-    # ['5-3', 5-3],
+    ['0-0', 0],
+    ['9-9', 9-9],
+    ['5-3', 5-3],
 ])
 def test_calculator_can_subtract_single_digits_without_space(src, expected):
     result = interpreter.Interpreter(src).exp()

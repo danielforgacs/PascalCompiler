@@ -1,13 +1,14 @@
 # Token types:
 INTEGER = 'INTEGER'
 PLUS = 'PLUS'
+MINUS = 'MINUS'
 EOF = 'EOF'
 
 
 class Token:
     def __init__(self, type_, value):
         self.type_ = type_
-        # None, 0123456789, '+'
+        # None, 0123456789, '+', '-'
         self.value = value
 
     def __repr__(self):
@@ -44,6 +45,14 @@ class Interpreter:
 
             return token
 
+        if char == '-':
+            token = Token(MINUS, '-')
+            self.pos += 1
+
+            return token
+
+
+
         raise Exception('CAN`T GET TOKEN')
 
 
@@ -59,10 +68,20 @@ class Interpreter:
         left = self.current_token
         self.eat(INTEGER)
         op = self.current_token
-        self.eat(PLUS)
+
+        if op.value == '+':
+            self.eat(PLUS)
+        elif op.value == '-':
+            self.eat(MINUS)
+
         right = self.current_token
         self.eat(INTEGER)
-        result = left.value + right.value
+
+        if op.type_ == PLUS:
+            result = left.value + right.value
+        elif op.type_ == MINUS:
+            result = left.value - right.value
+
         return result
 
 

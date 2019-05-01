@@ -118,3 +118,20 @@ def test_multiply(src, expected):
     assert result == expected
     result = fi.exp(src)
     assert result == expected
+
+
+
+@pytest.mark.parametrize('src, expected', [
+    ['0/1', 0/1],
+    ['1/1', 1/1],
+    ['123/321', 123/321],
+    ['   31/5', 31/5],
+    ['   31   /5', 31/5],
+    ['   31   /   5', 31/5],
+    ['   31   /   5   ', 31/5],
+])
+def test_div(src, expected):
+    result = interpreter.Interpreter(src).exp()
+    assert result == expected
+    result = fi.exp(src)
+    assert result == expected

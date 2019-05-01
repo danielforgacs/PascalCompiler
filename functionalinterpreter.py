@@ -2,6 +2,7 @@ INTEGER = 'INTEGER'
 PLUS = 'PLUS'
 MINUS = 'MINUS'
 MULT = 'MULT'
+DIV = 'DIV'
 EOF = 'EOF'
 
 
@@ -59,6 +60,10 @@ def get_next_token(src, idx):
         idx += 1
         token = Token(MULT, '*')
 
+    elif char in '/':
+        idx += 1
+        token = Token(DIV, '/')
+
     else:
         raise Exception('CAN NOT GET NEXT TOKEN')
 
@@ -78,7 +83,7 @@ def exp(src, idx=0):
 
     operator, idx = get_next_token(src=src, idx=idx)
 
-    if not operator.type_ in [PLUS, MINUS, MULT]:
+    if not operator.type_ in [PLUS, MINUS, MULT, DIV]:
         raise Exception('EXPRESSION OP ERROR')
 
     right, idx = get_next_token(src=src, idx=idx)
@@ -92,6 +97,8 @@ def exp(src, idx=0):
         result = left.value - right.value
     elif operator.type_ == MULT:
         result = left.value * right.value
+    elif operator.type_ == DIV:
+        result = left.value / right.value
 
     return result
 

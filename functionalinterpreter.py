@@ -10,6 +10,8 @@ class Token:
         self.value = value
     def __repr__(self):
         return '[%s][%s]' % (self.type_, self.value)
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
 
 
 

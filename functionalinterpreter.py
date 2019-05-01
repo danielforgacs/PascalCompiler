@@ -7,10 +7,13 @@ class Token:
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
+    def __repr__(self):
+        return '[%s][%s]' % (self.type_, self.value)
 
 
 def integer(src, idx):
     result = ''
+
     while True:
         result += src[idx]
         idx += 1
@@ -22,7 +25,7 @@ def integer(src, idx):
             break
 
 
-    return int(result), idx+1
+    return int(result), idx
 
 
 def get_next_token(src, idx):
@@ -34,22 +37,25 @@ def get_next_token(src, idx):
 
     elif char in '+':
         idx += 1
-        return Token(PLUS, PLUS), idx
+        return Token(PLUS, '+'), idx
 
 
 
 def exp(src, idx=0):
     left, idx = get_next_token(src=src, idx=idx)
+    print(left, idx)
 
     if not left.type_ == INTEGER:
         raise
 
     operator, idx = get_next_token(src=src, idx=idx)
+    print(operator, idx)
 
     if not operator.type_ == PLUS:
         raise Exception
 
     right, idx = get_next_token(src=src, idx=idx)
+    print(right, idx)
 
     if not right.type_ == INTEGER:
         raise

@@ -9,41 +9,38 @@ class Token:
         self.value = value
 
 
+def integer(src, idx):
+    return int(src[idx]), idx+1
+
+
 def get_next_token(src, idx):
     char = src[idx]
 
-    if not char:
-        return Token(EOF, EOF)
-
-    elif char in '0123456789':
-        return Token(INTEGER, int(char))
+    if char in '0123456789':
+        number, idx = integer(src, idx)
+        return Token(INTEGER, int(char)), idx
 
     elif char in '+':
-        return Token(PLUS, PLUS)
+        idx += 1
+        return Token(PLUS, PLUS), idx
 
 
 
 def exp(src, idx=0):
-    token = get_next_token(src=src, idx=idx)
+    left, idx = get_next_token(src=src, idx=idx)
 
-    if not token.type_ == INTEGER:
+    if not left.type_ == INTEGER:
         raise
 
-    left = token
-    idx += 1
-    token = get_next_token(src=src, idx=idx)
+    operator, idx = get_next_token(src=src, idx=idx)
 
-    if not token.type_ == PLUS:
+    if not operator.type_ == PLUS:
+        raise Exception
+
+    right, idx = get_next_token(src=src, idx=idx)
+
+    if not right.type_ == INTEGER:
         raise
-
-    operator = token
-    idx += 1
-    token = get_next_token(src=src, idx=idx)
-
-    if not token.type_ == INTEGER:
-        raise
-
-    right = token
 
     result = left.value + right.value
 

@@ -24,7 +24,10 @@ class Interpreter:
         self.text = text
         self.pos = 0
         self.current_token = None
-        self.current_char = self.text[self.pos]
+        self.current_char = None
+
+        if text:
+            self.current_char = self.text[self.pos]
 
 
     def advance(self):
@@ -78,6 +81,9 @@ class Interpreter:
 
 
     def exp(self):
+        if not self.current_char:
+            return
+
         self.current_token = self.get_next_token()
         left = self.current_token
         self.eat(INTEGER)

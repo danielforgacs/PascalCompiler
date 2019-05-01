@@ -49,3 +49,7 @@ def test_get_next_token_subtract():
 def test_calculator_can_add_single_digits_without_space(src, expected):
     result = interpreter.Interpreter(src).exp()
     assert result == expected
+
+
+def test_emtpy_string():
+    result = interpreter.Interpreter('').exp()

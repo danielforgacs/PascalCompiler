@@ -28,7 +28,14 @@ def integer(src, idx):
     return int(result), idx
 
 
+def skip_whitespace(src, idx):
+    while src[idx] == ' ':
+        idx += 1
+    return idx
+
+
 def get_next_token(src, idx):
+    idx = skip_whitespace(src, idx)
     char = src[idx]
 
     if char in '0123456789':
@@ -72,3 +79,6 @@ if __name__ == '__main__':
     assert exp(src='0+0') == 0
     assert exp(src='9+9') == 9+9
     assert exp(src='100+100') == 100+100
+    assert exp(src=' 3+5') == 3+5
+    assert exp(src='    3+5') == 3+5
+    assert exp(src='    3   +     5') == 3+5

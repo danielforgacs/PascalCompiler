@@ -1,54 +1,61 @@
-INTEGER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, EOF = (
-    'INTEGER', '+', '-', '*', '/', '(', ')', 'EOF'
-)
+# Token types:
+INTEGER = 'INTEGER'
+PLUS = 'PLUS'
+MINUS = 'MINUS'
+MULT = 'MULT'
+DIV = 'DIV'
+EOF = 'EOF'
 
 
-class Token(object):
-    def __init__(self, type, value):
-        self.type = type
+class Token:
+    def __init__(self, type_, value):
+        self.type_ = type_
+        # None, 0123456789, '+', '-'
         self.value = value
 
+    def __repr__(self):
+        return '[%s]:[%s]' % (self.type_, self.value)
 
-class Lexer(object):
+    def __eq__(self, other):
+        return (self.type_ == other.type_) and (self.value == other.value)
+
+
+
+class Interpreter:
     def __init__(self, text):
-        # client string input, e.g. "4 + 2 * 3 - 6 / 2"
         self.text = text
-        # self.pos is an index into self.text
         self.pos = 0
-        self.current_char = self.text[self.pos]
+        self.current_token = None
+        self.current_char = None
 
-    def error(self):
-        raise Exception('Invalid character')
+        if text:
+            self.current_char = self.text[self.pos]
+
 
     def advance(self):
-        """Advance the `pos` pointer and set the `current_char` variable."""
         self.pos += 1
-        if self.pos > len(self.text) - 1:
-            self.current_char = None  # Indicates end of input
+        if self.pos == len(self.text):
+            self.current_char = None
         else:
             self.current_char = self.text[self.pos]
 
+
     def skip_whitespace(self):
-        while self.current_char is not None and self.current_char.isspace():
+        while self.current_char and (self.current_char == ' '):
             self.advance()
 
+
     def integer(self):
-        """Return a (multidigit) integer consumed from the input."""
         result = ''
-        while self.current_char is not None and self.current_char.isdigit():
+        while self.current_char and self.current_char.isdigit():
             result += self.current_char
             self.advance()
         return int(result)
 
+
     def get_next_token(self):
-        """Lexical analyzer (also known as scanner or tokenizer)
-
-        This method is responsible for breaking a sentence
-        apart into tokens. One token at a time.
-        """
-        while self.current_char is not None:
-
-            if self.current_char.isspace():
+        while self.current_char:
+            if self.current_char == ' ':
                 self.skip_whitespace()
                 continue
 
@@ -65,116 +72,55 @@ class Lexer(object):
 
             if self.current_char == '*':
                 self.advance()
-                return Token(MUL, '*')
+                return Token(MULT, '*')
 
             if self.current_char == '/':
                 self.advance()
                 return Token(DIV, '/')
 
-            if self.current_char == '(':
-                self.advance()
-                return Token(LPAREN, '(')
-
-            if self.current_char == ')':
-                self.advance()
-                return Token(RPAREN, ')')
-
-            self.error()
+            raise Exception('NEXT TOKEN ERROR')
 
         return Token(EOF, None)
 
 
-class Interpreter(object):
-    def __init__(self, lexer):
-        self.lexer = lexer
-        # set current token to the first token taken from the input
-        self.current_token = self.lexer.get_next_token()
-
-    def error(self):
-        raise Exception('Invalid syntax')
-
     def eat(self, token_type):
-        # compare the current token type with the passed token
-        # type and if they match then "eat" the current token
-        # and assign the next token to the self.current_token,
-        # otherwise raise an exception.
-        if self.current_token.type == token_type:
-            self.current_token = self.lexer.get_next_token()
+        if self.current_token.type_ == token_type:
+            self.current_token = self.get_next_token()
         else:
-            self.error()
+            raise Exception('CAN NOT EAT')
 
 
-    def factor(self):
-        """factor : INTEGER | LPAREN expr RPAREN"""
-        token = self.current_token
+    def exp(self):
+        if not self.current_char:
+            return
 
-        if token.type == INTEGER:
-            self.eat(INTEGER)
+        self.current_token = self.get_next_token()
+        left = self.current_token
+        self.eat(INTEGER)
+        op = self.current_token
 
-            return token.value
+        if op.value == '+':
+            self.eat(PLUS)
+        elif op.value == '-':
+            self.eat(MINUS)
+        elif op.value == '*':
+            self.eat(MULT)
+        elif op.value == '/':
+            self.eat(DIV)
+        else:
+            raise Exception('BAD OP')
 
-        elif token.type == LPAREN:
-            self.eat(LPAREN)
-            result = self.expr()
-            self.eat(RPAREN)
+        right = self.current_token
+        self.eat(INTEGER)
 
-            return result
-
-
-    def term(self):
-        """term : factor ((MUL | DIV) factor)*"""
-        result = self.factor()
-
-        while self.current_token.type in (MUL, DIV):
-            token = self.current_token
-
-            if token.type == MUL:
-                self.eat(MUL)
-                result = result * self.factor()
-
-            elif token.type == DIV:
-                self.eat(DIV)
-                result = result / self.factor()
-
-        return result
-
-    def expr(self):
-        """Arithmetic expression parser / interpreter.
-
-        expr   : term ((PLUS | MINUS) term)*
-        term   : factor ((MUL | DIV) factor)*
-        factor : INTEGER | LPAREN expr RPAREN
-        """
-        result = self.term()
-
-        while self.current_token.type in (PLUS, MINUS):
-            token = self.current_token
-
-            if token.type == PLUS:
-                self.eat(PLUS)
-                result = result + self.term()
-
-            elif token.type == MINUS:
-                self.eat(MINUS)
-                result = result - self.term()
+        if op.type_ == PLUS:
+            result = left.value + right.value
+        elif op.type_ == MINUS:
+            result = left.value - right.value
+        elif op.type_ == MULT:
+            result = left.value * right.value
+        elif op.type_ == DIV:
+            result = left.value / right.value
 
         return result
 
-
-def main():
-    while True:
-        try:
-            text = input('calc> ')
-        except EOFError:
-            break
-        if not text:
-            exit()
-
-        lexer = Lexer(text)
-        interpreter = Interpreter(lexer)
-        result = interpreter.expr()
-        print(result)
-
-
-if __name__ == '__main__':
-    main()

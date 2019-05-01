@@ -1,5 +1,6 @@
 INTEGER = 'INTEGER'
 PLUS = 'PLUS'
+MINUS = 'MINUS'
 EOF = 'EOF'
 
 
@@ -9,6 +10,7 @@ class Token:
         self.value = value
     def __repr__(self):
         return '[%s][%s]' % (self.type_, self.value)
+
 
 
 def integer(src, idx):
@@ -40,34 +42,44 @@ def get_next_token(src, idx):
 
     if char in '0123456789':
         number, idx = integer(src, idx)
-        return Token(INTEGER, number), idx
+        token = Token(INTEGER, number)
 
     elif char in '+':
         idx += 1
-        return Token(PLUS, '+'), idx
+        token = Token(PLUS, '+')
+
+    elif char in '-':
+        idx += 1
+        token = Token(MINUS, '-')
+
+    else:
+        raise
+
+    print('{:<5}{}'.format(idx, token))
+    return token, idx
 
 
 
 def exp(src, idx=0):
     left, idx = get_next_token(src=src, idx=idx)
-    print(left, idx)
 
     if not left.type_ == INTEGER:
-        raise
+        raise Exception('EXPERRION LEFT ERROR')
 
     operator, idx = get_next_token(src=src, idx=idx)
-    print(operator, idx)
 
-    if not operator.type_ == PLUS:
-        raise Exception
+    if not operator.type_ in [PLUS, MINUS]:
+        raise Exception('EXPERRION OP ERROR')
 
     right, idx = get_next_token(src=src, idx=idx)
-    print(right, idx)
 
     if not right.type_ == INTEGER:
-        raise
+        raise Exception('EXPERRION RIGHT ERROR')
 
-    result = left.value + right.value
+    if operator.type_ == PLUS:
+        result = left.value + right.value
+    else:
+        result = left.value - right.value
 
     return result
 
@@ -82,3 +94,10 @@ if __name__ == '__main__':
     assert exp(src=' 3+5') == 3+5
     assert exp(src='    3+5') == 3+5
     assert exp(src='    3   +     5') == 3+5
+    assert exp(src='3-5') == 3-5
+    assert exp(src='0-0') == 0
+    assert exp(src='9-9') == 9-9
+    assert exp(src='100-100') == 100-100
+    assert exp(src=' 3-5') == 3-5
+    assert exp(src='    3-5') == 3-5
+    assert exp(src='    3   -     5') == 3-5

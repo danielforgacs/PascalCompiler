@@ -1,6 +1,7 @@
 INTEGER = 'INTEGER'
 PLUS = 'PLUS'
 MINUS = 'MINUS'
+MULT = 'MULT'
 EOF = 'EOF'
 
 
@@ -54,8 +55,12 @@ def get_next_token(src, idx):
         idx += 1
         token = Token(MINUS, '-')
 
+    elif char in '*':
+        idx += 1
+        token = Token(MULT, '*')
+
     else:
-        raise
+        raise Exception('CAN NOT GET NEXT TOKEN')
 
     print('{:<5}{}'.format(idx, token))
     return token, idx
@@ -69,22 +74,24 @@ def exp(src, idx=0):
     left, idx = get_next_token(src=src, idx=idx)
 
     if not left.type_ == INTEGER:
-        raise Exception('EXPERRION LEFT ERROR')
+        raise Exception('EXPRESSION LEFT ERROR')
 
     operator, idx = get_next_token(src=src, idx=idx)
 
-    if not operator.type_ in [PLUS, MINUS]:
-        raise Exception('EXPERRION OP ERROR')
+    if not operator.type_ in [PLUS, MINUS, MULT]:
+        raise Exception('EXPRESSION OP ERROR')
 
     right, idx = get_next_token(src=src, idx=idx)
 
     if not right.type_ == INTEGER:
-        raise Exception('EXPERRION RIGHT ERROR')
+        raise Exception('EXPRESSION RIGHT ERROR')
 
     if operator.type_ == PLUS:
         result = left.value + right.value
-    else:
+    elif operator.type_ == MINUS:
         result = left.value - right.value
+    elif operator.type_ == MULT:
+        result = left.value * right.value
 
     return result
 

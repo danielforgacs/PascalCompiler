@@ -69,7 +69,7 @@ def test_get_next_token_subtract():
     ['5+32', 5+32],
     ['12345+54321', 12345+54321],
 ])
-def test_calculator_can_add_single_digits_without_space(src, expected):
+def test_calculator_can_add_adny_digits_without_space(src, expected):
     result = interpreter.Interpreter(src).exp()
     assert result == expected
     result = fi.exp(src)
@@ -79,3 +79,42 @@ def test_calculator_can_add_single_digits_without_space(src, expected):
 def test_emtpy_string_does_not_crash():
     assert not interpreter.Interpreter('').exp()
     assert not fi.exp('')
+
+
+
+
+@pytest.mark.parametrize('src, expected', [
+    ['   31+5', 31+5],
+    ['   31   +5', 31+5],
+    ['   31   +   5', 31+5],
+    ['   31   +   5   ', 31+5],
+    ['   31-5', 31-5],
+    ['   31   -5', 31-5],
+    ['   31   -   5', 31-5],
+    ['   31   -   5   ', 31-5],
+])
+def test_space_is_ok(src, expected):
+    result = interpreter.Interpreter(src).exp()
+    assert result == expected
+    result = fi.exp(src)
+    assert result == expected
+
+
+
+
+@pytest.mark.parametrize('src, expected', [
+    ['0*0', 0*0],
+    ['1*0', 1*0],
+    ['0*1', 0*1],
+    ['1*1', 1*1],
+    ['123*321', 123*321],
+    ['   31*5', 31*5],
+    ['   31   *5', 31*5],
+    ['   31   *   5', 31*5],
+    ['   31   *   5   ', 31*5],
+])
+def test_multiply(src, expected):
+    result = interpreter.Interpreter(src).exp()
+    assert result == expected
+    result = fi.exp(src)
+    assert result == expected

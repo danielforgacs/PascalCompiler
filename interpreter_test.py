@@ -139,7 +139,9 @@ def test_div(src, expected):
 
 
 @pytest.mark.parametrize('src, expected', [
-    ['1+2+3', 1+2+3]
+    ['1+2+3', 1+2+3],
+    ['1+2+3+2+1', 1+2+3+2+1],
+    ['12+23+34+25+16', 12+23+34+25+16],
     ])
 def test_multiple_op_01(src, expected):
     result = interpreter.Interpreter(src).exp()

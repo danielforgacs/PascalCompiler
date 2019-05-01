@@ -135,3 +135,12 @@ def test_div(src, expected):
     assert result == expected
     result = fi.exp(src)
     assert result == expected
+
+
+
+@pytest.mark.parametrize('src, expected', [
+    ['1+2+3', 1+2+3]
+    ])
+def test_multiple_op_01(src, expected):
+    result = interpreter.Interpreter(src).exp()
+    assert result == expected

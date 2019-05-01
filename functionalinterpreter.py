@@ -63,6 +63,9 @@ def get_next_token(src, idx):
 
 
 def exp(src, idx=0):
+    if not src:
+        return
+
     left, idx = get_next_token(src=src, idx=idx)
 
     if not left.type_ == INTEGER:
@@ -89,6 +92,7 @@ def exp(src, idx=0):
 if __name__ == '__main__':
     pass
 
+    assert not exp(src='')
     assert exp(src='3+5') == 3+5
     assert exp(src='0+0') == 0
     assert exp(src='9+9') == 9+9

@@ -69,6 +69,6 @@ if __name__ == '__main__':
     pass
 
     assert exp(src='3+5') == 3+5
-    # assert exp(src='0+0') == 0
-    # assert exp(src='9+9') == 9+9
-    # assert exp(src='100+100') == 100+100
+    assert exp(src='0+0') == 0
+    assert exp(src='9+9') == 9+9
+    assert exp(src='100+100') == 100+100

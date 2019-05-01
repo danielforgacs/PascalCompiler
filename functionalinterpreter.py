@@ -53,4 +53,6 @@ def exp(src, idx=0):
 if __name__ == '__main__':
     pass
 
-    print exp(src='3+5')
+    assert exp(src='3+5') == 3+5
+    assert exp(src='0+0') == 0
+    assert exp(src='9+9') == 9+9

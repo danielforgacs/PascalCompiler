@@ -10,7 +10,6 @@ EOF = 'EOF'
 class Token:
     def __init__(self, type_, value):
         self.type_ = type_
-        # None, 0123456789, '+', '-'
         self.value = value
 
     def __repr__(self):
@@ -115,34 +114,3 @@ class Interpreter:
                 result -= self.term()
 
         return result
-
-        # self.current_token = self.get_next_token()
-        # left = self.current_token
-        # self.eat(INTEGER)
-        # op = self.current_token
-
-        # if op.value == '+':
-        #     self.eat(PLUS)
-        # elif op.value == '-':
-        #     self.eat(MINUS)
-        # elif op.value == '*':
-        #     self.eat(MULT)
-        # elif op.value == '/':
-        #     self.eat(DIV)
-        # else:
-        #     raise Exception('BAD OP')
-
-        # right = self.current_token
-        # self.eat(INTEGER)
-
-        # if op.type_ == PLUS:
-        #     result = left.value + right.value
-        # elif op.type_ == MINUS:
-        #     result = left.value - right.value
-        # elif op.type_ == MULT:
-        #     result = left.value * right.value
-        # elif op.type_ == DIV:
-        #     result = left.value / right.value
-
-        # return result
-

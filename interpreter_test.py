@@ -165,6 +165,3 @@ def test_multiple_op_01(src, expected):
 def test_multiple_op_01(src, expected):
     result = fi.exp(src)
     assert result == expected
-
-
-# assert 12.333333333333334 == 35.333333333333336

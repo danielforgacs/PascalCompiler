@@ -121,3 +121,4 @@ if __name__ == '__main__':
     assert exp(src=' 3-5') == 3-5
     assert exp(src='    3-5') == 3-5
     assert exp(src='    3   -     5') == 3-5
+    assert exp(src='12+23+34+25+16') == 12+23+34+25+16

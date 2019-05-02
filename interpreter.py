@@ -119,3 +119,9 @@ class Interpreter:
                 result /= self.term()
 
         return result
+
+
+
+# src = '1+1*2'
+# print(eval(src))
+# print(Interpreter(src).exp())

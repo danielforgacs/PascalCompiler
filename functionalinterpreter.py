@@ -35,13 +35,26 @@ def integer(src, idx):
 
 
 def skip_whitespace(src, idx):
-    while src[idx] == ' ':
+    while True:
+        if src[idx] != ' ':
+            break
         idx += 1
+
+        if idx == len(src):
+            break
+
     return idx
 
 
 def get_next_token(src, idx):
+    if idx == len(src):
+        return Token(EOF, EOF), idx
+
     idx = skip_whitespace(src, idx)
+
+    if idx == len(src):
+        return Token(EOF, EOF), idx
+
     char = src[idx]
 
     if char in '0123456789':
@@ -67,7 +80,7 @@ def get_next_token(src, idx):
     else:
         raise Exception('CAN NOT GET NEXT TOKEN')
 
-    print('{:<5}{}'.format(idx, token))
+    # print('{:<5}{}'.format(idx, token))
     return token, idx
 
 
@@ -76,29 +89,31 @@ def exp(src, idx=0):
     if not src:
         return
 
-    left, idx = get_next_token(src=src, idx=idx)
+    token, idx = get_next_token(src=src, idx=idx)
+    result = token.value
 
-    if not left.type_ == INTEGER:
-        raise Exception('EXPRESSION LEFT ERROR')
+    while True:
+        print(token)
+        token, idx = get_next_token(src=src, idx=idx)
 
-    operator, idx = get_next_token(src=src, idx=idx)
+        if token.type_ == PLUS:
+            token, idx = get_next_token(src=src, idx=idx)
+            result += token.value
 
-    if not operator.type_ in [PLUS, MINUS, MULT, DIV]:
-        raise Exception('EXPRESSION OP ERROR')
+        elif token.type_ == MINUS:
+            token, idx = get_next_token(src=src, idx=idx)
+            result -= token.value
 
-    right, idx = get_next_token(src=src, idx=idx)
+        elif token.type_ == MULT:
+            token, idx = get_next_token(src=src, idx=idx)
+            result *= token.value
 
-    if not right.type_ == INTEGER:
-        raise Exception('EXPRESSION RIGHT ERROR')
+        elif token.type_ == DIV:
+            token, idx = get_next_token(src=src, idx=idx)
+            result /= token.value
 
-    if operator.type_ == PLUS:
-        result = left.value + right.value
-    elif operator.type_ == MINUS:
-        result = left.value - right.value
-    elif operator.type_ == MULT:
-        result = left.value * right.value
-    elif operator.type_ == DIV:
-        result = left.value / right.value
+        else:
+            break
 
     return result
 
@@ -121,3 +136,11 @@ if __name__ == '__main__':
     assert exp(src=' 3-5') == 3-5
     assert exp(src='    3-5') == 3-5
     assert exp(src='    3   -     5') == 3-5
+    assert exp(src='12+23+34+25+16') == 12+23+34+25+16
+    assert exp(src=' 12 + 23  + 34 + 25  + 16  ') == 12+23+34+25+16
+    assert exp(src='1+1-1/1*1+1+1-1') == 1+1-1/1*1+1+1-1
+    assert exp(src=' 1 + 1  - 1 / 1  *  1 + 1  +  1  - 1  ') == 1+1-1/1*1+1+1-1
+    # print (1+22+333*444*0+124/12+4-2/1+0)
+    print ((1+333)*2)
+    print (exp('1+333*2'))
+    # assert exp('1+22+333*444*0+124/12+4-2/1+0') == 1+22+333*444*0+124/12+4-2/1+0

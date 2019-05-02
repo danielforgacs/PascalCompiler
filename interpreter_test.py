@@ -135,3 +135,33 @@ def test_div(src, expected):
     assert result == expected
     result = fi.exp(src)
     assert result == expected
+
+
+
+@pytest.mark.parametrize('src, expected', [
+    ['1+2+3', 1+2+3],
+    ['1+2+3+2+1', 1+2+3+2+1],
+    ['12+23+34+25+16', 12+23+34+25+16],
+    [' 12  +  23  +    34  +25 + 16  ', 12+23+34+25+16],
+    [' 1  + 1  -  1  /  1 * 1 +  1 + 1 - 1  ', 1+1-1/1*1+1+1-1],
+    # [' 1 + 22 + 333 * 444 * 0+ 124 / 12 + 4 - 2 / 1 + 0  ', 1+22+333*444*0+124/12+4-2/1+0],
+    # [' 12  +  23  +    34  +2   5 + 16  ', 12+23+34+25+16], !!!!!
+    ])
+def test_multiple_op_01(src, expected):
+    result = interpreter.Interpreter(src).exp()
+    assert result == expected
+
+
+
+@pytest.mark.parametrize('src, expected', [
+    ['1+2+3', 1+2+3],
+    ['1+2+3+2+1', 1+2+3+2+1],
+    ['12+23+34+25+16', 12+23+34+25+16],
+    [' 12  +  23  +    34  +25 + 16  ', 12+23+34+25+16],
+    [' 1  + 1  -  1  /  1 * 1 +  1 + 1 - 1  ', 1+1-1/1*1+1+1-1],
+    # [' 1 + 22 + 333 * 444 * 0+ 124 / 12 + 4 - 2 / 1 + 0  ', 1+22+333*444*0+124/12+4-2/1+0],
+    # [' 12  +  23  +    34  +2   5 + 16  ', 12+23+34+25+16], !!!!!
+    ])
+def test_multiple_op_func(src, expected):
+    result = fi.exp(src)
+    assert result == expected

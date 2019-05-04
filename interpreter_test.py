@@ -174,3 +174,15 @@ def test_multiple_op_03(src, expected):
     result = fi.expr(src)
     assert result == expected
 
+
+cases_01 = []
+@pytest.mark.parametrize('src, expected', cases_01)
+def test_can_handle_parenthesis(src, expected):
+    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
+    assert result == expected
+
+
+@pytest.mark.parametrize('src, expected', cases_01)
+def test_functional_can_handle_parenthesis(src, expected):
+    result = fi.expr(src)
+    assert result == expected

@@ -95,12 +95,12 @@ def term(src, idx):
         token, idx = get_next_token(src=src, idx=idx)
 
         if token.type_ == MULT:
-            number, idx = integer(src, idx)
-            result *= number
+            number, idx = get_next_token(src, idx)
+            result *= number.value
 
         elif token.type_ == DIV:
-            number, idx = integer(src, idx)
-            result /= number
+            number, idx = get_next_token(src, idx)
+            result /= number.value
 
         else:
             idx = idxin
@@ -138,7 +138,9 @@ def exp(src, idx=0):
 if __name__ == '__main__':
     pass
 
-    assert exp(src=' 1 + 1  - 1 / 1  *  1 + 1  +  1  - 1  ') == 1+1-1/1*1+1+1-1
+    exp(src='1*  1')
+    # exp(src=' 1 + 1  - 1 / 1  *  1')
+    # assert exp(src=' 1 + 1  - 1 / 1  *  1 + 1  +  1  - 1  ') == 1+1-1/1*1+1+1-1
     assert not exp(src='')
     assert exp(src='3+5') == 3+5
     assert exp(src='0+0') == 0

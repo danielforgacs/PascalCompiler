@@ -85,32 +85,49 @@ def get_next_token(src, idx):
 
 
 
+def term(src, idx):
+    result, idx = integer(src, idx)
+    # token, idx = get_next_token(src=src, idx=idx)
+    # result = token.value
+
+    while True:
+        # print(token)
+        token, idx = get_next_token(src=src, idx=idx)
+
+        if token.type_ == MULT:
+            number, idx = integer(src, idx)
+            result *= number
+
+        elif token.type_ == DIV:
+            number, idx = integer(src, idx)
+            result /= number
+
+        else:
+            idx -= 1
+            break
+
+    return result, idx
+
+
+
+
 def exp(src, idx=0):
     if not src:
         return
 
-    token, idx = get_next_token(src=src, idx=idx)
-    result = token.value
+    result, idx = term(src, idx)
 
     while True:
-        print(token)
+        # print(token)
         token, idx = get_next_token(src=src, idx=idx)
 
         if token.type_ == PLUS:
-            token, idx = get_next_token(src=src, idx=idx)
-            result += token.value
+            num, idx = term(src, idx)
+            result += num
 
         elif token.type_ == MINUS:
-            token, idx = get_next_token(src=src, idx=idx)
-            result -= token.value
-
-        elif token.type_ == MULT:
-            token, idx = get_next_token(src=src, idx=idx)
-            result *= token.value
-
-        elif token.type_ == DIV:
-            token, idx = get_next_token(src=src, idx=idx)
-            result /= token.value
+            num, idx = term(src, idx)
+            result -= num
 
         else:
             break
@@ -127,20 +144,17 @@ if __name__ == '__main__':
     assert exp(src='9+9') == 9+9
     assert exp(src='100+100') == 100+100
     assert exp(src=' 3+5') == 3+5
-    assert exp(src='    3+5') == 3+5
-    assert exp(src='    3   +     5') == 3+5
-    assert exp(src='3-5') == 3-5
-    assert exp(src='0-0') == 0
-    assert exp(src='9-9') == 9-9
-    assert exp(src='100-100') == 100-100
-    assert exp(src=' 3-5') == 3-5
-    assert exp(src='    3-5') == 3-5
-    assert exp(src='    3   -     5') == 3-5
-    assert exp(src='12+23+34+25+16') == 12+23+34+25+16
-    assert exp(src=' 12 + 23  + 34 + 25  + 16  ') == 12+23+34+25+16
-    assert exp(src='1+1-1/1*1+1+1-1') == 1+1-1/1*1+1+1-1
-    assert exp(src=' 1 + 1  - 1 / 1  *  1 + 1  +  1  - 1  ') == 1+1-1/1*1+1+1-1
-    # print (1+22+333*444*0+124/12+4-2/1+0)
-    print ((1+333)*2)
-    print (exp('1+333*2'))
+    # assert exp(src='    3+5') == 3+5
+    # assert exp(src='    3   +     5') == 3+5
+    # assert exp(src='3-5') == 3-5
+    # assert exp(src='0-0') == 0
+    # assert exp(src='9-9') == 9-9
+    # assert exp(src='100-100') == 100-100
+    # assert exp(src=' 3-5') == 3-5
+    # assert exp(src='    3-5') == 3-5
+    # assert exp(src='    3   -     5') == 3-5
+    # assert exp(src='12+23+34+25+16') == 12+23+34+25+16
+    # assert exp(src=' 12 + 23  + 34 + 25  + 16  ') == 12+23+34+25+16
+    # assert exp(src='1+1-1/1*1+1+1-1') == 1+1-1/1*1+1+1-1
+    # assert exp(src=' 1 + 1  - 1 / 1  *  1 + 1  +  1  - 1  ') == 1+1-1/1*1+1+1-1
     # assert exp('1+22+333*444*0+124/12+4-2/1+0') == 1+22+333*444*0+124/12+4-2/1+0

@@ -146,15 +146,15 @@ if __name__ == '__main__':
     assert exp(src=' 3+5') == 3+5
     # assert exp(src='    3+5') == 3+5
     # assert exp(src='    3   +     5') == 3+5
-    # assert exp(src='3-5') == 3-5
-    # assert exp(src='0-0') == 0
-    # assert exp(src='9-9') == 9-9
-    # assert exp(src='100-100') == 100-100
-    # assert exp(src=' 3-5') == 3-5
+    assert exp(src='3-5') == 3-5
+    assert exp(src='0-0') == 0
+    assert exp(src='9-9') == 9-9
+    assert exp(src='100-100') == 100-100
+    assert exp(src=' 3-5') == 3-5
     # assert exp(src='    3-5') == 3-5
     # assert exp(src='    3   -     5') == 3-5
-    # assert exp(src='12+23+34+25+16') == 12+23+34+25+16
-    # assert exp(src=' 12 + 23  + 34 + 25  + 16  ') == 12+23+34+25+16
-    # assert exp(src='1+1-1/1*1+1+1-1') == 1+1-1/1*1+1+1-1
+    assert exp(src='12+23+34+25+16') == 12+23+34+25+16
+    assert exp(src=' 12 + 23  + 34 + 25  + 16  ') == 12+23+34+25+16
+    assert exp(src='1+1-1/1*1+1+1-1') == 1+1-1/1*1+1+1-1
     # assert exp(src=' 1 + 1  - 1 / 1  *  1 + 1  +  1  - 1  ') == 1+1-1/1*1+1+1-1
-    # assert exp('1+22+333*444*0+124/12+4-2/1+0') == 1+22+333*444*0+124/12+4-2/1+0
+    assert exp('1+22+333*444*0+124/12+4-2/1+0') == 1+22+333*444*0+124/12+4-2/1+0

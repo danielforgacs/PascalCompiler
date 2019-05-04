@@ -96,29 +96,42 @@ class Interpreter:
             raise Exception('CAN NOT EAT')
 
 
+    def factor(self):
+        self.eat(INTEGER)
+
+
     def exp(self):
-        if not self.current_char:
-            return
+        self.factor()
 
-        self.current_token = self.get_next_token()
-
-        result = self.term()
-
-        while self.current_token.type_ in (PLUS, MINUS, MULT, DIV):
-            if self.current_token.type_ == PLUS:
-                self.eat(PLUS)
-                result += self.term()
-            elif self.current_token.type_ == MINUS:
-                self.eat(MINUS)
-                result -= self.term()
-            elif self.current_token.type_ == MULT:
+        while self.current_token.type_ in (MULT, DIV):
+            if self.current_token.type_ == MULT:
                 self.eat(MULT)
-                result *= self.term()
+                self.factor()
             elif self.current_token.type_ == DIV:
                 self.eat(DIV)
-                result /= self.term()
+                self.factor()
+        # if not self.current_char:
+        #     return
 
-        return result
+        # self.current_token = self.get_next_token()
+
+        # result = self.term()
+
+        # while self.current_token.type_ in (PLUS, MINUS, MULT, DIV):
+        #     if self.current_token.type_ == PLUS:
+        #         self.eat(PLUS)
+        #         result += self.term()
+        #     elif self.current_token.type_ == MINUS:
+        #         self.eat(MINUS)
+        #         result -= self.term()
+        #     elif self.current_token.type_ == MULT:
+        #         self.eat(MULT)
+        #         result *= self.term()
+        #     elif self.current_token.type_ == DIV:
+        #         self.eat(DIV)
+        #         result /= self.term()
+
+        # return result
 
 
 

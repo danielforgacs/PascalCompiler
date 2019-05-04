@@ -127,13 +127,13 @@ class Interpreter:
         while self.current_token.type_ in (PLUS, MINUS):
             if self.current_token.type_ == PLUS:
                 self.eat(PLUS)
-                result += self.factor()
+                result += self.term()
             elif self.current_token.type_ == MINUS:
                 self.eat(MINUS)
-                result -= self.factor()
+                result -= self.term()
 
         return result
 
 
-# print(Interpreter(Lexer('')).exp())
-# print(4/2)
+print(Interpreter(Lexer('1-1/1+1')).exp())
+print(1-1/1+1)

@@ -53,11 +53,6 @@ class Lexer:
         return int(result)
 
 
-    def term(self):
-        token = self.current_token
-        self.eat(INTEGER)
-        return token.value
-
 
     def get_next_token(self):
         while self.current_char:

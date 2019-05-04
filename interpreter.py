@@ -20,7 +20,7 @@ class Token:
 
 
 
-class Interpreter:
+class Lexer:
     def __init__(self, text):
         self.text = text
         self.pos = 0
@@ -33,6 +33,7 @@ class Interpreter:
 
     def advance(self):
         self.pos += 1
+
         if self.pos == len(self.text):
             self.current_char = None
         else:
@@ -46,17 +47,11 @@ class Interpreter:
 
     def integer(self):
         result = ''
-        # while self.current_char and self.current_char.isdigit():
         while (self.current_char is not None) and self.current_char.isdigit():
             result += self.current_char
             self.advance()
         return int(result)
 
-
-    def term(self):
-        token = self.current_token
-        self.eat(INTEGER)
-        return token.value
 
 
     def get_next_token(self):
@@ -89,39 +84,56 @@ class Interpreter:
         return Token(EOF, None)
 
 
+
+class Interpreter:
+    def __init__(self, lexer):
+        self.lexer = lexer
+        self.current_token = self.lexer.get_next_token()
+
     def eat(self, token_type):
         if self.current_token.type_ == token_type:
-            self.current_token = self.get_next_token()
+            self.current_token = self.lexer.get_next_token()
         else:
             raise Exception('CAN NOT EAT')
 
 
-    def exp(self):
-        if not self.current_char:
-            return
+    def factor(self):
+        token = self.current_token
+        self.eat(INTEGER)
+        return token.value
 
-        self.current_token = self.get_next_token()
+
+    def term(self):
+        result = self.factor()
+
+        while self.current_token.type_ in (MULT, DIV):
+            if self.current_token.type_ == MULT:
+                self.eat(MULT)
+                result *= self.factor()
+            elif self.current_token.type_ == DIV:
+                self.eat(DIV)
+                result /= self.factor()
+
+        return result
+
+
+
+    def exp(self):
+        if self.current_token.type_ == EOF:
+            return
 
         result = self.term()
 
-        while self.current_token.type_ in (PLUS, MINUS, MULT, DIV):
+        while self.current_token.type_ in (PLUS, MINUS):
             if self.current_token.type_ == PLUS:
                 self.eat(PLUS)
                 result += self.term()
             elif self.current_token.type_ == MINUS:
                 self.eat(MINUS)
                 result -= self.term()
-            elif self.current_token.type_ == MULT:
-                self.eat(MULT)
-                result *= self.term()
-            elif self.current_token.type_ == DIV:
-                self.eat(DIV)
-                result /= self.term()
 
         return result
 
 
-
-# src = '1+1*2'
-# print(eval(src))
-# print(Interpreter(src).exp())
+print(Interpreter(Lexer('1-1/1+1')).exp())
+print(1-1/1+1)

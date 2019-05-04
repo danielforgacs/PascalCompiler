@@ -9,7 +9,7 @@ import pytest
     ['9+9', 18],
 ])
 def test_calculator_can_add_single_digits_without_space(src, expected):
-    result = interpreter.Interpreter(src).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
     assert result == expected
 
 
@@ -20,14 +20,14 @@ def test_calculator_can_add_single_digits_without_space(src, expected):
     ['5-3', 5-3],
 ])
 def test_calculator_can_subtract_single_digits_without_space(src, expected):
-    result = interpreter.Interpreter(src).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
     assert result == expected
     result = fi.exp(src)
     assert result == expected
 
 
 def test_get_next_token_add():
-    interp = interpreter.Interpreter(text='3+5')
+    interp = interpreter.Lexer(text='3+5')
     assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 3)
     assert interp.get_next_token() == interpreter.Token(interpreter.PLUS, '+')
     assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 5)
@@ -45,7 +45,7 @@ def test_get_next_token_add():
 
 
 def test_get_next_token_subtract():
-    interp = interpreter.Interpreter(text='3-5')
+    interp = interpreter.Lexer(text='3-5')
     assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 3)
     assert interp.get_next_token() == interpreter.Token(interpreter.MINUS, '-')
     assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 5)
@@ -70,14 +70,14 @@ def test_get_next_token_subtract():
     ['12345+54321', 12345+54321],
 ])
 def test_calculator_can_add_adny_digits_without_space(src, expected):
-    result = interpreter.Interpreter(src).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
     assert result == expected
     result = fi.exp(src)
     assert result == expected
 
 
 def test_emtpy_string_does_not_crash():
-    assert not interpreter.Interpreter('').exp()
+    assert not interpreter.Interpreter(interpreter.Lexer('')).exp()
     assert not fi.exp('')
 
 
@@ -94,7 +94,7 @@ def test_emtpy_string_does_not_crash():
     ['   31   -   5   ', 31-5],
 ])
 def test_space_is_ok(src, expected):
-    result = interpreter.Interpreter(src).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
     assert result == expected
     result = fi.exp(src)
     assert result == expected
@@ -114,7 +114,7 @@ def test_space_is_ok(src, expected):
     ['   31   *   5   ', 31*5],
 ])
 def test_multiply(src, expected):
-    result = interpreter.Interpreter(src).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
     assert result == expected
     result = fi.exp(src)
     assert result == expected
@@ -131,7 +131,7 @@ def test_multiply(src, expected):
     ['   31   /   5   ', 31/5],
 ])
 def test_div(src, expected):
-    result = interpreter.Interpreter(src).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
     assert result == expected
     result = fi.exp(src)
     assert result == expected
@@ -144,11 +144,9 @@ def test_div(src, expected):
     ['12+23+34+25+16', 12+23+34+25+16],
     [' 12  +  23  +    34  +25 + 16  ', 12+23+34+25+16],
     [' 1  + 1  -  1  /  1 * 1 +  1 + 1 - 1  ', 1+1-1/1*1+1+1-1],
-    # [' 1 + 22 + 333 * 444 * 0+ 124 / 12 + 4 - 2 / 1 + 0  ', 1+22+333*444*0+124/12+4-2/1+0],
-    # [' 12  +  23  +    34  +2   5 + 16  ', 12+23+34+25+16], !!!!!
     ])
 def test_multiple_op_01(src, expected):
-    result = interpreter.Interpreter(src).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
     assert result == expected
 
 
@@ -159,9 +157,20 @@ def test_multiple_op_01(src, expected):
     ['12+23+34+25+16', 12+23+34+25+16],
     [' 12  +  23  +    34  +25 + 16  ', 12+23+34+25+16],
     [' 1  + 1  -  1  /  1 * 1 +  1 + 1 - 1  ', 1+1-1/1*1+1+1-1],
-    # [' 1 + 22 + 333 * 444 * 0+ 124 / 12 + 4 - 2 / 1 + 0  ', 1+22+333*444*0+124/12+4-2/1+0],
-    # [' 12  +  23  +    34  +2   5 + 16  ', 12+23+34+25+16], !!!!!
     ])
 def test_multiple_op_func(src, expected):
     result = fi.exp(src)
     assert result == expected
+
+
+@pytest.mark.parametrize('src, expected', [
+    ['1-1/1+1', 1-1/1+1],
+    # [' 1 + 22 + 333 * 444 * 0+ 124 / 12 + 4 - 2 / 1 + 0  ', 1+22+333*444*0+124/12+4-2/1+0],
+    # [' 12  +  23  +    34  +2   5 + 16  ', 12+23+34+25+16], !!!!!
+    ])
+def test_multiple_op_03(src, expected):
+    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
+    assert result == expected
+    result = fi.exp(src)
+    assert result == expected
+

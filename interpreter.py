@@ -20,7 +20,7 @@ class Token:
 
 
 
-class Interpreter:
+class Lexer:
     def __init__(self, text):
         self.text = text
         self.pos = 0
@@ -88,24 +88,34 @@ class Interpreter:
         return Token(EOF, None)
 
 
+
+class Interpreter:
+    def __init__(self, lexer):
+        self.lexer = lexer
+        self.current_token = self.lexer.get_next_token()
+
     def eat(self, token_type):
         if self.current_token.type_ == token_type:
-            self.current_token = self.get_next_token()
+            self.current_token = self.lexer.get_next_token()
         else:
             raise Exception('CAN NOT EAT')
 
 
     def factor(self):
+        token = self.current_token
         self.eat(INTEGER)
+        return token.value
 
 
     def exp(self):
-        self.factor()
+        result = self.factor()
 
         while self.current_token.type_ in (MULT, DIV):
             if self.current_token.type_ == MULT:
                 self.eat(MULT)
-                self.factor()
+                result *= self.factor()
             elif self.current_token.type_ == DIV:
                 self.eat(DIV)
-                self.factor()
+                result /= self.factor()
+
+        return result

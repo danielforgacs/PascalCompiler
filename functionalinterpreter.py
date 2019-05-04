@@ -3,6 +3,8 @@ PLUS = 'PLUS'
 MINUS = 'MINUS'
 MULT = 'MULT'
 DIV = 'DIV'
+PAREN_LEFT = '('
+PAREN_RIGHT = ')'
 EOF = 'EOF'
 
 
@@ -111,7 +113,7 @@ def term(src, idx):
 
 
 
-def exp(src, idx=0):
+def expr(src, idx=0):
     if not src:
         return
 

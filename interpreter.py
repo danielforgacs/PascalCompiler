@@ -46,7 +46,6 @@ class Interpreter:
 
     def integer(self):
         result = ''
-        # while self.current_char and self.current_char.isdigit():
         while (self.current_char is not None) and self.current_char.isdigit():
             result += self.current_char
             self.advance()
@@ -110,31 +109,3 @@ class Interpreter:
             elif self.current_token.type_ == DIV:
                 self.eat(DIV)
                 self.factor()
-        # if not self.current_char:
-        #     return
-
-        # self.current_token = self.get_next_token()
-
-        # result = self.term()
-
-        # while self.current_token.type_ in (PLUS, MINUS, MULT, DIV):
-        #     if self.current_token.type_ == PLUS:
-        #         self.eat(PLUS)
-        #         result += self.term()
-        #     elif self.current_token.type_ == MINUS:
-        #         self.eat(MINUS)
-        #         result -= self.term()
-        #     elif self.current_token.type_ == MULT:
-        #         self.eat(MULT)
-        #         result *= self.term()
-        #     elif self.current_token.type_ == DIV:
-        #         self.eat(DIV)
-        #         result /= self.term()
-
-        # return result
-
-
-
-# src = '1+1*2'
-# print(eval(src))
-# print(Interpreter(src).exp())

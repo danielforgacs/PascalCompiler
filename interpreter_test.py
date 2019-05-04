@@ -77,7 +77,7 @@ def test_calculator_can_add_adny_digits_without_space(src, expected):
 
 
 def test_emtpy_string_does_not_crash():
-    assert not interpreter.Interpreter('').exp()
+    assert not interpreter.Interpreter(interpreter.Lexer('')).exp()
     assert not fi.exp('')
 
 

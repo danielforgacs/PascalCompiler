@@ -119,6 +119,9 @@ class Interpreter:
 
 
     def exp(self):
+        if self.current_token.type_ == EOF:
+            return
+
         result = self.term()
 
         while self.current_token.type_ in (PLUS, MINUS):
@@ -132,5 +135,5 @@ class Interpreter:
         return result
 
 
-# print(Interpreter(Lexer('4/2')).exp())
+# print(Interpreter(Lexer('')).exp())
 # print(4/2)

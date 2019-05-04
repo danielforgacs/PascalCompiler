@@ -9,7 +9,7 @@ import pytest
     ['9+9', 18],
 ])
 def test_calculator_can_add_single_digits_without_space(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
     assert result == expected
 
 
@@ -20,9 +20,9 @@ def test_calculator_can_add_single_digits_without_space(src, expected):
     ['5-3', 5-3],
 ])
 def test_calculator_can_subtract_single_digits_without_space(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
     assert result == expected
-    result = fi.exp(src)
+    result = fi.expr(src)
     assert result == expected
 
 
@@ -70,15 +70,15 @@ def test_get_next_token_subtract():
     ['12345+54321', 12345+54321],
 ])
 def test_calculator_can_add_adny_digits_without_space(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
     assert result == expected
-    result = fi.exp(src)
+    result = fi.expr(src)
     assert result == expected
 
 
 def test_emtpy_string_does_not_crash():
-    assert not interpreter.Interpreter(interpreter.Lexer('')).exp()
-    assert not fi.exp('')
+    assert not interpreter.Interpreter(interpreter.Lexer('')).expr()
+    assert not fi.expr('')
 
 
 
@@ -94,9 +94,9 @@ def test_emtpy_string_does_not_crash():
     ['   31   -   5   ', 31-5],
 ])
 def test_space_is_ok(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
     assert result == expected
-    result = fi.exp(src)
+    result = fi.expr(src)
     assert result == expected
 
 
@@ -114,9 +114,9 @@ def test_space_is_ok(src, expected):
     ['   31   *   5   ', 31*5],
 ])
 def test_multiply(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
     assert result == expected
-    result = fi.exp(src)
+    result = fi.expr(src)
     assert result == expected
 
 
@@ -131,9 +131,9 @@ def test_multiply(src, expected):
     ['   31   /   5   ', 31/5],
 ])
 def test_div(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
     assert result == expected
-    result = fi.exp(src)
+    result = fi.expr(src)
     assert result == expected
 
 
@@ -146,7 +146,7 @@ def test_div(src, expected):
     [' 1  + 1  -  1  /  1 * 1 +  1 + 1 - 1  ', 1+1-1/1*1+1+1-1],
     ])
 def test_multiple_op_01(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
     assert result == expected
 
 
@@ -159,7 +159,7 @@ def test_multiple_op_01(src, expected):
     [' 1  + 1  -  1  /  1 * 1 +  1 + 1 - 1  ', 1+1-1/1*1+1+1-1],
     ])
 def test_multiple_op_func(src, expected):
-    result = fi.exp(src)
+    result = fi.expr(src)
     assert result == expected
 
 
@@ -169,8 +169,8 @@ def test_multiple_op_func(src, expected):
     # [' 12  +  23  +    34  +2   5 + 16  ', 12+23+34+25+16], !!!!!
     ])
 def test_multiple_op_03(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).exp()
+    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
     assert result == expected
-    result = fi.exp(src)
+    result = fi.expr(src)
     assert result == expected
 

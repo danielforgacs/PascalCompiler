@@ -95,10 +95,22 @@ def get_next_token(src, idx):
 
 
 
-def term(src, idx):
+def factor(src, idx):
     token, idx = get_next_token(src, idx)
-    assert token.type_ == INTEGER
     result = token.value
+
+    if token.type_ == PAREN_LEFT:
+        result, idx = expr(src, idx)
+
+        token, _ = get_next_token(src, idx)
+        # assert token.type_ == PAREN_RIGHT, 'MISSING CLOSING PAREN: %s' % idx
+
+    return result, idx
+
+
+
+def term(src, idx):
+    result, idx = factor(src, idx)
 
     while True:
         idxin = idx
@@ -142,10 +154,29 @@ def expr(src, idx=0):
         else:
             break
 
-    return result
+    # return result, idx
+    return result, idx
 
 
 if __name__ == '__main__':
     pass
 
-    print(expr('(1)'))
+    print(*expr('1'))
+    print(*expr('(1+1)'))
+    print(*expr('(1+1+2)'))
+    print(*expr('(1+1+2)+1'))
+    print(*expr('(1 +  1+2)+1'))
+    print(*expr('(1 +  1 +2  )+1'))
+    print(*expr('(1 +  1 +2  )   +   1'))
+    print(*expr('(1 +  1 +2  )   +   (1)'))
+
+    assert expr('1')[0] == 1
+    assert expr('(1)')[0] == 1
+    assert expr('((1))')[0] == 1
+    assert expr('(((1)))')[0] == 1
+    assert expr('((((1))))')[0] == 1
+    assert expr('((((1')[0] == 1
+    assert expr('1+1')[0] == 1+1
+    assert expr('(1+1)')[0] == (1+1)
+    assert expr('(1+(1))')[0] == (1+(1))
+    assert expr('(1+(1))')[0] == (1+(1))

@@ -118,7 +118,7 @@ class Interpreter:
 
 
 
-    def exp(self):
+    def expr(self):
         if self.current_token.type_ == EOF:
             return
 
@@ -135,5 +135,5 @@ class Interpreter:
         return result
 
 
-print(Interpreter(Lexer('1-1/1+1')).exp())
-print(1-1/1+1)
+# print(Interpreter(Lexer('1-1/1+1')).expr())
+# print(1-1/1+1)

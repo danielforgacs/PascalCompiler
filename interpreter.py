@@ -4,6 +4,8 @@ PLUS = 'PLUS'
 MINUS = 'MINUS'
 MULT = 'MULT'
 DIV = 'DIV'
+PAREN_LEFT = 'PAREN_LEFT'
+PAREN_RIGHT = 'PAREN_RIGHT'
 EOF = 'EOF'
 
 
@@ -55,31 +57,45 @@ class Lexer:
 
 
     def get_next_token(self):
+        token = None
+
         while self.current_char:
             if self.current_char == ' ':
                 self.skip_whitespace()
                 continue
 
             if self.current_char.isdigit():
-                return Token(INTEGER, self.integer())
+                token = Token(INTEGER, self.integer())
 
             if self.current_char == '+':
                 self.advance()
-                return Token(PLUS, '+')
+                token = Token(PLUS, '+')
 
             if self.current_char == '-':
                 self.advance()
-                return Token(MINUS, '-')
+                token = Token(MINUS, '-')
 
             if self.current_char == '*':
                 self.advance()
-                return Token(MULT, '*')
+                token = Token(MULT, '*')
 
             if self.current_char == '/':
                 self.advance()
-                return Token(DIV, '/')
+                token = Token(DIV, '/')
 
-            raise Exception('NEXT TOKEN ERROR')
+            if self.current_char == '(':
+                self.advance()
+                token = Token(PAREN_LEFT, '(')
+
+            if self.current_char == ')':
+                self.advance()
+                token = Token(PAREN_RIGHT, ')')
+
+            if not token:
+                raise Exception('NEXT TOKEN ERROR')
+
+            print(token)
+            return token
 
         return Token(EOF, None)
 
@@ -99,8 +115,17 @@ class Interpreter:
 
     def factor(self):
         token = self.current_token
-        self.eat(INTEGER)
-        return token.value
+
+        if token.type_ == INTEGER:
+            self.eat(INTEGER)
+            return token.value
+
+        elif token.type_ == PAREN_LEFT:
+            self.eat(PAREN_LEFT)
+            result = self.expr()
+            self.eat(PAREN_RIGHT)
+            return result
+
 
 
     def term(self):
@@ -135,5 +160,5 @@ class Interpreter:
         return result
 
 
-# print(Interpreter(Lexer('1-1/1+1')).expr())
+print(Interpreter(Lexer('(1)')).expr())
 # print(1-1/1+1)

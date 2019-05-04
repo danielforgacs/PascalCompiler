@@ -79,6 +79,14 @@ def get_next_token(src, idx):
         idx += 1
         token = Token(DIV, '/')
 
+    elif char in '(':
+        idx += 1
+        token = Token(PAREN_LEFT, '(')
+
+    elif char in ')':
+        idx += 1
+        token = Token(PAREN_RIGHT, ')')
+
     else:
         raise Exception('CAN NOT GET NEXT TOKEN')
 
@@ -139,3 +147,5 @@ def expr(src, idx=0):
 
 if __name__ == '__main__':
     pass
+
+    print(expr('(1)'))

@@ -33,6 +33,7 @@ class Lexer:
 
     def advance(self):
         self.pos += 1
+
         if self.pos == len(self.text):
             self.current_char = None
         else:
@@ -107,7 +108,7 @@ class Interpreter:
         return token.value
 
 
-    def exp(self):
+    def term(self):
         result = self.factor()
 
         while self.current_token.type_ in (MULT, DIV):
@@ -119,3 +120,22 @@ class Interpreter:
                 result /= self.factor()
 
         return result
+
+
+
+    def exp(self):
+        result = self.term()
+
+        while self.current_token.type_ in (PLUS, MINUS):
+            if self.current_token.type_ == PLUS:
+                self.eat(PLUS)
+                result += self.factor()
+            elif self.current_token.type_ == MINUS:
+                self.eat(MINUS)
+                result -= self.factor()
+
+        return result
+
+
+# print(Interpreter(Lexer('4/2')).exp())
+# print(4/2)

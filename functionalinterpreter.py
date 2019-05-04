@@ -30,8 +30,8 @@ def integer(src, idx):
         if not src[idx] in '0123456789':
             break
 
-
     return int(result), idx
+
 
 
 def skip_whitespace(src, idx):
@@ -86,12 +86,12 @@ def get_next_token(src, idx):
 
 
 def term(src, idx):
-    result, idx = integer(src, idx)
-    # token, idx = get_next_token(src=src, idx=idx)
-    # result = token.value
+    token, idx = get_next_token(src, idx)
+    assert token.type_ == INTEGER
+    result = token.value
 
     while True:
-        # print(token)
+        idxin = idx
         token, idx = get_next_token(src=src, idx=idx)
 
         if token.type_ == MULT:
@@ -103,7 +103,7 @@ def term(src, idx):
             result /= number
 
         else:
-            idx -= 1
+            idx = idxin
             break
 
     return result, idx
@@ -118,7 +118,7 @@ def exp(src, idx=0):
     result, idx = term(src, idx)
 
     while True:
-        # print(token)
+        idxin = idx
         token, idx = get_next_token(src=src, idx=idx)
 
         if token.type_ == PLUS:
@@ -138,23 +138,23 @@ def exp(src, idx=0):
 if __name__ == '__main__':
     pass
 
+    assert exp(src=' 1 + 1  - 1 / 1  *  1 + 1  +  1  - 1  ') == 1+1-1/1*1+1+1-1
     assert not exp(src='')
     assert exp(src='3+5') == 3+5
     assert exp(src='0+0') == 0
     assert exp(src='9+9') == 9+9
     assert exp(src='100+100') == 100+100
     assert exp(src=' 3+5') == 3+5
-    # assert exp(src='    3+5') == 3+5
-    # assert exp(src='    3   +     5') == 3+5
+    assert exp(src='    3+5') == 3+5
+    assert exp(src='    3   +     5') == 3+5
     assert exp(src='3-5') == 3-5
     assert exp(src='0-0') == 0
     assert exp(src='9-9') == 9-9
     assert exp(src='100-100') == 100-100
     assert exp(src=' 3-5') == 3-5
-    # assert exp(src='    3-5') == 3-5
-    # assert exp(src='    3   -     5') == 3-5
+    assert exp(src='    3-5') == 3-5
+    assert exp(src='    3   -     5') == 3-5
     assert exp(src='12+23+34+25+16') == 12+23+34+25+16
     assert exp(src=' 12 + 23  + 34 + 25  + 16  ') == 12+23+34+25+16
     assert exp(src='1+1-1/1*1+1+1-1') == 1+1-1/1*1+1+1-1
-    # assert exp(src=' 1 + 1  - 1 / 1  *  1 + 1  +  1  - 1  ') == 1+1-1/1*1+1+1-1
     assert exp('1+22+333*444*0+124/12+4-2/1+0') == 1+22+333*444*0+124/12+4-2/1+0

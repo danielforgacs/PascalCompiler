@@ -40,6 +40,7 @@ def skip_whitespace(src, idx):
     while True:
         if src[idx] != ' ':
             break
+
         idx += 1
 
         if idx == len(src):
@@ -49,10 +50,12 @@ def skip_whitespace(src, idx):
 
 
 def get_next_token(src, idx):
+    # print('\n\n', src, idx, '')
     if idx == len(src):
         return Token(EOF, EOF), idx
 
-    idx = skip_whitespace(src, idx)
+    src, idx = skip_whitespace(src, idx)
+    # print('', src, idx, '\n\n')
 
     if idx == len(src):
         return Token(EOF, EOF), idx

@@ -23,6 +23,7 @@ def test_integer(src, exp):
 
 @pytest.mark.parametrize('src, exp', [
     [[' ', 0], (' ', 1)],
+    [['1', 0], ('1', 0)],
     [['  ', 0], ('  ', 2)],
     [['  1', 0], ('  1', 2)],
     [['1   ', 0], ('1   ', 0)],
@@ -33,4 +34,16 @@ def test_integer(src, exp):
     ])
 def test_skip_whitespace(src, exp):
     result = fi.skip_whitespace(*src)
+    assert result == exp
+
+
+
+get_next_token_parms = [
+    [['', 0], (fi.Token(fi.EOF, fi.EOF), 0)],
+    [['1', 0], (fi.Token(fi.INTEGER, 1), 1)],
+]
+
+@pytest.mark.parametrize('src, exp', get_next_token_parms)
+def test_get_next_token(src, exp):
+    result = fi.get_next_token(*src)
     assert result == exp

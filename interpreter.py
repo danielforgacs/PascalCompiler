@@ -28,6 +28,9 @@ class Token(object):
     def __repr__(self):
         return self.__str__()
 
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
 
 class Lexer(object):
     def __init__(self, text):

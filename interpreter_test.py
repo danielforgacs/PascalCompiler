@@ -35,15 +35,15 @@ def test_calculator_can_subtract_single_digits_without_space(src, expected):
     assert result == expected
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_02)
 def test_calculator_can_subtract_single_digits_without_space__func(src, expected):
-    result = fi.expr(src)
+    result = fi.expr(src)[0]
     assert result == expected
 
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 def test_get_next_token_add():
     interp = interpreter.Lexer(text='3+5')
     assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 3)
@@ -67,7 +67,7 @@ def test_get_next_token_add__func():
 
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 def test_get_next_token_subtract():
     interp = interpreter.Lexer(text='3-5')
     assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 3)
@@ -104,10 +104,10 @@ def test_calculator_can_add_adny_digits_without_space(src, expected):
     assert result == expected
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_03)
 def test_calculator_can_add_adny_digits_without_space__func(src, expected):
-    result = fi.expr(src)
+    result = fi.expr(src)[0]
     assert result == expected
 
 
@@ -118,7 +118,7 @@ def test_emtpy_string_does_not_crash():
 
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 def test_emtpy_string_does_not_crash__func():
     assert not fi.expr('')
 
@@ -141,10 +141,10 @@ def test_space_is_ok(src, expected):
     assert result == expected
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_04)
 def test_space_is_ok__func(src, expected):
-    result = fi.expr(src)
+    result = fi.expr(src)[0]
     assert result == expected
 
 
@@ -190,10 +190,10 @@ def test_multiply(src, expected):
 
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_05)
 def test_multiply__func(src, expected):
-    result = fi.expr(src)
+    result = fi.expr(src)[0]
     assert result == expected
 
 
@@ -225,10 +225,10 @@ def test_div(src, expected):
     assert result == expected
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_06)
 def test_div__func(src, expected):
-    result = fi.expr(src)
+    result = fi.expr(src)[0]
     assert result == expected
 
 
@@ -253,8 +253,8 @@ def test_multiple_op_01(src, expected):
     assert result == expected
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_07)
 def test_multiple_op_01__func(src, expected):
-    result = fi.expr(src)
+    result = fi.expr(src)[0]
     assert result == expected

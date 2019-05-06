@@ -149,27 +149,6 @@ def test_space_is_ok__func(src, expected):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 cases_05 = [
     ['0*0', 0*0],
     ['1*0', 1*0],
@@ -198,16 +177,6 @@ def test_multiply__func(src, expected):
 
 
 
-
-
-
-
-
-
-
-
-
-
 cases_06 = [
     ['0/1', 0/1],
     ['1/1', 1/1],
@@ -230,10 +199,6 @@ def test_div(src, expected):
 def test_div__func(src, expected):
     result = fi.expr(src)[0]
     assert result == expected
-
-
-
-
 
 
 

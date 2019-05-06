@@ -41,6 +41,8 @@ def test_skip_whitespace(src, exp):
 get_next_token_parms = [
     [['', 0], (fi.Token(fi.EOF, fi.EOF), 0)],
     [['1', 0], (fi.Token(fi.INTEGER, 1), 1)],
+    [[' 1', 0], (fi.Token(fi.INTEGER, 1), 2)],
+    [['  1', 0], (fi.Token(fi.INTEGER, 1), 3)],
 ]
 
 @pytest.mark.parametrize('src, exp', get_next_token_parms)

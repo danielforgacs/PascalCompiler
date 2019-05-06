@@ -45,7 +45,7 @@ def skip_whitespace(src, idx):
         if idx == len(src):
             break
 
-    return idx
+    return src, idx
 
 
 def get_next_token(src, idx):
@@ -97,15 +97,25 @@ def get_next_token(src, idx):
 
 def factor(src, idx):
     token, idx = get_next_token(src, idx)
-    result = token.value
+
+    if token.type_ == INTEGER:
+        return token.value, idx
 
     if token.type_ == PAREN_LEFT:
-        result, idx = expr(src, idx)
+        # print(token)
+        token, idx = get_next_token(src, idx)
+        # print(token)
 
-        token, _ = get_next_token(src, idx)
+        result, idx = expr(src, idx)
+        # token, idx = get_next_token(src, idx)
+        # print(token)
+        # assert token.type_ == PAREN_RIGHT, 'EXPECTED PAREN_RIGHT'
+        return result, idx
+
+        # token, _ = get_next_token(src, idx)
         # assert token.type_ == PAREN_RIGHT, 'MISSING CLOSING PAREN: %s' % idx
 
-    return result, idx
+    # return result, idx
 
 
 
@@ -125,7 +135,9 @@ def term(src, idx):
             result /= number.value
 
         else:
-            idx = idxin
+            # idx = idxin
+            # print('BREAK')
+            # print(result)
             break
 
     return result, idx
@@ -161,22 +173,40 @@ def expr(src, idx=0):
 if __name__ == '__main__':
     pass
 
-    print(*expr('1'))
-    print(*expr('(1+1)'))
-    print(*expr('(1+1+2)'))
-    print(*expr('(1+1+2)+1'))
-    print(*expr('(1 +  1+2)+1'))
-    print(*expr('(1 +  1 +2  )+1'))
-    print(*expr('(1 +  1 +2  )   +   1'))
-    print(*expr('(1 +  1 +2  )   +   (1)'))
+    # print(expr('((1))')[0])
+    # print(expr('((1+1))')[0])
+    # print(expr('((1*1))')[0])
+    # print(expr('((1/1))')[0])
+    # print(expr('((1/1)+1)')[0])
+    # print(expr('1+(1)')[0])
+    # print(expr('1+(1+1)')[0])
+    print(expr('1+')[0])
+    # print(expr('1*(1+1)')[0])
+    # print(expr('1*(1*1)')[0])
 
-    assert expr('1')[0] == 1
-    assert expr('(1)')[0] == 1
-    assert expr('((1))')[0] == 1
-    assert expr('(((1)))')[0] == 1
-    assert expr('((((1))))')[0] == 1
-    assert expr('((((1')[0] == 1
-    assert expr('1+1')[0] == 1+1
-    assert expr('(1+1)')[0] == (1+1)
-    assert expr('(1+(1))')[0] == (1+(1))
-    assert expr('(1+(1))')[0] == (1+(1))
+    # print(expr('1*(2+3)')[0])
+    # print(expr('(1*(2+3))'))
+    # print(expr('(1*(2+3))/1'))
+    # print(expr('(1*(2+3))/1+(4+(5*6))'))
+    # assert expr('(1*(2+3))/1+(4+(5*6))')
+
+
+    # print(*expr('1'))
+    # print(*expr('(1+1)'))
+    # print(*expr('(1+1+2)'))
+    # print(*expr('(1+1+2)+1'))
+    # print(*expr('(1 +  1+2)+1'))
+    # print(*expr('(1 +  1 +2  )+1'))
+    # print(*expr('(1 +  1 +2  )   +   1'))
+    # print(*expr('(1 +  1 +2  )   +   (1)'))
+
+    # assert expr('1')[0] == 1
+    # assert expr('(1)')[0] == 1
+    # assert expr('((1))')[0] == 1
+    # assert expr('(((1)))')[0] == 1
+    # assert expr('((((1))))')[0] == 1
+    # assert expr('((((1')[0] == 1
+    # assert expr('1+1')[0] == 1+1
+    # assert expr('(1+1)')[0] == (1+1)
+    # assert expr('(1+(1))')[0] == (1+(1))
+    # assert expr('(1+(1))')[0] == (1+(1))

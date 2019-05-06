@@ -3,6 +3,7 @@ import functionalinterpreter as fi
 import pytest
 
 
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', [
     ['3+5', 3+5],
     ['0+0', 0],
@@ -13,6 +14,7 @@ def test_calculator_can_add_single_digits_without_space(src, expected):
     assert result == expected
 
 
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', [
     ['3-5', 3-5],
     ['0-0', 0],
@@ -26,6 +28,7 @@ def test_calculator_can_subtract_single_digits_without_space(src, expected):
     assert result == expected
 
 
+# @pytest.mark.skip('')
 def test_get_next_token_add():
     interp = interpreter.Lexer(text='3+5')
     assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 3)
@@ -44,6 +47,7 @@ def test_get_next_token_add():
     assert idx == 3
 
 
+# @pytest.mark.skip('')
 def test_get_next_token_subtract():
     interp = interpreter.Lexer(text='3-5')
     assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 3)
@@ -76,6 +80,7 @@ def test_calculator_can_add_adny_digits_without_space(src, expected):
     assert result == expected
 
 
+# @pytest.mark.skip('')
 def test_emtpy_string_does_not_crash():
     assert not interpreter.Interpreter(interpreter.Lexer('')).expr()
     assert not fi.expr('')
@@ -83,6 +88,7 @@ def test_emtpy_string_does_not_crash():
 
 
 
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', [
     ['   31+5', 31+5],
     ['   31   +5', 31+5],
@@ -102,6 +108,7 @@ def test_space_is_ok(src, expected):
 
 
 
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', [
     ['0*0', 0*0],
     ['1*0', 1*0],
@@ -121,6 +128,7 @@ def test_multiply(src, expected):
 
 
 
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', [
     ['0/1', 0/1],
     ['1/1', 1/1],
@@ -138,6 +146,7 @@ def test_div(src, expected):
 
 
 
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', [
     ['1+2+3', 1+2+3],
     ['1+2+3+2+1', 1+2+3+2+1],
@@ -151,6 +160,7 @@ def test_multiple_op_01(src, expected):
 
 
 
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', [
     ['1+2+3', 1+2+3],
     ['1+2+3+2+1', 1+2+3+2+1],
@@ -163,6 +173,7 @@ def test_multiple_op_func(src, expected):
     assert result == expected
 
 
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', [
     ['1-1/1+1', 1-1/1+1],
     # [' 1 + 22 + 333 * 444 * 0+ 124 / 12 + 4 - 2 / 1 + 0  ', 1+22+333*444*0+124/12+4-2/1+0],
@@ -180,12 +191,14 @@ cases_01 = [
     ['(1)', 1],
 ]
 
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_01)
 def test_can_handle_parenthesis(src, expected):
     result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
     assert result == expected
 
 
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_01)
 def test_functional_can_handle_parenthesis(src, expected):
     result = fi.expr(src)

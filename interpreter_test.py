@@ -223,3 +223,31 @@ def test_multiple_op_01(src, expected):
 def test_multiple_op_01__func(src, expected):
     result = fi.expr(src)[0]
     assert result == expected
+
+
+
+cases_08 = [
+    ['(1)', 1],
+    ['((1))', 1],
+    ['(((1)))', 1],
+    ['(((1+1)))', 1+1],
+    ['(1+1)', (1+1)],
+    ['(1+1)+1', (1+1)+1],
+    [' ( 1 + 1  )  +   1', (1+1)+1],
+    ['(1*1)+1', (1*1)+1],
+    ['(1*1)/1', (1*1)/1],
+    ['(1*(2+3))/1+(4+(5*6))', (1*(2+3))/1+(4+(5*6))],
+]
+
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('src, expected', cases_08)
+def test_parentheses(src, expected):
+    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
+    assert result == expected
+
+
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('src, expected', cases_08)
+def test_parentheses__func(src, expected):
+    result = fi.expr(src)[0]
+    assert result == expected

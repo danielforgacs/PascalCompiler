@@ -26,7 +26,7 @@ class Lexer:
     def __init__(self, text):
         self.text = text
         self.pos = 0
-        self.current_token = None
+        # self.current_token = None
         self.current_char = None
 
         if text:
@@ -94,7 +94,7 @@ class Lexer:
             if not token:
                 raise Exception('NEXT TOKEN ERROR')
 
-            print(token)
+            # print(token)
             return token
 
         return Token(EOF, None)
@@ -125,6 +125,9 @@ class Interpreter:
             result = self.expr()
             self.eat(PAREN_RIGHT)
             return result
+
+        else:
+            raise Exception(token.type_)
 
 
 
@@ -160,5 +163,6 @@ class Interpreter:
         return result
 
 
-print(Interpreter(Lexer('(1)')).expr())
+print(Interpreter(Lexer('3+5')).expr())
+# print(Interpreter(Lexer('(1)')).expr())
 # print(1-1/1+1)

@@ -3,6 +3,8 @@ PLUS = 'PLUS'
 MINUS = 'MINUS'
 MULT = 'MULT'
 DIV = 'DIV'
+PAREN_LEFT = '('
+PAREN_RIGHT = ')'
 EOF = 'EOF'
 
 
@@ -43,7 +45,7 @@ def skip_whitespace(src, idx):
         if idx == len(src):
             break
 
-    return idx
+    return src, idx
 
 
 def get_next_token(src, idx):
@@ -77,6 +79,14 @@ def get_next_token(src, idx):
         idx += 1
         token = Token(DIV, '/')
 
+    elif char in '(':
+        idx += 1
+        token = Token(PAREN_LEFT, '(')
+
+    elif char in ')':
+        idx += 1
+        token = Token(PAREN_RIGHT, ')')
+
     else:
         raise Exception('CAN NOT GET NEXT TOKEN')
 
@@ -85,10 +95,32 @@ def get_next_token(src, idx):
 
 
 
-def term(src, idx):
+def factor(src, idx):
     token, idx = get_next_token(src, idx)
-    assert token.type_ == INTEGER
-    result = token.value
+
+    if token.type_ == INTEGER:
+        return token.value, idx
+
+    if token.type_ == PAREN_LEFT:
+        # print(token)
+        token, idx = get_next_token(src, idx)
+        # print(token)
+
+        result, idx = expr(src, idx)
+        # token, idx = get_next_token(src, idx)
+        # print(token)
+        # assert token.type_ == PAREN_RIGHT, 'EXPECTED PAREN_RIGHT'
+        return result, idx
+
+        # token, _ = get_next_token(src, idx)
+        # assert token.type_ == PAREN_RIGHT, 'MISSING CLOSING PAREN: %s' % idx
+
+    # return result, idx
+
+
+
+def term(src, idx):
+    result, idx = factor(src, idx)
 
     while True:
         idxin = idx
@@ -103,7 +135,9 @@ def term(src, idx):
             result /= number.value
 
         else:
-            idx = idxin
+            # idx = idxin
+            # print('BREAK')
+            # print(result)
             break
 
     return result, idx
@@ -111,7 +145,7 @@ def term(src, idx):
 
 
 
-def exp(src, idx=0):
+def expr(src, idx=0):
     if not src:
         return
 
@@ -132,8 +166,47 @@ def exp(src, idx=0):
         else:
             break
 
-    return result
+    # return result, idx
+    return result, idx
 
 
 if __name__ == '__main__':
     pass
+
+    # print(expr('((1))')[0])
+    # print(expr('((1+1))')[0])
+    # print(expr('((1*1))')[0])
+    # print(expr('((1/1))')[0])
+    # print(expr('((1/1)+1)')[0])
+    # print(expr('1+(1)')[0])
+    # print(expr('1+(1+1)')[0])
+    print(expr('1+')[0])
+    # print(expr('1*(1+1)')[0])
+    # print(expr('1*(1*1)')[0])
+
+    # print(expr('1*(2+3)')[0])
+    # print(expr('(1*(2+3))'))
+    # print(expr('(1*(2+3))/1'))
+    # print(expr('(1*(2+3))/1+(4+(5*6))'))
+    # assert expr('(1*(2+3))/1+(4+(5*6))')
+
+
+    # print(*expr('1'))
+    # print(*expr('(1+1)'))
+    # print(*expr('(1+1+2)'))
+    # print(*expr('(1+1+2)+1'))
+    # print(*expr('(1 +  1+2)+1'))
+    # print(*expr('(1 +  1 +2  )+1'))
+    # print(*expr('(1 +  1 +2  )   +   1'))
+    # print(*expr('(1 +  1 +2  )   +   (1)'))
+
+    # assert expr('1')[0] == 1
+    # assert expr('(1)')[0] == 1
+    # assert expr('((1))')[0] == 1
+    # assert expr('(((1)))')[0] == 1
+    # assert expr('((((1))))')[0] == 1
+    # assert expr('((((1')[0] == 1
+    # assert expr('1+1')[0] == 1+1
+    # assert expr('(1+1)')[0] == (1+1)
+    # assert expr('(1+(1))')[0] == (1+(1))
+    # assert expr('(1+(1))')[0] == (1+(1))

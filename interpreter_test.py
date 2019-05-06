@@ -112,7 +112,7 @@ def test_calculator_can_add_adny_digits_without_space__func(src, expected):
 
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 def test_emtpy_string_does_not_crash():
     assert not interpreter.Interpreter(interpreter.Lexer('')).expr()
 

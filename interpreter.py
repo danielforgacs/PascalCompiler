@@ -38,7 +38,10 @@ class Lexer(object):
         self.text = text
         # self.pos is an index into self.text
         self.pos = 0
-        self.current_char = self.text[self.pos]
+        if text:
+            self.current_char = self.text[self.pos]
+        else:
+            self.current_char = None
 
     def error(self):
         raise Exception('Invalid character')

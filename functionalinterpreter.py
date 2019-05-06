@@ -3,7 +3,9 @@ EXPR: FACTOR
 FACTOR: INTEGER
 """
 
+DIGITS = '0123456789'
 
+# Tokens:
 EOF = 'EOF'
 INTEGER = 'INTEGER'
 
@@ -19,19 +21,33 @@ class Token:
         return self.__dict__ == other.__dict__
 
 
-def integer(src, idx):
-    return 1
+def find_integer(src, idx):
+    result_char = ''
+    char = src[idx]
+
+    while char in DIGITS:
+        result_char += char
+        idx += 1
+        if idx == len(src):
+            break
+        char = src[idx]
+
+    result = int(result_char)
+
+    return result, idx
 
 
 def find_token(src, idx):
     token = Token(EOF, EOF)
 
     while idx < len(src):
-        if src[idx] in '0123456789':
-            token = Token(INTEGER, integer(src, idx))
+        if src[idx] in DIGITS:
+            number, idx = find_integer(src, idx)
+            token = Token(INTEGER, number)
         else:
             raise Exception('UNEXPECTED CHARACTER')
-        idx += 1
+
+        return token, idx
 
     return token, idx
 

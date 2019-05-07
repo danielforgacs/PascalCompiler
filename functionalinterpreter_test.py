@@ -3,10 +3,10 @@ import functionalinterpreter as fi
 
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 def test_expr_finds_EOF():
     result = fi.expr('')
-    assert result == None, 0
+    assert result == (None, 0)
 
 
 def test_get_token_find_EOF():
@@ -38,12 +38,8 @@ def test_find_integer(src, expected):
 
 
 
-
-
-
-
 if __name__ == '__main__':
     pytest.main([
         __file__,
-        '-s',
+        # '-s',
     ])

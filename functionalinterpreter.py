@@ -51,19 +51,22 @@ def find_token(src, idx):
 
 
 def eat(type_, src, idx):
-    token = find_token(src, idx)
+    token, idx = find_token(src, idx)
     if token.type_ == type_:
-        return token
+        return token, idx
     else:
         raise Exception('UNEXPECTED TOKEN')
 
 
 def factor(src, idx):
-    result = eat(INTEGER, src, idx)
+    result, idx = eat(INTEGER, src, idx)
     return result, idx
 
 
 def expr(src, idx=0):
+    if len(src) == 0:
+        return None, idx
+
     result, idx = factor(src, idx)
     return result, idx
 

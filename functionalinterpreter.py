@@ -8,12 +8,13 @@ INTEGER: (0|1||3|4|5|6|7|8|9)*
 """
 
 DIGITS = '0123456789'
+WHITESPACE = ' '
 
 # Tokens:
 EOF = 'EOF'
 INTEGER = 'INTEGER'
-PLUS = 'PLUS'
-MINUS = 'MINUS'
+PLUS = '+'
+MINUS = '-'
 
 
 
@@ -52,7 +53,7 @@ def skip_whitespace(src, idx):
         if idx == len(src):
             break
 
-        if src[idx] == ' ':
+        if src[idx] == WHITESPACE:
             idx += 1
 
         else:
@@ -71,12 +72,12 @@ def find_token(src, idx):
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)
 
-    elif src[idx] == '+':
-        token = Token(PLUS, '+')
+    elif src[idx] == PLUS:
+        token = Token(PLUS, PLUS)
         idx += 1
 
-    elif src[idx] == '-':
-        token = Token(MINUS, '-')
+    elif src[idx] == MINUS:
+        token = Token(MINUS, MINUS)
         idx += 1
 
     else:

@@ -43,7 +43,7 @@ cases_03 = [
     [[' 12', 1], (12, 3)],
     [['  123  ', 2], (123, 5)],
 ]
-# @pytest.mark.skip('')
+@pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_03)
 def test_expr_01(src, expected):
     assert fi.expr(*src) == expected
@@ -69,7 +69,7 @@ cases_05 = [
     [[' 12 3 ', 4], (3, 5)],
     [[' 12 3 444', 4], (3, 5)],
 ]
-# @pytest.mark.skip('')
+@pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_05)
 def test_expr_ignores_whitespace(src, expected):
     assert fi.expr(*src) == expected
@@ -86,6 +86,16 @@ cases_06 = [
 @pytest.mark.parametrize('src, expected', cases_06)
 def test_find_token_finds_PLUS(src, expected):
     assert fi.find_token(*src) == expected
+
+
+
+cases_07 = [
+    [['1+1'], (1+1, 3)],
+]
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('src, expected', cases_07)
+def test_expr_addition(src, expected):
+    assert fi.expr(*src) == expected
 
 
 

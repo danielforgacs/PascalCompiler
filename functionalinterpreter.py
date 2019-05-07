@@ -88,6 +88,11 @@ def expr(src, idx=0):
         return None, idx
 
     value, idx = factor(src, idx)
+    token, idx = find_token(src, idx)
+
+    if token.type_ == PLUS:
+        integer, idx = factor(src, idx)
+        value += integer
 
     return value, idx
 

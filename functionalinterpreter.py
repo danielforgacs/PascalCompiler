@@ -1,212 +1,161 @@
+"""
+EXPR: FACTOR ((PLUS|MINUS) FACTOR)*
+FACTOR: INTEGER | PAREN_LEFT EXPR PAREN_RIGHT
+
+PLUS: '+'
+MINUS: '-'
+PAREN_LEFT: '('
+PAREN_RIGHT: ')'
+INTEGER: (0|1||3|4|5|6|7|8|9)*
+"""
+
+DIGITS = '0123456789'
+WHITESPACE = ' '
+
+# Tokens:
+EOF = 'EOF'
 INTEGER = 'INTEGER'
-PLUS = 'PLUS'
-MINUS = 'MINUS'
-MULT = 'MULT'
-DIV = 'DIV'
+PLUS = '+'
+MINUS = '-'
 PAREN_LEFT = '('
 PAREN_RIGHT = ')'
-EOF = 'EOF'
 
 
 class Token:
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
+
     def __repr__(self):
-        return '[%s][%s]' % (self.type_, self.value)
+        return '<%s:%s>' % (self.type_, self.value)
+
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
 
+def find_integer(src, idx):
+    result_char = ''
+    char = src[idx]
 
-def integer(src, idx):
-    result = ''
-
-    while True:
-        result += src[idx]
+    while char in DIGITS:
+        result_char += char
         idx += 1
 
         if idx == len(src):
             break
 
-        if not src[idx] in '0123456789':
-            break
+        char = src[idx]
 
-    return int(result), idx
+    integer = int(result_char)
 
+    return integer, idx
 
 
 def skip_whitespace(src, idx):
     while True:
-        if src[idx] != ' ':
-            break
-        idx += 1
-
         if idx == len(src):
+            break
+
+        if src[idx] == WHITESPACE:
+            idx += 1
+
+        else:
             break
 
     return src, idx
 
 
-def get_next_token(src, idx):
-    if idx == len(src):
-        return Token(EOF, EOF), idx
-
-    idx = skip_whitespace(src, idx)
+def find_token(src, idx):
+    src, idx = skip_whitespace(src, idx)
 
     if idx == len(src):
         return Token(EOF, EOF), idx
 
-    char = src[idx]
-
-    if char in '0123456789':
-        number, idx = integer(src, idx)
+    if src[idx] in DIGITS:
+        number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)
 
-    elif char in '+':
+    elif src[idx] == PLUS:
+        token = Token(PLUS, PLUS)
         idx += 1
-        token = Token(PLUS, '+')
 
-    elif char in '-':
+    elif src[idx] == MINUS:
+        token = Token(MINUS, MINUS)
         idx += 1
-        token = Token(MINUS, '-')
 
-    elif char in '*':
+    elif src[idx] == PAREN_LEFT:
+        token = Token(PAREN_LEFT, PAREN_LEFT)
         idx += 1
-        token = Token(MULT, '*')
 
-    elif char in '/':
+    elif src[idx] == PAREN_RIGHT:
+        token = Token(PAREN_RIGHT, PAREN_RIGHT)
         idx += 1
-        token = Token(DIV, '/')
-
-    elif char in '(':
-        idx += 1
-        token = Token(PAREN_LEFT, '(')
-
-    elif char in ')':
-        idx += 1
-        token = Token(PAREN_RIGHT, ')')
 
     else:
-        raise Exception('CAN NOT GET NEXT TOKEN')
+        raise Exception('UNEXPECTED CHARACTER: %s' % src[idx])
 
-    # print('{:<5}{}'.format(idx, token))
     return token, idx
 
 
+def eat(type_, src, idx):
+    token, idx = find_token(src, idx)
+
+    if token.type_ == type_:
+        return token.value, idx
+
+    else:
+        raise Exception('UNEXPECTED TOKEN: %s, idx: %s' % (token, idx))
+
 
 def factor(src, idx):
-    token, idx = get_next_token(src, idx)
+    token, idx = find_token(src, idx)
 
     if token.type_ == INTEGER:
         return token.value, idx
 
-    if token.type_ == PAREN_LEFT:
-        # print(token)
-        token, idx = get_next_token(src, idx)
-        # print(token)
+    elif token.type_ == PAREN_LEFT:
+        value, idx = expr(src, idx)
+        # token, idx = eat(PAREN_RIGHT, src, idx)
+        return value, idx
 
-        result, idx = expr(src, idx)
-        # token, idx = get_next_token(src, idx)
-        # print(token)
-        # assert token.type_ == PAREN_RIGHT, 'EXPECTED PAREN_RIGHT'
-        return result, idx
-
-        # token, _ = get_next_token(src, idx)
-        # assert token.type_ == PAREN_RIGHT, 'MISSING CLOSING PAREN: %s' % idx
-
-    # return result, idx
-
-
-
-def term(src, idx):
-    result, idx = factor(src, idx)
-
-    while True:
-        idxin = idx
-        token, idx = get_next_token(src=src, idx=idx)
-
-        if token.type_ == MULT:
-            number, idx = get_next_token(src, idx)
-            result *= number.value
-
-        elif token.type_ == DIV:
-            number, idx = get_next_token(src, idx)
-            result /= number.value
-
-        else:
-            # idx = idxin
-            # print('BREAK')
-            # print(result)
-            break
-
-    return result, idx
-
+    else:
+        raise Exception('FACTOR TOKEN ERROR: %s' % token)
 
 
 
 def expr(src, idx=0):
-    if not src:
-        return
-
-    result, idx = term(src, idx)
+    if len(src) == 0:
+        return None, idx
 
     while True:
-        idxin = idx
-        token, idx = get_next_token(src=src, idx=idx)
+        token, idx = find_token(src, idx)
 
-        if token.type_ == PLUS:
-            num, idx = term(src, idx)
-            result += num
-
-        elif token.type_ == MINUS:
-            num, idx = term(src, idx)
-            result -= num
-
-        else:
+        if token.type_ == EOF:
             break
 
-    # return result, idx
-    return result, idx
+        elif token.type_ == INTEGER:
+            value = token.value
+
+        elif token.type_ == PLUS:
+            result, idx = factor(src, idx)
+            value += result
+
+        elif token.type_ == MINUS:
+            result, idx = factor(src, idx)
+            value -= result
+
+    return value, idx
+
 
 
 if __name__ == '__main__':
     pass
 
-    # print(expr('((1))')[0])
-    # print(expr('((1+1))')[0])
-    # print(expr('((1*1))')[0])
-    # print(expr('((1/1))')[0])
-    # print(expr('((1/1)+1)')[0])
-    # print(expr('1+(1)')[0])
-    # print(expr('1+(1+1)')[0])
-    print(expr('1+')[0])
-    # print(expr('1*(1+1)')[0])
-    # print(expr('1*(1*1)')[0])
-
-    # print(expr('1*(2+3)')[0])
-    # print(expr('(1*(2+3))'))
-    # print(expr('(1*(2+3))/1'))
-    # print(expr('(1*(2+3))/1+(4+(5*6))'))
-    # assert expr('(1*(2+3))/1+(4+(5*6))')
-
-
-    # print(*expr('1'))
-    # print(*expr('(1+1)'))
-    # print(*expr('(1+1+2)'))
-    # print(*expr('(1+1+2)+1'))
-    # print(*expr('(1 +  1+2)+1'))
-    # print(*expr('(1 +  1 +2  )+1'))
-    # print(*expr('(1 +  1 +2  )   +   1'))
-    # print(*expr('(1 +  1 +2  )   +   (1)'))
-
-    # assert expr('1')[0] == 1
-    # assert expr('(1)')[0] == 1
-    # assert expr('((1))')[0] == 1
-    # assert expr('(((1)))')[0] == 1
-    # assert expr('((((1))))')[0] == 1
-    # assert expr('((((1')[0] == 1
-    # assert expr('1+1')[0] == 1+1
-    # assert expr('(1+1)')[0] == (1+1)
-    # assert expr('(1+(1))')[0] == (1+(1))
-    # assert expr('(1+(1))')[0] == (1+(1))
+    # src = '1'
+    # src = '(11)()'
+    # src = '(11)+()'
+    # src = '(11)+(1)'
+    src = '2+( ( 1 + 1 ) )'
+    src = '+( ( 1 + 1 ) )'
+    print(expr(src)[0])
+    # print(eval(src))

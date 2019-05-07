@@ -66,10 +66,10 @@ cases_05 = [
     [[' 1'], (1, 2)],
     [[' 12'], (12, 3)],
     [[' 12 3', 4], (3, 5)],
-    [[' 12 3 ', 4], (3, 5)],
-    [[' 12 3 444', 4], (3, 5)],
+    [[' 12 3 ', 4], (3, 6)],
+    [[' 12 3 444', 4], (444, 9)],
 ]
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_05)
 def test_expr_ignores_whitespace(src, expected):
     assert fi.expr(*src) == expected

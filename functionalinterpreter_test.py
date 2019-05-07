@@ -88,6 +88,19 @@ def test_find_token_finds_PLUS(src, expected):
     assert fi.find_token(*src) == expected
 
 
+cases_08 = [
+    [['-', 0], (fi.Token(fi.MINUS, '-'), 1)],
+    [[' -', 0], (fi.Token(fi.MINUS, '-'), 2)],
+    [['  -', 0], (fi.Token(fi.MINUS, '-'), 3)],
+    [['  -', 1], (fi.Token(fi.MINUS, '-'), 3)],
+    [['  - ', 1], (fi.Token(fi.MINUS, '-'), 3)],
+]
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('src, expected', cases_08)
+def test_find_token_finds_PLUS(src, expected):
+    assert fi.find_token(*src) == expected
+
+
 
 cases_07 = [
     [['1+1'], (1+1, 3)],
@@ -98,7 +111,20 @@ cases_07 = [
 ]
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_07)
-def test_expr_addition(src, expected):
+def test_expr_PLUS(src, expected):
+    assert fi.expr(*src) == expected
+
+
+cases_09 = [
+    [['1-1'], (1-1, 3)],
+    [['11-1'], (11-1, 4)],
+    [['11 - 1'], (11-1, 6)],
+    [['  11 - 1'], (11-1, 8)],
+    [['  11 - 1  -2'], (11-1-2, 12)],
+]
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('src, expected', cases_09)
+def test_expr_MINUS(src, expected):
     assert fi.expr(*src) == expected
 
 

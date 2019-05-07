@@ -32,9 +32,9 @@ def find_integer(src, idx):
             break
         char = src[idx]
 
-    result = int(result_char)
+    integer = int(result_char)
 
-    return result, idx
+    return integer, idx
 
 
 def find_token(src, idx):
@@ -53,22 +53,22 @@ def find_token(src, idx):
 def eat(type_, src, idx):
     token, idx = find_token(src, idx)
     if token.type_ == type_:
-        return token, idx
+        return token.value, idx
     else:
         raise Exception('UNEXPECTED TOKEN')
 
 
 def factor(src, idx):
-    result, idx = eat(INTEGER, src, idx)
-    return result, idx
+    value, idx = eat(INTEGER, src, idx)
+    return value, idx
 
 
 def expr(src, idx=0):
     if len(src) == 0:
         return None, idx
 
-    result, idx = factor(src, idx)
-    return result, idx
+    value, idx = factor(src, idx)
+    return value, idx
 
 
 

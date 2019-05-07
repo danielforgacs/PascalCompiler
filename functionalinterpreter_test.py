@@ -37,6 +37,18 @@ def test_find_integer(src, expected):
     assert fi.find_integer(*src) == expected
 
 
+cases_03 = [
+    # [['1', 0], (1, 1)],
+]
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('src, expected', cases_03)
+def test_expr(src, expected):
+    print(fi.expr(*src))
+    print(fi.expr(*src))
+    print(fi.expr(*src))
+    assert fi.expr(*src) == expected
+
+
 
 if __name__ == '__main__':
     pytest.main([

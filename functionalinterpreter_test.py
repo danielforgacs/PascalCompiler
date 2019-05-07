@@ -41,9 +41,9 @@ cases_03 = [
     [['1', 0], (1, 1)],
     [['12', 0], (12, 2)],
     [[' 12', 1], (12, 3)],
-    [['  123  ', 2], (123, 5)],
+    [['  123  ', 2], (123, 7)],
 ]
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_03)
 def test_expr_01(src, expected):
     assert fi.expr(*src) == expected
@@ -105,7 +105,7 @@ def test_expr_addition(src, expected):
 
 if __name__ == '__main__':
     pytest.main([
-        # __file__,
-        __file__+'::test_expr_addition',
+        __file__,
+        # __file__+'::test_expr_addition',
         # '-s',
     ])

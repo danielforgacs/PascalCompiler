@@ -3,7 +3,7 @@ EXPR: FACTOR (PLUS FACTOR)*
 FACTOR: INTEGER
 
 PLUS: '+'
-INTEGER: 0|1||3|4|5|6|7|8|9*
+INTEGER: (0|1||3|4|5|6|7|8|9)*
 """
 
 DIGITS = '0123456789'
@@ -58,6 +58,9 @@ def find_token(src, idx):
 
     src, idx = skip_whitespace(src, idx)
 
+    if idx == len(src):
+        return Token(EOF, EOF), idx
+
     if src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)
@@ -89,7 +92,10 @@ def expr(src, idx=0):
 
     token, idx = find_token(src, idx)
 
-    while token.type_ != EOF:
+    while True:
+        if token.type_ == EOF:
+            break
+
         if token.type_ == INTEGER:
             value = token.value
 
@@ -98,12 +104,6 @@ def expr(src, idx=0):
             value += result
 
         token, idx = find_token(src, idx)
-        # value, idx = factor(src, idx)
-        # token, idx = find_token(src, idx)
-
-        # if token.type_ == PLUS:
-        #     integer, idx = factor(src, idx)
-        #     value += integer
 
     return value, idx
 
@@ -111,4 +111,3 @@ def expr(src, idx=0):
 
 if __name__ == '__main__':
     pass
-

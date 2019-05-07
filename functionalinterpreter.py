@@ -92,7 +92,7 @@ def find_token(src, idx):
         idx += 1
 
     else:
-        raise Exception('UNEXPECTED CHARACTER')
+        raise Exception('UNEXPECTED CHARACTER: %s' % src[idx])
 
     return token, idx
 
@@ -104,22 +104,23 @@ def eat(type_, src, idx):
         return token.value, idx
 
     else:
-        raise Exception('UNEXPECTED TOKEN')
+        raise Exception('UNEXPECTED TOKEN: %s, idx: %s' % (token, idx))
 
 
 def factor(src, idx):
-    # value, idx = eat(INTEGER, src, idx)
     token, idx = find_token(src, idx)
 
     if token.type_ == INTEGER:
         return token.value, idx
 
     elif token.type_ == PAREN_LEFT:
-        return expr(src, idx)
+        value, idx = expr(src, idx)
+        # token, idx = eat(PAREN_RIGHT, src, idx)
+        return value, idx
 
-    # else:
+    else:
+        raise Exception('FACTOR TOKEN ERROR: %s' % token)
 
-    # return value, idx
 
 
 def expr(src, idx=0):
@@ -149,3 +150,8 @@ def expr(src, idx=0):
 
 if __name__ == '__main__':
     pass
+
+    print(expr('1+2')[0])
+    print(expr('(1+2)+3')[0])
+    print(expr('(1+2)+3+(1+2)')[0])
+    print(expr('(1+2)+3+(1+2)')[0])

@@ -152,6 +152,8 @@ cases_11 = [
     [['(1)'], (1, 3)],
     [['((1))'], (1, 5)],
     [['( ( 1 ) )'], (1, 9)],
+    [['( ( 1 + 1 ) )'], (2, 13)],
+    [['2+( ( 1 + 1 ) )'], (2+( ( 1 + 1 ) ), 15)],
 ]
 @pytest.mark.parametrize('src, expected', cases_11)
 def test_expr_handles_parenthesis(src, expected):

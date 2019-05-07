@@ -6,7 +6,7 @@ import functionalinterpreter as fi
 @pytest.mark.skip('')
 def test_expr_finds_EOF():
     result = fi.expr('')
-    assert result == None
+    assert result == None, 0
 
 
 def test_get_token_find_EOF():

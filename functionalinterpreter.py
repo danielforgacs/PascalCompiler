@@ -38,16 +38,14 @@ def find_integer(src, idx):
 
 
 def find_token(src, idx):
-    token = Token(EOF, EOF)
+    if idx == len(src):
+        return Token(EOF, EOF), idx
 
-    while idx < len(src):
-        if src[idx] in DIGITS:
-            number, idx = find_integer(src, idx)
-            token = Token(INTEGER, number)
-        else:
-            raise Exception('UNEXPECTED CHARACTER')
-
-        return token, idx
+    if src[idx] in DIGITS:
+        number, idx = find_integer(src, idx)
+        token = Token(INTEGER, number)
+    else:
+        raise Exception('UNEXPECTED CHARACTER')
 
     return token, idx
 
@@ -67,6 +65,7 @@ def factor(src, idx):
 
 def expr(src, idx=0):
     result, idx = factor(src, idx)
+    return result, idx
 
 
 

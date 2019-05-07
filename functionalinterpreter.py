@@ -52,6 +52,8 @@ def find_token(src, idx):
     if idx == len(src):
         return Token(EOF, EOF), idx
 
+    src, idx = skip_whitespace(src, idx)
+
     if src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)

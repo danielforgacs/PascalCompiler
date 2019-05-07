@@ -46,10 +46,8 @@ cases_03 = [
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_03)
 def test_expr_01(src, expected):
-    print(fi.expr(*src))
-    print(fi.expr(*src))
-    print(fi.expr(*src))
     assert fi.expr(*src) == expected
+
 
 cases_04 = [
     [[' ', 0], (' ', 1)],
@@ -60,6 +58,21 @@ cases_04 = [
 @pytest.mark.parametrize('src, expected', cases_04)
 def test_skip_whitespace(src, expected):
     assert fi.skip_whitespace(*src) == expected
+
+
+
+cases_05 = [
+    [['1'], (1, 1)],
+    [[' 1'], (1, 2)],
+    [[' 12'], (12, 3)],
+    [[' 12 3', 4], (3, 5)],
+    [[' 12 3 ', 4], (3, 5)],
+    [[' 12 3 444', 4], (3, 5)],
+]
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('src, expected', cases_05)
+def test_expr_ignores_whitespace(src, expected):
+    assert fi.expr(*src) == expected
 
 
 

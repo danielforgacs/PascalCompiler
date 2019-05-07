@@ -105,6 +105,7 @@ def test_expr_addition(src, expected):
 
 if __name__ == '__main__':
     pytest.main([
-        __file__,
+        # __file__,
+        __file__+'::test_expr_addition',
         # '-s',
     ])

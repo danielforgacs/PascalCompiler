@@ -87,12 +87,23 @@ def expr(src, idx=0):
     if len(src) == 0:
         return None, idx
 
-    value, idx = factor(src, idx)
     token, idx = find_token(src, idx)
 
-    if token.type_ == PLUS:
-        integer, idx = factor(src, idx)
-        value += integer
+    while token.type_ != EOF:
+        if token.type_ == INTEGER:
+            value = token.value
+
+        elif token.type_ == PLUS:
+            result, idx = factor(src, idx)
+            value += result
+
+        token, idx = find_token(src, idx)
+        # value, idx = factor(src, idx)
+        # token, idx = find_token(src, idx)
+
+        # if token.type_ == PLUS:
+        #     integer, idx = factor(src, idx)
+        #     value += integer
 
     return value, idx
 

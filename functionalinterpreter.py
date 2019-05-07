@@ -1,6 +1,9 @@
 """
-EXPR: FACTOR
+EXPR: FACTOR (PLUS FACTOR)*
 FACTOR: INTEGER
+
+PLUS: '+'
+INTEGER: 0|1||3|4|5|6|7|8|9*
 """
 
 DIGITS = '0123456789'
@@ -8,6 +11,7 @@ DIGITS = '0123456789'
 # Tokens:
 EOF = 'EOF'
 INTEGER = 'INTEGER'
+PLUS = 'PLUS'
 
 
 
@@ -57,6 +61,9 @@ def find_token(src, idx):
     if src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)
+    elif src[idx] == '+':
+        token = Token(PLUS, '+')
+        idx += 1
     else:
         raise Exception('UNEXPECTED CHARACTER')
 
@@ -81,6 +88,7 @@ def expr(src, idx=0):
         return None, idx
 
     value, idx = factor(src, idx)
+
     return value, idx
 
 

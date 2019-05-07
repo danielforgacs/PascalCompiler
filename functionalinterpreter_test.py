@@ -75,6 +75,19 @@ def test_expr_ignores_whitespace(src, expected):
     assert fi.expr(*src) == expected
 
 
+cases_06 = [
+    [['+', 0], (fi.Token(fi.PLUS, '+'), 1)],
+    [[' +', 0], (fi.Token(fi.PLUS, '+'), 2)],
+    [['  +', 0], (fi.Token(fi.PLUS, '+'), 3)],
+    [['  +', 1], (fi.Token(fi.PLUS, '+'), 3)],
+    [['  + ', 1], (fi.Token(fi.PLUS, '+'), 3)],
+]
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('src, expected', cases_06)
+def test_find_token_finds_PLUS(src, expected):
+    assert fi.find_token(*src) == expected
+
+
 
 if __name__ == '__main__':
     pytest.main([

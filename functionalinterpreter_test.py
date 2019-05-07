@@ -91,6 +91,10 @@ def test_find_token_finds_PLUS(src, expected):
 
 cases_07 = [
     [['1+1'], (1+1, 3)],
+    [['11+1'], (11+1, 4)],
+    [['11 + 1'], (11+1, 6)],
+    [['  11 + 1'], (11+1, 8)],
+    [['  11 + 1  +2'], (11+1+2, 12)],
 ]
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_07)

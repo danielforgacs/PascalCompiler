@@ -17,7 +17,8 @@ EOF = 'EOF'
 INTEGER = 'INTEGER'
 PLUS = '+'
 MINUS = '-'
-
+PAREN_LEFT = '('
+PAREN_RIGHT = ')'
 
 
 class Token:
@@ -82,6 +83,14 @@ def find_token(src, idx):
         token = Token(MINUS, MINUS)
         idx += 1
 
+    elif src[idx] == PAREN_LEFT:
+        token = Token(PAREN_LEFT, PAREN_LEFT)
+        idx += 1
+
+    elif src[idx] == PAREN_RIGHT:
+        token = Token(PAREN_RIGHT, PAREN_RIGHT)
+        idx += 1
+
     else:
         raise Exception('UNEXPECTED CHARACTER')
 
@@ -99,9 +108,18 @@ def eat(type_, src, idx):
 
 
 def factor(src, idx):
-    value, idx = eat(INTEGER, src, idx)
+    # value, idx = eat(INTEGER, src, idx)
+    token, idx = find_token(src, idx)
 
-    return value, idx
+    if token.type_ == INTEGER:
+        return token.value, idx
+
+    elif token.type_ == PAREN_LEFT:
+        return expr(src, idx)
+
+    # else:
+
+    # return value, idx
 
 
 def expr(src, idx=0):

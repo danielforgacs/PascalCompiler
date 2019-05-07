@@ -127,10 +127,33 @@ cases_09 = [
 def test_expr_MINUS(src, expected):
     assert fi.expr(*src) == expected
 
+
+
 cases_10 = [
-    # [['(1)'], (1, 1)]
+    [['(', 0], (fi.Token(fi.PAREN_LEFT, '('), 1)],
+    [[' (', 0], (fi.Token(fi.PAREN_LEFT, '('), 2)],
+    [['  (', 0], (fi.Token(fi.PAREN_LEFT, '('), 3)],
+    [['  (', 1], (fi.Token(fi.PAREN_LEFT, '('), 3)],
+    [['  ( ', 1], (fi.Token(fi.PAREN_LEFT, '('), 3)],
+    [[')', 0], (fi.Token(fi.PAREN_RIGHT, ')'), 1)],
+    [[' )', 0], (fi.Token(fi.PAREN_RIGHT, ')'), 2)],
+    [['  )', 0], (fi.Token(fi.PAREN_RIGHT, ')'), 3)],
+    [['  )', 1], (fi.Token(fi.PAREN_RIGHT, ')'), 3)],
+    [['  ) ', 1], (fi.Token(fi.PAREN_RIGHT, ')'), 3)],
 ]
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_10)
+def test_find_token_finds_PARENTHESIS(src, expected):
+    assert fi.find_token(*src) == expected
+
+
+
+cases_11 = [
+    [['(1)'], (1, 3)],
+    [['((1))'], (1, 5)],
+    [['( ( 1 ) )'], (1, 9)],
+]
+@pytest.mark.parametrize('src, expected', cases_11)
 def test_expr_handles_parenthesis(src, expected):
     assert fi.expr(*src) == expected
 

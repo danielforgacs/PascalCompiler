@@ -51,6 +51,16 @@ def test_expr_01(src, expected):
     print(fi.expr(*src))
     assert fi.expr(*src) == expected
 
+cases_04 = [
+    [[' ', 0], (' ', 1)],
+    [[' ', 1], (' ', 1)],
+    [['  ', 1], ('  ', 2)],
+    [['  1', 1], ('  1', 2)],
+]
+@pytest.mark.parametrize('src, expected', cases_04)
+def test_skip_whitespace(src, expected):
+    assert fi.skip_whitespace(*src) == expected
+
 
 
 if __name__ == '__main__':

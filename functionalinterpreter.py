@@ -37,6 +37,17 @@ def find_integer(src, idx):
     return integer, idx
 
 
+def skip_whitespace(src, idx):
+    while True:
+        if idx == len(src):
+            break
+        if src[idx] == ' ':
+            idx += 1
+        else:
+            break
+    return src, idx
+
+
 def find_token(src, idx):
     if idx == len(src):
         return Token(EOF, EOF), idx

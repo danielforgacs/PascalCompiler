@@ -38,11 +38,14 @@ def test_find_integer(src, expected):
 
 
 cases_03 = [
-    # [['1', 0], (1, 1)],
+    [['1', 0], (1, 1)],
+    [['12', 0], (12, 2)],
+    [[' 12', 1], (12, 3)],
+    [['  123  ', 2], (123, 5)],
 ]
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_03)
-def test_expr(src, expected):
+def test_expr_01(src, expected):
     print(fi.expr(*src))
     print(fi.expr(*src))
     print(fi.expr(*src))

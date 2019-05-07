@@ -159,6 +159,16 @@ cases_11 = [
 def test_expr_handles_parenthesis(src, expected):
     assert fi.expr(*src) == expected
 
+cases_12 = [
+    'x',
+    ')',
+    '1(1)',
+]
+@pytest.mark.parametrize('src', cases_12)
+def test_expr_errors(src):
+    with pytest.raises(Exception):
+        fi.expr(src)
+
 
 
 if __name__ == '__main__':

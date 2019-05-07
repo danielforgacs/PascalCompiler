@@ -151,7 +151,9 @@ def expr(src, idx=0):
 if __name__ == '__main__':
     pass
 
-    print(expr('1+2')[0])
-    print(expr('(1+2)+3')[0])
-    print(expr('(1+2)+3+(1+2)')[0])
-    print(expr('(1+2)+3+(1+2)')[0])
+    src = '1'
+    src = '(11)()'
+    src = '(11)+()'
+    src = '(11)+(1)'
+    print(expr(src)[0])
+    print(eval(src))

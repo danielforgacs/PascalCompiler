@@ -90,20 +90,19 @@ def expr(src, idx=0):
     if len(src) == 0:
         return None, idx
 
-    token, idx = find_token(src, idx)
-
     while True:
+        token, idx = find_token(src, idx)
+
         if token.type_ == EOF:
             break
 
-        if token.type_ == INTEGER:
+        elif token.type_ == INTEGER:
             value = token.value
 
         elif token.type_ == PLUS:
             result, idx = factor(src, idx)
             value += result
 
-        token, idx = find_token(src, idx)
 
     return value, idx
 

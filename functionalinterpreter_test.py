@@ -97,7 +97,7 @@ cases_08 = [
 ]
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_08)
-def test_find_token_finds_PLUS(src, expected):
+def test_find_token_finds_MINUS(src, expected):
     assert fi.find_token(*src) == expected
 
 
@@ -125,6 +125,13 @@ cases_09 = [
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_09)
 def test_expr_MINUS(src, expected):
+    assert fi.expr(*src) == expected
+
+cases_10 = [
+    # [['(1)'], (1, 1)]
+]
+@pytest.mark.parametrize('src, expected', cases_10)
+def test_expr_handles_parenthesis(src, expected):
     assert fi.expr(*src) == expected
 
 

@@ -46,7 +46,7 @@ def find_token(src, idx):
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, 1)
     else:
-        raise Exception('BAD CHAR FOR TOKEN: %s, %s' % ('-', idx))
+        raise Exception('BAD CHAR FOR TOKEN: "%s", %s' % (src[idx], idx))
 
     return token, idx
 

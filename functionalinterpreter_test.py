@@ -4,7 +4,7 @@ import functionalinterpreter as fi
 
 
 def test_find_token_tokenizes_source():
-    src = '123'
+    src = '123 456'
 
     result = fi.find_token(src, 0)
     assert result == (fi.Token(fi.INTEGER, 1), 3)

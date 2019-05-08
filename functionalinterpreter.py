@@ -73,8 +73,12 @@ def find_token(src, idx):
 
 
 def expr(src, idx):
-    value = 1
-    return value, idx+1
+    """
+    expr: factor (PLUS|MINUS)*
+    """
+    token, idx = find_token(src, idx)
+    value = token.value
+    return value, idx
 
 
 

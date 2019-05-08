@@ -24,6 +24,12 @@ EXPR = [
     ['1+1+1+1+1+1+1', (1+1+1+1+1+1+1, 13)],
 
     ['1+1-1+1-1+1-1', (1+1-1+1-1+1-1, 13)],
+    ['0-0-0-0', (0, 7)],
+
+    ['123+321-234', (123+321-234, 11)],
+
+    ['11+11-11+11', (11+11-11+11, 11)],
+    # ['123+321-234+432', (123+321-234+432, 15)],
 ]
 
 
@@ -68,7 +74,7 @@ def test_find_integer_finds_integers(src, idx, expected):
 
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', EXPR)
 def test_expr(src, expected):
     assert fi.expr(src, 0) == expected

@@ -82,6 +82,7 @@ def expr(src, idx):
     expr: factor (PLUS|MINUS)*
     """
     token, idx = find_token(src, idx)
+    assert token.type_ == INTEGER
     value = token.value
     token, idx = find_token(src, idx)
 
@@ -89,8 +90,14 @@ def expr(src, idx):
         result, idx  = expr(src, idx)
         value += result
 
+    elif token.type_ == MINUS:
+        result, idx  = expr(src, idx)
+        value -= result
+
     token, idx = find_token(src, idx)
     assert token.type_ == EOF
+
+    assert isinstance(value, int)
 
     return value, idx
 

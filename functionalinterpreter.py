@@ -63,6 +63,7 @@ def find_token(src, idx):
         token = Token(INTEGER, number)
     elif src[idx] == PLUS:
         token = Token(PLUS, PLUS)
+        idx += 1
     else:
         raise Exception('BAD CHAR FOR TOKEN: "%s", %s' % (src[idx], idx))
 

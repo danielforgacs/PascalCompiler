@@ -33,7 +33,7 @@ class Token:
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
-        # print(self)
+        print(self)
     def __repr__(self):
         return '<%s:%s>' % (self.type_, self.value)
     def __eq__(self, other):
@@ -117,6 +117,26 @@ def factor(src, idx):
 
 
 
+def term(src, idx):
+    """
+    term: factor ((MULT|DIV) factor)*
+    """
+    value, idx = factor(src, idx)
+    token, idx = find_token(src, idx)
+
+    while token.type_ in [MULT, DIV]:
+        right, idx = factor(src, idx)
+        if token.type_ == MULT:
+            value *= right
+        elif token.type_ == DIV:
+            value /= right
+        token, idx = find_token(src, idx)
+
+    return value, idx
+
+
+
+
 def expr(src, idx):
     """
     expr: factor ((PLUS|MINUS) factor)*
@@ -141,8 +161,4 @@ if __name__ == '__main__':
     pass
 
     print('--------------------')
-    print(expr('(1)', 0))
-    print('--------------------')
-    print(expr('(1+1', 0))
-    print('--------------------')
-    print(expr('(1+1)+1', 0))
+    print(term('12*2', 0))

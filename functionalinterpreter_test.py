@@ -58,6 +58,20 @@ PAREN = [
     ['1+(2+(3+(4+(5+(6+(7)+8)+9)+10)))', 1+(2+(3+(4+(5+(6+(7)+8)+9)+10)))]
 ]
 
+TERM = [
+    '1*1',
+    '10*2',
+    '   10*2',
+    '   10  *   2',
+    '   10  *   223',
+    '   10  *   223 * 2',
+    '2*4/2*8/4',
+    '2  * 4  / 2  * 8 /   4',
+    '22  * 42  / 2  * 800 /   40',
+    '100000   / 1000'
+    '100000   / 1000 * 12480   / 200'
+]
+
 
 
 
@@ -215,6 +229,14 @@ def test_expr(src, expected):
 @pytest.mark.parametrize('src, expected', PAREN)
 def test_expr_parenthesis(src, expected):
     assert fi.expr(src, 0) == (expected, len(src))
+
+
+
+
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('src', TERM)
+def test_term(src):
+    assert fi.term(src, 0) == (eval(src), len(src))
 
 
 

@@ -81,8 +81,8 @@ def expr(src, idx):
     token, idx = find_token(src, idx)
 
     if token.type_ == PLUS:
-        token, idx = find_token(src, idx)
-        value += token.value
+        result, idx  = expr(src, idx)
+        value += result
 
     token, idx = find_token(src, idx)
     assert token.type_ == EOF

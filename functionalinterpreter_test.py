@@ -48,10 +48,11 @@ EXPR = [
 
 
 def test_find_token_tokenizes_source():
-    src = ('123 456   98765 ++1 003+-  - --')
-    idxs = [3, 7, 15, 17, 18, 19, 23, 24, 25, 28, 30, 31]
+    src = ('123 456   98765 ++1 003+-  - --( ) 1))')
+    idxs = [3, 7, 15, 17, 18, 19, 23, 24, 25, 28, 30, 31, 32, 34,
+        37, 38, 39]
     values = iter([123, 456, 98765, '+', '+', 1, 3, '+',
-        '-', '-', '-', '-', 'EOF'])
+        '-', '-', '-', '-', '(', ')', 'EOF'])
     tokentypes = iter([
         fi.INTEGER,
         fi.INTEGER,
@@ -65,6 +66,8 @@ def test_find_token_tokenizes_source():
         fi.MINUS,
         fi.MINUS,
         fi.MINUS,
+        fi.PAREN_LEFT,
+        fi.PAREN_RIGHT,
         fi.EOF,
     ])
 

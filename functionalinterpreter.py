@@ -5,6 +5,8 @@ factor: INTEGER
 -----------------------------
 plus: '+'
 minus: '-'
+paren_left: '('
+paren_right: ')'
 integer: (0|1||3|4|5|6|7|8|9)*
 """
 
@@ -16,6 +18,8 @@ EOF = 'EOF'
 INTEGER = 'INTEGER'
 PLUS = '+'
 MINUS = '-'
+PAREN_LEFT = '('
+PAREN_RIGHT = ')'
 
 
 
@@ -69,6 +73,12 @@ def find_token(src, idx):
         idx += 1
     elif src[idx] == MINUS:
         token = Token(MINUS, MINUS)
+        idx += 1
+    elif src[idx] == PAREN_LEFT:
+        token = Token(PAREN_LEFT, PAREN_LEFT)
+        idx += 1
+    elif src[idx] == PAREN_RIGHT:
+        token = Token(PAREN_RIGHT, PAREN_RIGHT)
         idx += 1
     else:
         raise Exception('BAD CHAR FOR TOKEN: "%s", %s' % (src[idx], idx))

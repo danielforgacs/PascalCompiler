@@ -4,15 +4,16 @@ import functionalinterpreter as fi
 
 
 def test_find_token_tokenizes_source():
-    src = '123 456   98765 ++'
-    idxs = [3, 7, 15, 17, 18, 18]
-    values = iter([123, 456, 98765, '+', '+', 'EOF'])
+    src = ('123 456   98765 ++1')
+    idxs = [3, 7, 15, 17, 18, 19, 19]
+    values = iter([123, 456, 98765, '+', '+', 1, 'EOF'])
     tokentypes = iter([
         fi.INTEGER,
         fi.INTEGER,
         fi.INTEGER,
         fi.PLUS,
         fi.PLUS,
+        fi.INTEGER,
         fi.EOF,
     ])
 

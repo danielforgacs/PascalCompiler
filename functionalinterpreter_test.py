@@ -2,6 +2,18 @@ import pytest
 import functionalinterpreter as fi
 
 
+FIND_INTEGERS = [
+    ['1', 0, (1, 1)],
+    ['123', 0, (123, 3)],
+    ['  123', 2, (123, 5)],
+    ['  123 ', 2, (123, 5)],
+    ['  123s ', 2, (123, 5)],
+    ['  123 45 s ', 2, (123, 5)],
+    ['  123 45 s ', 6, (45, 8)],
+]
+
+
+
 
 def test_find_token_tokenizes_source():
     src = ('123 456   98765 ++1 003+')
@@ -26,6 +38,14 @@ def test_find_token_tokenizes_source():
         result = fi.find_token(src, idx)
 
     assert result == (fi.Token(fi.EOF, fi.EOF), idxs[-1])
+
+
+
+
+@pytest.mark.parametrize('src, idx, expected', FIND_INTEGERS)
+def test_find_integer_finds_integers(src, idx, expected):
+    assert fi.find_integer(src, idx) == expected
+
 
 
 

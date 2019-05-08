@@ -72,6 +72,13 @@ def find_token(src, idx):
 
 
 
+def expr(src, idx):
+    value = 1
+    return value, idx+1
+
+
+
+
 
 # def find_token(src, idx):
 #     src, idx = skip_whitespace(src, idx)

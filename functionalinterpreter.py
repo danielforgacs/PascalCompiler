@@ -77,13 +77,25 @@ def find_token(src, idx):
 
 
 
+def factor(src, idx):
+    """
+    factor: INTEGER
+    """
+    token, idx = find_token(src, idx)
+
+    if token.type_ != INTEGER:
+        raise Exception('BAD FACTOR TOKEN: %s, %s' % (token, idx))
+
+    return token.value, idx
+
+
+
+
 def expr(src, idx):
     """
     expr: factor (PLUS|MINUS)*
     """
-    token, idx = find_token(src, idx)
-    assert token.type_ == INTEGER
-    value = token.value
+    value, idx = factor(src, idx)
     token, idx = find_token(src, idx)
 
     if token.type_ == PLUS:
@@ -94,10 +106,11 @@ def expr(src, idx):
         result, idx  = expr(src, idx)
         value -= result
 
-    token, idx = find_token(src, idx)
-    assert token.type_ == EOF
+    elif token.type_ == EOF:
+        pass
 
-    assert isinstance(value, int)
+    else:
+        raise Exception('BAD EXPR TOKEN: %s, %s' % (token, idx))
 
     return value, idx
 

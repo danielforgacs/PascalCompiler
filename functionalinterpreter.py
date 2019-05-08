@@ -30,6 +30,10 @@ def find_token(src, idx):
 
     if is_eof:
         token = Token(EOF, EOF)
+    elif src[idx]:
+        token = Token(INTEGER, 1)
+    else:
+        raise Exception('BAD CHAR FOR TOKEN: %s, %s' % ('-', idx))
 
     idx += 1
 

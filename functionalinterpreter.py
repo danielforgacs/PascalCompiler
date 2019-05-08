@@ -57,7 +57,7 @@ def find_token(src, idx):
         token = Token(EOF, EOF)
     elif src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
-        token = Token(INTEGER, 1)
+        token = Token(INTEGER, number)
     else:
         raise Exception('BAD CHAR FOR TOKEN: "%s", %s' % (src[idx], idx))
 

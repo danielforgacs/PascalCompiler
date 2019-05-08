@@ -4,12 +4,14 @@ import functionalinterpreter as fi
 
 
 def test_find_token_tokenizes_source():
-    src = '123 456'
+    src = '123 456   98765'
 
     result = fi.find_token(src, 0)
-    assert result == (fi.Token(fi.INTEGER, 1), 3)
+    assert result == (fi.Token(fi.INTEGER, 123), 3)
     result = fi.find_token(src, result[1])
-    assert result == (fi.Token(fi.INTEGER, 1), 7)
+    assert result == (fi.Token(fi.INTEGER, 456), 7)
+    result = fi.find_token(src, result[1])
+    assert result == (fi.Token(fi.INTEGER, 98765), 15)
     result = fi.find_token(src, result[1])
     assert result == (fi.Token(fi.EOF, fi.EOF), len(src))
 
@@ -19,4 +21,5 @@ def test_find_token_tokenizes_source():
 if __name__ == '__main__':
     pytest.main([
         __file__,
+        '-s'
     ])

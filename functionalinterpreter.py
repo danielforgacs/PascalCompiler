@@ -1,6 +1,6 @@
 """
 expr: factor ((PLUS|MINUS) factor)*
-factor: INTEGER
+factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
 
 -----------------------------
 plus: '+'
@@ -90,14 +90,18 @@ def find_token(src, idx):
 
 def factor(src, idx):
     """
-    factor: INTEGER
+    factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
     """
     token, idx = find_token(src, idx)
 
-    if token.type_ != INTEGER:
+    if token.type_ == INTEGER:
+        value = token.value
+    elif token.type_ == PAREN_LEFT:
+        value, idx = expr(src, idx)
+    else:
         raise Exception('BAD FACTOR TOKEN: %s, %s' % (token, idx))
 
-    return token.value, idx
+    return value, idx
 
 
 
@@ -124,3 +128,10 @@ def expr(src, idx):
 
 if __name__ == '__main__':
     pass
+
+    print('--------------------')
+    print(expr('(1)', 0))
+    print('--------------------')
+    print(expr('(1+1', 0))
+    print('--------------------')
+    print(expr('(1+1)+1', 0))

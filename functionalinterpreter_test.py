@@ -45,6 +45,16 @@ EXPR = [
 ]
 
 PAREN = [
+    ['(1)', 1],
+    ['((1))', 1],
+    ['(1+1)', 2],
+    [' ( 1  +1  )', 2],
+    ['(1+1)+1', 3],
+    ['(10+10)+10', 30],
+    [' (  111  +222  )   +334', (111+222)+334],
+    [' (  111  +222  )   +(334)', (111+222)+334],
+    [' (  111  +222  )   +(334)', (111+222)+334],
+    [' (  111  +222  )   +(334) - (4 + 2)', (111+222)+(334)-(4+2)],
 ]
 
 
@@ -169,7 +179,7 @@ def test_expr(src, expected):
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', PAREN)
 def test_expr_parenthesis(src, expected):
-    assert fi.expr(src, 0) == expected
+    assert fi.expr(src, 0) == (expected, len(src))
 
 
 
@@ -177,5 +187,5 @@ def test_expr_parenthesis(src, expected):
 if __name__ == '__main__':
     pytest.main([
         __file__,
-        '-s'
+        # '-s'
     ])

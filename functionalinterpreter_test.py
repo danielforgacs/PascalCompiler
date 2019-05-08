@@ -147,6 +147,40 @@ def test_find_token_tokenizes_source():
     values_items += [')']
     tokentypes_items += [fi.PAREN_RIGHT]
 
+    src += '*'
+    idxs += [len(src)]
+    values_items += ['*']
+    tokentypes_items += [fi.MULT]
+
+    src += '/'
+    idxs += [len(src)]
+    values_items += ['/']
+    tokentypes_items += [fi.DIV]
+
+    src += '   98765'
+    idxs += [len(src)]
+    values_items += [98765]
+    tokentypes_items += [fi.INTEGER]
+
+    src += ' +'
+    idxs += [len(src)]
+    values_items += ['+']
+    tokentypes_items += [fi.PLUS]
+
+    src += '+'
+    idxs += [len(src)]
+    values_items += ['+']
+    tokentypes_items += [fi.PLUS]
+
+    src += '    *'
+    idxs += [len(src)]
+    values_items += ['*']
+    tokentypes_items += [fi.MULT]
+
+    src += '    *'
+    idxs += [len(src)]
+    values_items += ['*']
+    tokentypes_items += [fi.MULT]
 
     values = iter(values_items)
     tokentypes = iter(tokentypes_items)

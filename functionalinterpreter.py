@@ -1,10 +1,13 @@
 """
-expr: factor ((PLUS|MINUS) factor)*
+expr: term ((PLUS|MINUS) term)*
+term: factor ((MULT|DIV) factor)*
 factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
 
 -----------------------------
 plus: '+'
 minus: '-'
+mult: '*'
+div: '/'
 paren_left: '('
 paren_right: ')'
 integer: (0|1||3|4|5|6|7|8|9)*
@@ -18,6 +21,8 @@ EOF = 'EOF'
 INTEGER = 'INTEGER'
 PLUS = '+'
 MINUS = '-'
+MULT = '*'
+DIV = '/'
 PAREN_LEFT = '('
 PAREN_RIGHT = ')'
 
@@ -79,6 +84,12 @@ def find_token(src, idx):
         idx += 1
     elif src[idx] == PAREN_RIGHT:
         token = Token(PAREN_RIGHT, PAREN_RIGHT)
+        idx += 1
+    elif src[idx] == MULT:
+        token = Token(MULT, MULT)
+        idx += 1
+    elif src[idx] == DIV:
+        token = Token(DIV, DIV)
         idx += 1
     else:
         raise Exception('BAD CHAR FOR TOKEN: "%s", %s' % (src[idx], idx))

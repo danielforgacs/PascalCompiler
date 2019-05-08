@@ -44,32 +44,101 @@ EXPR = [
     ['  123 +  321 - 234  +   432', (123+321-234+432, 27)],
 ]
 
+PAREN = [
+]
+
 
 
 
 def test_find_token_tokenizes_source():
-    src = ('123 456   98765 ++1 003+-  - --( ) 1))')
-    idxs = [3, 7, 15, 17, 18, 19, 23, 24, 25, 28, 30, 31, 32, 34,
-        37, 38, 39]
-    values = iter([123, 456, 98765, '+', '+', 1, 3, '+',
-        '-', '-', '-', '-', '(', ')', 'EOF'])
-    tokentypes = iter([
-        fi.INTEGER,
-        fi.INTEGER,
-        fi.INTEGER,
-        fi.PLUS,
-        fi.PLUS,
-        fi.INTEGER,
-        fi.INTEGER,
-        fi.PLUS,
-        fi.MINUS,
-        fi.MINUS,
-        fi.MINUS,
-        fi.MINUS,
-        fi.PAREN_LEFT,
-        fi.PAREN_RIGHT,
-        fi.EOF,
-    ])
+    src = '123'
+    idxs = [len(src)]
+    values_items = [123]
+    tokentypes_items = [fi.INTEGER]
+
+    src += ' 456'
+    idxs += [len(src)]
+    values_items += [456]
+    tokentypes_items += [fi.INTEGER]
+
+    src += '   98765'
+    idxs += [len(src)]
+    values_items += [98765]
+    tokentypes_items += [fi.INTEGER]
+
+    src += ' +'
+    idxs += [len(src)]
+    values_items += ['+']
+    tokentypes_items += [fi.PLUS]
+
+    src += '+'
+    idxs += [len(src)]
+    values_items += ['+']
+    tokentypes_items += [fi.PLUS]
+
+    src += '1'
+    idxs += [len(src)]
+    values_items += [1]
+    tokentypes_items += [fi.INTEGER]
+
+    src += ' 003'
+    idxs += [len(src)]
+    values_items += [3]
+    tokentypes_items += [fi.INTEGER]
+
+    src += '+'
+    idxs += [len(src)]
+    values_items += ['+']
+    tokentypes_items += [fi.PLUS]
+
+    src += '-'
+    idxs += [len(src)]
+    values_items += ['-']
+    tokentypes_items += [fi.MINUS]
+
+    src += '  -'
+    idxs += [len(src)]
+    values_items += ['-']
+    tokentypes_items += [fi.MINUS]
+
+    src += ' -'
+    idxs += [len(src)]
+    values_items += ['-']
+    tokentypes_items += [fi.MINUS]
+
+    src += '-'
+    idxs += [len(src)]
+    values_items += ['-']
+    tokentypes_items += [fi.MINUS]
+
+    src += '('
+    idxs += [len(src)]
+    values_items += ['(']
+    tokentypes_items += [fi.PAREN_LEFT]
+
+    src += ' )'
+    idxs += [len(src)]
+    values_items += [')']
+    tokentypes_items += [fi.PAREN_RIGHT]
+
+    src += ' 1'
+    idxs += [len(src)]
+    values_items += [1]
+    tokentypes_items += [fi.INTEGER]
+
+    src += ')'
+    idxs += [len(src)]
+    values_items += [')']
+    tokentypes_items += [fi.PAREN_RIGHT]
+
+    src += ')'
+    idxs += [len(src)]
+    values_items += [')']
+    tokentypes_items += [fi.PAREN_RIGHT]
+
+
+    values = iter(values_items)
+    tokentypes = iter(tokentypes_items)
 
     result = fi.find_token(src, 0)
 
@@ -92,6 +161,14 @@ def test_find_integer_finds_integers(src, idx, expected):
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', EXPR)
 def test_expr(src, expected):
+    assert fi.expr(src, 0) == expected
+
+
+
+
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('src, expected', PAREN)
+def test_expr_parenthesis(src, expected):
     assert fi.expr(src, 0) == expected
 
 

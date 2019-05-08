@@ -25,17 +25,28 @@ class Token:
         return self.__dict__ == other.__dict__
 
 
-def find_token(src, idx):
-    is_eof = idx == len(src)
+def find_integer(src, idx):
+    result = ''
+    while True:
+        if idx == len(src):
+            break
+        if src[idx] in DIGITS:
+            result += src[idx]
+            idx += 1
+        else:
+            break
+    number = int(result)
+    return number, idx
 
-    if is_eof:
+
+def find_token(src, idx):
+    if idx == len(src):
         token = Token(EOF, EOF)
-    elif src[idx]:
+    elif src[idx] in DIGITS:
+        number, idx = find_integer(src, idx)
         token = Token(INTEGER, 1)
     else:
         raise Exception('BAD CHAR FOR TOKEN: %s, %s' % ('-', idx))
-
-    idx += 1
 
     return token, idx
 

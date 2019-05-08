@@ -109,6 +109,8 @@ def factor(src, idx):
         value = token.value
     elif token.type_ == PAREN_LEFT:
         value, idx = expr(src, idx)
+        # token, idx = find_token(src, idx)
+        # assert token.type_ == PAREN_RIGHT
     else:
         raise Exception('BAD FACTOR TOKEN: %s, %s' % (token, idx))
 
@@ -139,13 +141,13 @@ def term(src, idx):
 
 def expr(src, idx):
     """
-    expr: factor ((PLUS|MINUS) factor)*
+    expr: term ((PLUS|MINUS) term)*
     """
     value, idx = factor(src, idx)
     token, idx = find_token(src, idx)
 
     while token.type_ in [PLUS, MINUS]:
-        right, idx = factor(src, idx)
+        right, idx = term(src, idx)
         if token.type_ == PLUS:
             value += right
         elif token.type_ == MINUS:
@@ -159,6 +161,15 @@ def expr(src, idx):
 
 if __name__ == '__main__':
     pass
+
+    print('--------------------')
+    print(term('1*2', 0))
+
+    print('--------------------')
+    print(expr('1+2', 0))
+
+    print('--------------------')
+    print(expr('1*2', 0))
 
     print('--------------------')
     print(term('(1*2)', 0))

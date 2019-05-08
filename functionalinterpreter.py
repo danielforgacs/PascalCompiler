@@ -43,7 +43,7 @@ def skip_whitespace(src, idx):
     while True:
         if idx == len(src):
             break
-        if src[idx] != ' ':
+        if src[idx] != WHITESPACE:
             break
         else:
             idx += 1
@@ -64,36 +64,7 @@ def find_token(src, idx):
     return token, idx
 
 
-# def find_integer(src, idx):
-#     result_char = ''
-#     char = src[idx]
 
-#     while char in DIGITS:
-#         result_char += char
-#         idx += 1
-
-#         if idx == len(src):
-#             break
-
-#         char = src[idx]
-
-#     integer = int(result_char)
-
-#     return integer, idx
-
-
-# def skip_whitespace(src, idx):
-#     while True:
-#         if idx == len(src):
-#             break
-
-#         if src[idx] == WHITESPACE:
-#             idx += 1
-
-#         else:
-#             break
-
-#     return src, idx
 
 
 # def find_token(src, idx):

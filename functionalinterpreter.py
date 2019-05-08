@@ -78,10 +78,19 @@ def expr(src, idx):
     """
     token, idx = find_token(src, idx)
     value = token.value
+    token, idx = find_token(src, idx)
+
+    if token.type_ == PLUS:
+        token, idx = find_token(src, idx)
+        value += token.value
+
+    token, idx = find_token(src, idx)
+    assert token.type_ == EOF
+
     return value, idx
 
 
-
+# print(expr('1+1', 0))
 
 
 # def find_token(src, idx):

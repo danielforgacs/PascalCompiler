@@ -72,9 +72,14 @@ TERM = [
     '100000   / 1000 * 12480   / 200'
 ]
 
+EXPR_TERM = [
+    '1*2',
+    '(1*2)',
+]
 
 
 
+2
 def test_find_token_tokenizes_source():
     src = '123'
     idxs = [len(src)]
@@ -236,6 +241,14 @@ def test_expr_parenthesis(src, expected):
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src', TERM)
 def test_term(src):
+    assert fi.term(src, 0) == (eval(src), len(src))
+
+
+
+
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('src', EXPR_TERM)
+def test_expr_term(src):
     assert fi.term(src, 0) == (eval(src), len(src))
 
 

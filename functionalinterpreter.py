@@ -1,7 +1,9 @@
 """
+expr: factor (PLUS|MINUS)*
 factor: INTEGER
 
 -----------------------------
+plus: '+'
 integer: (0|1||3|4|5|6|7|8|9)*
 """
 
@@ -11,6 +13,7 @@ WHITESPACE = ' '
 # Tokens:
 EOF = 'EOF'
 INTEGER = 'INTEGER'
+PLUS = '+'
 
 
 
@@ -58,6 +61,8 @@ def find_token(src, idx):
     elif src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)
+    elif src[idx] == PLUS:
+        token = Token(PLUS, PLUS)
     else:
         raise Exception('BAD CHAR FOR TOKEN: "%s", %s' % (src[idx], idx))
 

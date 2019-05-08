@@ -1,5 +1,5 @@
 """
-expr: factor (PLUS|MINUS)*
+expr: factor ((PLUS|MINUS) factor)*
 factor: INTEGER
 
 -----------------------------
@@ -24,6 +24,7 @@ class Token:
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
+        # print(self)
     def __repr__(self):
         return '<%s:%s>' % (self.type_, self.value)
     def __eq__(self, other):
@@ -93,111 +94,21 @@ def factor(src, idx):
 
 def expr(src, idx):
     """
-    expr: factor (PLUS|MINUS)*
+    expr: factor ((PLUS|MINUS) factor)*
     """
     value, idx = factor(src, idx)
     token, idx = find_token(src, idx)
 
-    if token.type_ == PLUS:
-        result, idx  = expr(src, idx)
-        value += result
-
-    elif token.type_ == MINUS:
-        result, idx  = expr(src, idx)
-        value -= result
-
-    elif token.type_ == EOF:
-        pass
-
-    else:
-        raise Exception('BAD EXPR TOKEN: %s, %s' % (token, idx))
+    while token.type_ in [PLUS, MINUS]:
+        right, idx = factor(src, idx)
+        if token.type_ == PLUS:
+            value += right
+        elif token.type_ == MINUS:
+            value -= right
+        token, idx = find_token(src, idx)
 
     return value, idx
 
-
-# print(expr('1+1', 0))
-
-
-# def find_token(src, idx):
-#     src, idx = skip_whitespace(src, idx)
-
-#     if idx == len(src):
-#         return Token(EOF, EOF), idx
-
-#     if src[idx] in DIGITS:
-#         number, idx = find_integer(src, idx)
-#         token = Token(INTEGER, number)
-
-#     elif src[idx] == PLUS:
-#         token = Token(PLUS, PLUS)
-#         idx += 1
-
-#     elif src[idx] == MINUS:
-#         token = Token(MINUS, MINUS)
-#         idx += 1
-
-#     elif src[idx] == PAREN_LEFT:
-#         token = Token(PAREN_LEFT, PAREN_LEFT)
-#         idx += 1
-
-#     elif src[idx] == PAREN_RIGHT:
-#         token = Token(PAREN_RIGHT, PAREN_RIGHT)
-#         idx += 1
-
-#     else:
-#         raise Exception('UNEXPECTED CHARACTER: %s' % src[idx])
-
-#     return token, idx
-
-
-# def eat(type_, src, idx):
-#     token, idx = find_token(src, idx)
-
-#     if token.type_ == type_:
-#         return token.value, idx
-
-#     else:
-#         raise Exception('UNEXPECTED TOKEN: %s, idx: %s' % (token, idx))
-
-
-# def factor(src, idx):
-#     token, idx = find_token(src, idx)
-
-#     if token.type_ == INTEGER:
-#         return token.value, idx
-
-#     elif token.type_ == PAREN_LEFT:
-#         value, idx = expr(src, idx)
-#         # token, idx = eat(PAREN_RIGHT, src, idx)
-#         return value, idx
-
-#     else:
-#         raise Exception('FACTOR TOKEN ERROR: %s' % token)
-
-
-
-# def expr(src, idx=0):
-#     if len(src) == 0:
-#         return None, idx
-
-#     while True:
-#         token, idx = find_token(src, idx)
-
-#         if token.type_ == EOF:
-#             break
-
-#         elif token.type_ == INTEGER:
-#             value = token.value
-
-#         elif token.type_ == PLUS:
-#             result, idx = factor(src, idx)
-#             value += result
-
-#         elif token.type_ == MINUS:
-#             result, idx = factor(src, idx)
-#             value -= result
-
-#     return value, idx
 
 
 

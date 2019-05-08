@@ -39,7 +39,20 @@ def find_integer(src, idx):
     return number, idx
 
 
+def skip_whitespace(src, idx):
+    while True:
+        if idx == len(src):
+            break
+        if src[idx] != ' ':
+            break
+        else:
+            idx += 1
+    return idx
+
+
 def find_token(src, idx):
+    idx = skip_whitespace(src, idx)
+
     if idx == len(src):
         token = Token(EOF, EOF)
     elif src[idx] in DIGITS:

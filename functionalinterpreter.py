@@ -19,12 +19,20 @@ WHITESPACE = ' '
 # Tokens:
 EOF = 'EOF'
 INTEGER = 'INTEGER'
-PLUS = '+'
-MINUS = '-'
-MULT = '*'
-DIV = '/'
-PAREN_LEFT = '('
-PAREN_RIGHT = ')'
+
+PLUS_SYMBOL = '+'
+PLUS = 'PLUS'
+MINUS_SYMBOL = '-'
+MINUS = 'MINUS'
+MULT_SYMBOL = '*'
+MULT = 'MULT'
+DIV_SYMBOL = '/'
+DIV = 'DIV'
+PAREN_LEFT_SYMBOL = '('
+PAREN_LEFT = 'PAREN_LEFT'
+PAREN_RIGHT_SYMBOL = ')'
+PAREN_RIGHT = 'PAREN_RIGHT'
+
 
 
 
@@ -79,23 +87,23 @@ def find_token(src, idx):
     if src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)
-    elif src[idx] == PLUS:
-        token = Token(PLUS, PLUS)
+    elif src[idx] == PLUS_SYMBOL:
+        token = Token(PLUS, PLUS_SYMBOL)
         idx += 1
-    elif src[idx] == MINUS:
-        token = Token(MINUS, MINUS)
+    elif src[idx] == MINUS_SYMBOL:
+        token = Token(MINUS, MINUS_SYMBOL)
         idx += 1
-    elif src[idx] == PAREN_LEFT:
-        token = Token(PAREN_LEFT, PAREN_LEFT)
+    elif src[idx] == PAREN_LEFT_SYMBOL:
+        token = Token(PAREN_LEFT, PAREN_LEFT_SYMBOL)
         idx += 1
-    elif src[idx] == PAREN_RIGHT:
-        token = Token(PAREN_RIGHT, PAREN_RIGHT)
+    elif src[idx] == PAREN_RIGHT_SYMBOL:
+        token = Token(PAREN_RIGHT, PAREN_RIGHT_SYMBOL)
         idx += 1
-    elif src[idx] == MULT:
-        token = Token(MULT, MULT)
+    elif src[idx] == MULT_SYMBOL:
+        token = Token(MULT, MULT_SYMBOL)
         idx += 1
-    elif src[idx] == DIV:
-        token = Token(DIV, DIV)
+    elif src[idx] == DIV_SYMBOL:
+        token = Token(DIV, DIV_SYMBOL)
         idx += 1
     else:
         raise Exception('BAD CHAR FOR TOKEN: "%s", %s' % (src[idx], idx))

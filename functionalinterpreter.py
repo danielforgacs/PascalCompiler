@@ -58,19 +58,25 @@ def skip_whitespace(src, idx):
     while True:
         if idx == len(src):
             break
-        if src[idx] != WHITESPACE:
-            break
-        else:
+        if src[idx] == WHITESPACE:
             idx += 1
+        else:
+            break
     return idx
 
 
 def find_token(src, idx):
+    if idx == len(src):
+        token = Token(EOF, EOF)
+        return token, idx
+
     idx = skip_whitespace(src, idx)
 
     if idx == len(src):
         token = Token(EOF, EOF)
-    elif src[idx] in DIGITS:
+        return token, idx
+
+    if src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)
     elif src[idx] == PLUS:
@@ -101,6 +107,8 @@ def find_token(src, idx):
 
 def factor(src, idx):
     """
+    expr: term ((PLUS|MINUS) term)*
+    term: factor ((MULT|DIV) factor)*
     factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
     """
     token, idx = find_token(src, idx)
@@ -109,7 +117,7 @@ def factor(src, idx):
         value = token.value
     elif token.type_ == PAREN_LEFT:
         value, idx = expr(src, idx)
-        # token, idx = find_token(src, idx)
+        token, idx = find_token(src, idx)
         # assert token.type_ == PAREN_RIGHT
     else:
         raise Exception('BAD FACTOR TOKEN: %s, %s' % (token, idx))
@@ -121,7 +129,9 @@ def factor(src, idx):
 
 def term(src, idx):
     """
+    expr: term ((PLUS|MINUS) term)*
     term: factor ((MULT|DIV) factor)*
+    factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
     """
     value, idx = factor(src, idx)
     token, idx = find_token(src, idx)
@@ -142,8 +152,10 @@ def term(src, idx):
 def expr(src, idx):
     """
     expr: term ((PLUS|MINUS) term)*
+    term: factor ((MULT|DIV) factor)*
+    factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
     """
-    value, idx = factor(src, idx)
+    value, idx = term(src, idx)
     token, idx = find_token(src, idx)
 
     while token.type_ in [PLUS, MINUS]:
@@ -163,16 +175,6 @@ if __name__ == '__main__':
     pass
 
     print('--------------------')
-    print(term('1*2', 0))
-
-    print('--------------------')
-    print(expr('1+2', 0))
-
-    print('--------------------')
-    print(expr('1*2', 0))
-
-    print('--------------------')
-    print(term('(1*2)', 0))
-
-    print('--------------------')
-    print(expr('(1*2)', 0))
+    # print(expr('10', 0))
+    # print(expr('(10)', 0))
+    print(expr('(10+2)', 0))

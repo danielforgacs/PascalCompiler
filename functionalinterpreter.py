@@ -54,7 +54,7 @@ class Token:
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
-        print(self)
+        # print(self)
     def __repr__(self):
         return '<%s:%s>' % (self.type_, self.value)
     def __eq__(self, other):
@@ -150,9 +150,11 @@ def term(src, idx):
     value, idx = factor(src, idx)
 
     while True:
+        idx0 = idx
         token, idx = find_token(src, idx)
 
         if token.type_ not in [MULT, DIV]:
+            idx = idx0
             break
 
         right, idx = factor(src, idx)

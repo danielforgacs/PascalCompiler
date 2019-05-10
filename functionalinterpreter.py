@@ -132,6 +132,7 @@ def factor(src, idx):
         value = token.value
     elif token.type_ == PAREN_LEFT:
         value, idx = expr(src, idx)
+        token, idx = find_token(src, idx)
     else:
         raise Exception('BAD FACTOR TOKEN: %s, %s' % (token, idx))
 

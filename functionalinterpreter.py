@@ -174,7 +174,7 @@ def expr(src, idx):
     """
     value, idx = term(src, idx)
 
-    while idx < len(src):
+    while True:
         token, idx = find_token(src, idx)
 
         if token.type_ not in [PLUS, MINUS]:

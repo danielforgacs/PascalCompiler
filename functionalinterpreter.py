@@ -178,9 +178,11 @@ def expr(src, idx):
     value, idx = term(src, idx)
 
     while True:
+        idx0 = idx
         token, idx = find_token(src, idx)
 
         if token.type_ not in [PLUS, MINUS]:
+            idx = idx0
             break
 
         right, idx = term(src, idx)

@@ -3,6 +3,19 @@ expr: term ((PLUS|MINUS) term)*
 term: factor ((MULT|DIV) factor)*
 factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
 
+
+
+((INTEGER PLUS INTEGER))
+((10+2))
+
+PAREN_LEFT
+    PAREN_LEFT
+        INTEGER
+        PLUS
+        INTEGER
+    PAREN_RIGHT
+PAREN_RIGHT
+
 -----------------------------
 plus: '+'
 minus: '-'
@@ -64,7 +77,7 @@ def find_integer(src, idx):
 
 def skip_whitespace(src, idx):
     while True:
-        if idx == len(src):
+        if len(src) == idx:
             break
         if src[idx] == WHITESPACE:
             idx += 1
@@ -74,17 +87,11 @@ def skip_whitespace(src, idx):
 
 
 def find_token(src, idx):
-    if idx == len(src):
-        token = Token(EOF, EOF)
-        return token, idx
-
     idx = skip_whitespace(src, idx)
 
-    if idx == len(src):
+    if len(src) == idx:
         token = Token(EOF, EOF)
-        return token, idx
-
-    if src[idx] in DIGITS:
+    elif src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)
     elif src[idx] == PLUS_SYMBOL:
@@ -125,8 +132,6 @@ def factor(src, idx):
         value = token.value
     elif token.type_ == PAREN_LEFT:
         value, idx = expr(src, idx)
-        token, idx = find_token(src, idx)
-        # assert token.type_ == PAREN_RIGHT
     else:
         raise Exception('BAD FACTOR TOKEN: %s, %s' % (token, idx))
 
@@ -142,15 +147,19 @@ def term(src, idx):
     factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
     """
     value, idx = factor(src, idx)
-    token, idx = find_token(src, idx)
 
-    while token.type_ in [MULT, DIV]:
+    while True:
+        token, idx = find_token(src, idx)
+
+        if token.type_ not in [MULT, DIV]:
+            break
+
         right, idx = factor(src, idx)
+
         if token.type_ == MULT:
             value *= right
         elif token.type_ == DIV:
             value /= right
-        token, idx = find_token(src, idx)
 
     return value, idx
 
@@ -164,15 +173,19 @@ def expr(src, idx):
     factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
     """
     value, idx = term(src, idx)
-    token, idx = find_token(src, idx)
 
-    while token.type_ in [PLUS, MINUS]:
+    while idx < len(src):
+        token, idx = find_token(src, idx)
+
+        if token.type_ not in [PLUS, MINUS]:
+            break
+
         right, idx = term(src, idx)
+
         if token.type_ == PLUS:
             value += right
         elif token.type_ == MINUS:
             value -= right
-        token, idx = find_token(src, idx)
 
     return value, idx
 
@@ -183,6 +196,14 @@ if __name__ == '__main__':
     pass
 
     print('--------------------')
-    # print(expr('10', 0))
-    # print(expr('(10)', 0))
-    print(expr('(10+2)', 0))
+    print(expr('10', 0))
+    print('--------------------')
+    print(expr('(10)', 0))
+    print('--------------------')
+    print(expr('(10+20)', 0))
+    print('--------------------')
+    print(expr('10+20', 0))
+    print('--------------------')
+    print(expr('1+2', 0))
+    print('--------------------')
+    print(expr('(((1+2)))', 0))

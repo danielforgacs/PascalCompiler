@@ -54,7 +54,7 @@ class Token:
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
-        # print(self)
+        print(self)
     def __repr__(self):
         return '<%s:%s>' % (self.type_, self.value)
     def __eq__(self, other):
@@ -91,6 +91,7 @@ def find_token(src, idx):
 
     if len(src) == idx:
         token = Token(EOF, EOF)
+        idx += 1
     elif src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)

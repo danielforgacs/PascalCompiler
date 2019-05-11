@@ -54,7 +54,7 @@ class Token:
     def __init__(self, type_, value):
         self.type_ = type_
         self.value = value
-        print(self)
+        # print(self)
     def __repr__(self):
         return '<%s:%s>' % (self.type_, self.value)
     def __eq__(self, other):
@@ -200,35 +200,3 @@ def expr(src, idx):
 
 if __name__ == '__main__':
     pass
-
-    print('\n--------------------')
-    print('10\n')
-    print(expr('10', 0))
-    print('\n--------------------')
-    print('(10)\n')
-    print(expr('(10)', 0))
-    print('\n--------------------')
-    print('(10+20)\n')
-    print(expr('(10+20)', 0))
-    print('\n--------------------')
-    print('10+20\n')
-    print(expr('10+20', 0))
-    print('\n--------------------')
-    print('1+2\n')
-    print(expr('1+2', 0))
-    print('\n--------------------')
-    print('(((1+2)))\n')
-    print(expr('(((1+2)))', 0))
-
-    print('\n--------------------')
-    print('(10*20)\n')
-    print(expr('(10*20)', 0))
-    print('\n--------------------')
-    print('10*20\n')
-    print(expr('10*20', 0))
-    print('\n--------------------')
-    print('1*2\n')
-    print(expr('1*2', 0))
-    print('\n--------------------')
-    print('(((1*2)))\n')
-    print(expr('(((1*2)))', 0))

@@ -30,9 +30,10 @@ DIGITS = '0123456789'
 WHITESPACE = ' '
 
 # Tokens:
-EOF = 'EOF'
 INTEGER = 'INTEGER'
 
+EOF_SYMBOL = r'\0'
+EOF = 'EOF'
 PLUS_SYMBOL = '+'
 PLUS = 'PLUS'
 MINUS_SYMBOL = '-'
@@ -90,7 +91,7 @@ def find_token(src, idx):
     idx = skip_whitespace(src, idx)
 
     if len(src) == idx:
-        token = Token(EOF, EOF)
+        token = Token(EOF, EOF_SYMBOL)
         idx += 1
     elif src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
@@ -134,6 +135,8 @@ def factor(src, idx):
     elif token.type_ == PAREN_LEFT:
         value, idx = expr(src, idx)
         token, idx = find_token(src, idx)
+        if token.type_ != PAREN_RIGHT:
+            raise Exception('MISSING FACTOR PAREN_RIGHT: %s, %s' % (token, idx))
     else:
         raise Exception('BAD FACTOR TOKEN: %s, %s' % (token, idx))
 

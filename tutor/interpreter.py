@@ -7,6 +7,24 @@ INTEGER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, EOF = (
 )
 
 
+class AST:
+    pass
+
+
+class BinOp(AST):
+    def __init__(self, left, op, right):
+        self.left = left
+        self.op = op
+        self.right = right
+        self.token = token
+
+
+class Num(AST):
+    def __init__(self, token):
+        self.token = token
+        self.value = token.value
+
+
 class Token(object):
     def __init__(self, type, value):
         self.type = type

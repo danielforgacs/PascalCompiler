@@ -91,6 +91,7 @@ def find_token(src, idx):
 
     if len(src) == idx:
         token = Token(EOF, EOF)
+        idx += 1
     elif src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)
@@ -199,35 +200,3 @@ def expr(src, idx):
 
 if __name__ == '__main__':
     pass
-
-    print('\n--------------------')
-    print('10\n')
-    print(expr('10', 0))
-    print('\n--------------------')
-    print('(10)\n')
-    print(expr('(10)', 0))
-    print('\n--------------------')
-    print('(10+20)\n')
-    print(expr('(10+20)', 0))
-    print('\n--------------------')
-    print('10+20\n')
-    print(expr('10+20', 0))
-    print('\n--------------------')
-    print('1+2\n')
-    print(expr('1+2', 0))
-    print('\n--------------------')
-    print('(((1+2)))\n')
-    print(expr('(((1+2)))', 0))
-
-    print('\n--------------------')
-    print('(10*20)\n')
-    print(expr('(10*20)', 0))
-    print('\n--------------------')
-    print('10*20\n')
-    print(expr('10*20', 0))
-    print('\n--------------------')
-    print('1*2\n')
-    print(expr('1*2', 0))
-    print('\n--------------------')
-    print('(((1*2)))\n')
-    print(expr('(((1*2)))', 0))

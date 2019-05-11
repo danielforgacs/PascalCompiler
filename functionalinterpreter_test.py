@@ -75,6 +75,23 @@ TERM = [
 EXPR_TERM = [
     '1*2',
     '(1*2)',
+    '(1*2)*3',
+    '((((1*2)*3)))',
+    '((((1*2)*3)+2)/1)',
+    '((((12*21)*33)+22)/10)',
+    '((((  12 * 21) * 33) + 22 ) / 10)',
+    '( ((  (  12 * 21) * 33) + 22 ) / 10   )',
+]
+
+EPR_PLUS_MINUS_MULT_DIV_PAREN = [
+    '(1)+(2)',
+    '(12)+(21)',
+    '(12)+(21)*(24)/(2)',
+    '((12)+(21))*(24)/(2)',
+    '((12)+(21))*((24)/(2))',
+    '(((12)+(21))*((24)/(2)))+((((12)+(21))*((24)/(2))))*(((12)+(21))*((24)/(2)))',
+    (' ( ( ( 12) + ( 21) ) * ( (24) /  ( 2))) +  (((   (12)+(21))'
+        ' *( ( 24) / (2  ) )) ) * ( (( 12) + ( 21) )*((24)/ (2  ) )  )'),
 ]
 
 
@@ -210,7 +227,7 @@ def test_find_token_tokenizes_source():
         assert result == (fi.Token(next(tokentypes), next(values)), idx)
         result = fi.find_token(src, idx)
 
-    assert result == (fi.Token(fi.EOF, fi.EOF), idxs[-1])
+    assert result == (fi.Token(fi.EOF, fi.EOF), idxs[-1]+1)
 
 
 
@@ -250,6 +267,14 @@ def test_term(src):
 @pytest.mark.parametrize('src', EXPR_TERM)
 def test_expr_term(src):
     assert fi.term(src, 0) == (eval(src), len(src))
+
+
+
+
+# @pytest.mark.skip('')
+@pytest.mark.parametrize('src', EPR_PLUS_MINUS_MULT_DIV_PAREN)
+def test_expr_epr_plus_minus_mult_div_paren(src):
+    assert fi.expr(src, 0) == (eval(src), len(src))
 
 
 

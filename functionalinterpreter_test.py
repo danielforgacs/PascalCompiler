@@ -92,6 +92,8 @@ EPR_PLUS_MINUS_MULT_DIV_PAREN = [
     '(((12)+(21))*((24)/(2)))+((((12)+(21))*((24)/(2))))*(((12)+(21))*((24)/(2)))',
     (' ( ( ( 12) + ( 21) ) * ( (24) /  ( 2))) +  (((   (12)+(21))'
         ' *( ( 24) / (2  ) )) ) * ( (( 12) + ( 21) )*((24)/ (2  ) )  )'),
+    (' ( ( ( 12+  23+36) + ( 21) ) * ( (24) /  ( 2))) +  (((   (12)+(21))'
+        ' *( ( 24*3+2*3) / (2  ) )) ) * ( (( 12) + ( 21) )*((24)/ (2  ) )  )'),
 ]
 
 
@@ -227,7 +229,7 @@ def test_find_token_tokenizes_source():
         assert result == (fi.Token(next(tokentypes), next(values)), idx)
         result = fi.find_token(src, idx)
 
-    assert result == (fi.Token(fi.EOF, fi.EOF), idxs[-1]+1)
+    assert result == (fi.Token(fi.EOF, fi.EOF_SYMBOL), idxs[-1]+1)
 
 
 

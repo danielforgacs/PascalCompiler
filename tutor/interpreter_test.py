@@ -78,16 +78,20 @@ cases_08 = [
 
 
 
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_01)
 def test_calculator_can_add_single_digits_without_space(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
+    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
+    result = compiler.interpret()
     assert result == expected
 
 
 
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_02)
 def test_calculator_can_subtract_single_digits_without_space(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
+    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
+    result = compiler.interpret()
     assert result == expected
 
 
@@ -116,12 +120,13 @@ def test_get_next_token_subtract():
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_03)
 def test_calculator_can_add_adny_digits_without_space(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
+    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
+    result = compiler.interpret()
     assert result == expected
 
 
 
-# @pytest.mark.skip('')
+@pytest.mark.skip('')
 def test_emtpy_string_does_not_crash():
     assert not interpreter.Interpreter(interpreter.Lexer('')).expr()
 
@@ -131,7 +136,8 @@ def test_emtpy_string_does_not_crash():
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_04)
 def test_space_is_ok(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
+    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
+    result = compiler.interpret()
     assert result == expected
 
 
@@ -140,7 +146,8 @@ def test_space_is_ok(src, expected):
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_05)
 def test_multiply(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
+    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
+    result = compiler.interpret()
     assert result == expected
 
 
@@ -149,7 +156,8 @@ def test_multiply(src, expected):
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_06)
 def test_div(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
+    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
+    result = compiler.interpret()
     assert result == expected
 
 
@@ -158,7 +166,8 @@ def test_div(src, expected):
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_07)
 def test_multiple_op_01(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
+    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
+    result = compiler.interpret()
     assert result == expected
 
 
@@ -167,11 +176,42 @@ def test_multiple_op_01(src, expected):
 # @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', cases_08)
 def test_parentheses(src, expected):
-    result = interpreter.Interpreter(interpreter.Lexer(src)).expr()
+    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
+    result = compiler.interpret()
     assert result == expected
 
 
 
 
-def test_AST_basics():
-    pass
+def test_AST_basics_2_MULT_7_PLUS_3():
+    tkn_int_2 = interpreter.Token(interpreter.INTEGER, 2)
+    tkn_int_3 = interpreter.Token(interpreter.INTEGER, 3)
+    tkn_int_7 = interpreter.Token(interpreter.INTEGER, 7)
+
+    tkn_mult = interpreter.Token(interpreter.MUL, '*')
+    tkn_plus = interpreter.Token(interpreter.MUL, '+')
+
+    num_node_2 = interpreter.Num(token=tkn_int_2)
+    num_node_3 = interpreter.Num(token=tkn_int_3)
+    num_node_7 = interpreter.Num(token=tkn_int_7)
+
+
+    node_mult = interpreter.BinOp(
+        left=num_node_2,
+        op=tkn_mult,
+        right=num_node_3,
+    )
+    node_plus = interpreter.BinOp(
+        left=node_mult,
+        op=tkn_plus,
+        right=num_node_7,
+    )
+
+
+
+
+if __name__ == '__main__':
+    pytest.main([
+        __file__,
+        # __file__+'::test_AST_basics_2_MULT_7_PLUS_3',
+    ])

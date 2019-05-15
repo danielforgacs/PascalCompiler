@@ -183,7 +183,7 @@ def term(src, idx):
             break
 
         right, idx = factor(src, idx)
-        node, idx = BinOp(node, token, right)
+        node = BinOp(node, token, right)
 
     return node, idx
 
@@ -220,6 +220,22 @@ def parse(src):
 
 
 
+def nodevisitor(node):
+    if isinstance(node, Num):
+        return node.value
+
+    elif isinstance(node, BinOp):
+        if node.op.type_ == PLUS:
+            return nodevisitor(node.left) + nodevisitor(node.right)
+        elif node.op.type_ == MINUS:
+            return nodevisitor(node.left) - nodevisitor(node.right)
+        elif node.op.type_ == MULT:
+            return nodevisitor(node.left) * nodevisitor(node.right)
+        elif node.op.type_ == DIV:
+            return nodevisitor(node.left) / nodevisitor(node.right)
+
+
+
 if __name__ == '__main__':
     pass
 
@@ -229,3 +245,12 @@ if __name__ == '__main__':
     print(node.left.right.value)
     print(node.op)
     print(node.right.value)
+
+    print(nodevisitor(parse('1')))
+    print(nodevisitor(parse('1+1')))
+    print(nodevisitor(parse('1+2')))
+    print(nodevisitor(parse('1+2+3')))
+    print(nodevisitor(parse('1-2')))
+    print(nodevisitor(parse('2*3')))
+    print(nodevisitor(parse('10/2')))
+    print(nodevisitor(parse('1+2+3+4+5+6+7')))

@@ -265,4 +265,19 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    pass
+
+    # main()
+    lexer = Lexer('1')
+    lexer = Lexer('1+1')
+    lexer = Lexer('1+2+3')
+    parser = Parser(lexer)
+    pars = parser.parse()
+    print(pars.left.left)
+    print(pars.left.op)
+    print(pars.left.right)
+    print(pars.op)
+    print(pars.right)
+    # interpreter = Inte`rpreter(parser)
+    # result = interpreter.interpret()
+    # print(result)

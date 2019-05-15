@@ -185,11 +185,6 @@ def term(src, idx):
         right, idx = factor(src, idx)
         node, idx = BinOp(node, token, right)
 
-        # if token.type_ == MULT:
-        #     value *= right
-        # elif token.type_ == DIV:
-        #     value /= right
-
     return node, idx
 
 
@@ -213,11 +208,6 @@ def expr(src, idx):
 
         right, idx = term(src, idx)
         node = BinOp(node, token, right)
-
-        # if token.type_ == PLUS:
-        #     value += right
-        # elif token.type_ == MINUS:
-        #     value -= right
 
     return node, idx
 

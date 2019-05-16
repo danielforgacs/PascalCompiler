@@ -236,6 +236,13 @@ def nodevisitor(node):
 
 
 
+
+def interpreter(src):
+    result = nodevisitor(parse(src))
+    return result
+
+
+
 if __name__ == '__main__':
     pass
 
@@ -246,11 +253,11 @@ if __name__ == '__main__':
     print(node.op)
     print(node.right.value)
 
-    print(nodevisitor(parse('1')))
-    print(nodevisitor(parse('1+1')))
-    print(nodevisitor(parse('1+2')))
-    print(nodevisitor(parse('1+2+3')))
-    print(nodevisitor(parse('1-2')))
-    print(nodevisitor(parse('2*3')))
-    print(nodevisitor(parse('10/2')))
-    print(nodevisitor(parse('1+2+3+4+5+6+7')))
+    print(interpreter('1'))
+    print(interpreter('1+1'))
+    print(interpreter('1+2'))
+    print(interpreter('1+2+3'))
+    print(interpreter('1-2'))
+    print(interpreter('2*3'))
+    print(interpreter('10/2'))
+    print(interpreter('1+2+3+4+5+6+7'))

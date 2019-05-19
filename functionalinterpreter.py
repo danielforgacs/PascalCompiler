@@ -78,6 +78,8 @@ class Num(object):
     def __init__(self, token):
         self.value = token.value
         self.token = token
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
 
 
 
@@ -246,18 +248,22 @@ def interpreter(src):
 if __name__ == '__main__':
     pass
 
-    node = parse('1+2+3')
-    print(node.left.left.value)
-    print(node.left.op)
-    print(node.left.right.value)
-    print(node.op)
-    print(node.right.value)
 
-    print(interpreter('1'))
-    print(interpreter('1+1'))
-    print(interpreter('1+2'))
-    print(interpreter('1+2+3'))
-    print(interpreter('1-2'))
-    print(interpreter('2*3'))
-    print(interpreter('10/2'))
-    print(interpreter('1+2+3+4+5+6+7'))
+    print(expr('1', 0))
+    # print(Token(INTEGER, 1))
+    # print(Num(Token(INTEGER, 1)))
+    # node = parse('1+2+3')
+    # print(node.left.left.value)
+    # print(node.left.op)
+    # print(node.left.right.value)
+    # print(node.op)
+    # print(node.right.value)
+
+    # print(interpreter('1'))
+    # print(interpreter('1+1'))
+    # print(interpreter('1+2'))
+    # print(interpreter('1+2+3'))
+    # print(interpreter('1-2'))
+    # print(interpreter('2*3'))
+    # print(interpreter('10/2'))
+    # print(interpreter('1+2+3+4+5+6+7'))

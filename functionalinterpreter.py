@@ -4,18 +4,6 @@ term: factor ((MULT|DIV) factor)*
 factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
 
 
-
-((INTEGER PLUS INTEGER))
-((10+2))
-
-PAREN_LEFT
-    PAREN_LEFT
-        INTEGER
-        PLUS
-        INTEGER
-    PAREN_RIGHT
-PAREN_RIGHT
-
 -----------------------------
 plus: '+'
 minus: '-'
@@ -247,23 +235,3 @@ def interpreter(src):
 
 if __name__ == '__main__':
     pass
-
-
-    print(expr('1', 0))
-    # print(Token(INTEGER, 1))
-    # print(Num(Token(INTEGER, 1)))
-    # node = parse('1+2+3')
-    # print(node.left.left.value)
-    # print(node.left.op)
-    # print(node.left.right.value)
-    # print(node.op)
-    # print(node.right.value)
-
-    # print(interpreter('1'))
-    # print(interpreter('1+1'))
-    # print(interpreter('1+2'))
-    # print(interpreter('1+2+3'))
-    # print(interpreter('1-2'))
-    # print(interpreter('2*3'))
-    # print(interpreter('10/2'))
-    # print(interpreter('1+2+3+4+5+6+7'))

@@ -99,6 +99,13 @@ EPR_PLUS_MINUS_MULT_DIV_PAREN = [
 
 
 
+INTERPRETER = [
+    '1+1',
+    '+1',
+]
+
+
+
 
 def test_find_token_tokenizes_source():
     src = '123'
@@ -278,6 +285,12 @@ def test_expr_term(src):
 @pytest.mark.parametrize('src', EPR_PLUS_MINUS_MULT_DIV_PAREN)
 def test_expr_epr_plus_minus_mult_div_paren(src):
     assert fi.expr(src, 0) == (eval(src), len(src))
+
+
+
+@pytest.mark.parametrize('src', INTERPRETER)
+def test_expr_epr_plus_minus_mult_div_paren(src):
+    assert fi.interpreter(src) == eval(src)
 
 
 

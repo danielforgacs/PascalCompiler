@@ -1,20 +1,8 @@
 """
 expr: term ((PLUS|MINUS) term)*
 term: factor ((MULT|DIV) factor)*
-factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
+factor: INTEGER | (PLUS|MINUS) factor | PAREN_LEFT expr PAREN_RIGHT
 
-
-
-((INTEGER PLUS INTEGER))
-((10+2))
-
-PAREN_LEFT
-    PAREN_LEFT
-        INTEGER
-        PLUS
-        INTEGER
-    PAREN_RIGHT
-PAREN_RIGHT
 
 -----------------------------
 plus: '+'
@@ -85,6 +73,15 @@ class Num(object):
 
 
 
+class UnaryOp(object):
+    def __init__(self, op, token):
+        self.op = op
+        self.token = token
+
+
+
+
+
 def find_integer(src, idx):
     result = ''
     while True:
@@ -149,7 +146,7 @@ def factor(src, idx):
     """
     expr: term ((PLUS|MINUS) term)*
     term: factor ((MULT|DIV) factor)*
-    factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
+    factor: INTEGER | (PLUS|MINUS) factor | PAREN_LEFT expr PAREN_RIGHT
     """
     token, idx = find_token(src, idx)
 
@@ -160,6 +157,14 @@ def factor(src, idx):
         token, idx = find_token(src, idx)
         if token.type_ != PAREN_RIGHT:
             raise Exception('MISSING FACTOR PAREN_RIGHT: %s, %s' % (token, idx))
+    elif token.type_ == PLUS:
+        op = token
+        token, idx = factor(src, idx)
+        node = UnaryOp(op, token)
+    elif token.type_ == MINUS:
+        op = token
+        token, idx = factor(src, idx)
+        node = UnaryOp(op, token)
     else:
         raise Exception('BAD FACTOR TOKEN: %s, %s' % (token, idx))
 
@@ -236,6 +241,12 @@ def nodevisitor(node):
         elif node.op.type_ == DIV:
             return nodevisitor(node.left) / nodevisitor(node.right)
 
+    elif isinstance(node, UnaryOp):
+        if node.op.type_ == PLUS:
+            return nodevisitor(node.token)
+        elif node.op.type_ == MINUS:
+            return nodevisitor(node.token) * -1
+
 
 
 
@@ -247,23 +258,3 @@ def interpreter(src):
 
 if __name__ == '__main__':
     pass
-
-
-    print(expr('1', 0))
-    # print(Token(INTEGER, 1))
-    # print(Num(Token(INTEGER, 1)))
-    # node = parse('1+2+3')
-    # print(node.left.left.value)
-    # print(node.left.op)
-    # print(node.left.right.value)
-    # print(node.op)
-    # print(node.right.value)
-
-    # print(interpreter('1'))
-    # print(interpreter('1+1'))
-    # print(interpreter('1+2'))
-    # print(interpreter('1+2+3'))
-    # print(interpreter('1-2'))
-    # print(interpreter('2*3'))
-    # print(interpreter('10/2'))
-    # print(interpreter('1+2+3+4+5+6+7'))

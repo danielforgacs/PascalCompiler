@@ -62,6 +62,29 @@ class Token:
         return self.__dict__ == other.__dict__
 
 
+
+
+
+
+class BinOp(object):
+    def __init__(self, left, op, right):
+        self.left = left
+        self.op = op
+        self.right = right
+
+
+
+class Num(object):
+    def __init__(self, token):
+        self.value = token.value
+        self.token = token
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+
+
+
+
 def find_integer(src, idx):
     result = ''
     while True:
@@ -131,16 +154,16 @@ def factor(src, idx):
     token, idx = find_token(src, idx)
 
     if token.type_ == INTEGER:
-        value = token.value
+        node = Num(token)
     elif token.type_ == PAREN_LEFT:
-        value, idx = expr(src, idx)
+        node, idx = expr(src, idx)
         token, idx = find_token(src, idx)
         if token.type_ != PAREN_RIGHT:
             raise Exception('MISSING FACTOR PAREN_RIGHT: %s, %s' % (token, idx))
     else:
         raise Exception('BAD FACTOR TOKEN: %s, %s' % (token, idx))
 
-    return value, idx
+    return node, idx
 
 
 
@@ -151,7 +174,7 @@ def term(src, idx):
     term: factor ((MULT|DIV) factor)*
     factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
     """
-    value, idx = factor(src, idx)
+    node, idx = factor(src, idx)
 
     while True:
         idx0 = idx
@@ -162,13 +185,9 @@ def term(src, idx):
             break
 
         right, idx = factor(src, idx)
+        node = BinOp(node, token, right)
 
-        if token.type_ == MULT:
-            value *= right
-        elif token.type_ == DIV:
-            value /= right
-
-    return value, idx
+    return node, idx
 
 
 
@@ -179,7 +198,7 @@ def expr(src, idx):
     term: factor ((MULT|DIV) factor)*
     factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
     """
-    value, idx = term(src, idx)
+    node, idx = term(src, idx)
 
     while True:
         idx0 = idx
@@ -190,16 +209,61 @@ def expr(src, idx):
             break
 
         right, idx = term(src, idx)
+        node = BinOp(node, token, right)
 
-        if token.type_ == PLUS:
-            value += right
-        elif token.type_ == MINUS:
-            value -= right
+    return node, idx
 
-    return value, idx
 
+
+def parse(src):
+    result, idx = expr(src, 0)
+    return result
+
+
+
+
+def nodevisitor(node):
+    if isinstance(node, Num):
+        return node.value
+
+    elif isinstance(node, BinOp):
+        if node.op.type_ == PLUS:
+            return nodevisitor(node.left) + nodevisitor(node.right)
+        elif node.op.type_ == MINUS:
+            return nodevisitor(node.left) - nodevisitor(node.right)
+        elif node.op.type_ == MULT:
+            return nodevisitor(node.left) * nodevisitor(node.right)
+        elif node.op.type_ == DIV:
+            return nodevisitor(node.left) / nodevisitor(node.right)
+
+
+
+
+def interpreter(src):
+    result = nodevisitor(parse(src))
+    return result
 
 
 
 if __name__ == '__main__':
     pass
+
+
+    print(expr('1', 0))
+    # print(Token(INTEGER, 1))
+    # print(Num(Token(INTEGER, 1)))
+    # node = parse('1+2+3')
+    # print(node.left.left.value)
+    # print(node.left.op)
+    # print(node.left.right.value)
+    # print(node.op)
+    # print(node.right.value)
+
+    # print(interpreter('1'))
+    # print(interpreter('1+1'))
+    # print(interpreter('1+2'))
+    # print(interpreter('1+2+3'))
+    # print(interpreter('1-2'))
+    # print(interpreter('2*3'))
+    # print(interpreter('10/2'))
+    # print(interpreter('1+2+3+4+5+6+7'))

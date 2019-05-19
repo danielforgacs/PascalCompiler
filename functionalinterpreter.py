@@ -1,7 +1,7 @@
 """
 expr: term ((PLUS|MINUS) term)*
 term: factor ((MULT|DIV) factor)*
-factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
+factor: INTEGER | (PLUS|MINUS) factor | PAREN_LEFT expr PAREN_RIGHT
 
 
 -----------------------------
@@ -137,7 +137,7 @@ def factor(src, idx):
     """
     expr: term ((PLUS|MINUS) term)*
     term: factor ((MULT|DIV) factor)*
-    factor: INTEGER | PAREN_LEFT expr PAREN_RIGHT
+    factor: INTEGER | (PLUS|MINUS) factor | PAREN_LEFT expr PAREN_RIGHT
     """
     token, idx = find_token(src, idx)
 

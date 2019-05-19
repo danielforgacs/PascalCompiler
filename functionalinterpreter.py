@@ -73,6 +73,15 @@ class Num(object):
 
 
 
+class UnaryOp(object):
+    def __init__(self, op, token):
+        self.op = op
+        self.token = token
+
+
+
+
+
 def find_integer(src, idx):
     result = ''
     while True:
@@ -148,6 +157,14 @@ def factor(src, idx):
         token, idx = find_token(src, idx)
         if token.type_ != PAREN_RIGHT:
             raise Exception('MISSING FACTOR PAREN_RIGHT: %s, %s' % (token, idx))
+    elif token.type_ == PLUS:
+        op = token
+        token, idx = factor(src, idx)
+        node = UnaryOp(op, token)
+    elif token.type_ == MINUS:
+        op = token
+        token, idx = factor(src, idx)
+        node = UnaryOp(op, token)
     else:
         raise Exception('BAD FACTOR TOKEN: %s, %s' % (token, idx))
 
@@ -223,6 +240,12 @@ def nodevisitor(node):
             return nodevisitor(node.left) * nodevisitor(node.right)
         elif node.op.type_ == DIV:
             return nodevisitor(node.left) / nodevisitor(node.right)
+
+    elif isinstance(node, UnaryOp):
+        if node.op.type_ == PLUS:
+            return nodevisitor(node.token)
+        elif node.op.type_ == MINUS:
+            return nodevisitor(node.token) * -1
 
 
 

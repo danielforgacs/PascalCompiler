@@ -13,10 +13,10 @@ FIND_INTEGERS = [
 ]
 
 EXPR = [
-    ['1', (fi.Num(fi.Token(fi.INTEGER, 1)), 1)],
-    ['12', (fi.Num(fi.Token(fi.INTEGER, 12)), 2)],
-    ['12345', (fi.Num(fi.Token(fi.INTEGER, 12345)), 5)],
-    ['1+1', (fi.Num(fi.Token(fi.INTEGER, 1+1)), 3)],
+    ['1', fi.Num(fi.Token(fi.INTEGER, 1))],
+    ['12', fi.Num(fi.Token(fi.INTEGER, 12))],
+    ['12345', fi.Num(fi.Token(fi.INTEGER, 12345))],
+    # ['1+1', fi.Num(fi.Token(fi.INTEGER, 1+1))],
     # ['1+1', (2, 3)],
     # ['123+456', (123+456, 7)],
     # ['  123   +   456', (123+456, 15)],
@@ -111,6 +111,8 @@ INTERPRETER = [
     '-+-+-+1',
     '(+(-+(-+(-(1)))))',
     '(-(+-(+-(+(1)))))',
+    ' ( -( + -( +- (  +(   1 ) )  ) ) )',
+    ' ( -( + -( +- (  +(   1 ) )  ) ) ) + (3) * (2)',
 ]
 
 
@@ -258,10 +260,10 @@ def test_find_integer_finds_integers(src, idx, expected):
 
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', EXPR)
 def test_expr(src, expected):
-    assert fi.expr(src, 0) == expected
+    assert fi.expr(src, 0) == (expected, len(src))
 
 
 

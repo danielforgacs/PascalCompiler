@@ -219,6 +219,11 @@ def test_find_token_tokenizes_source():
     values_items += ['/']
     tokentypes_items += [fi.DIV]
 
+    src += ' ;'
+    idxs += [len(src)]
+    values_items += [';']
+    tokentypes_items += [fi.SEMICOLON]
+
     src += '   98765'
     idxs += [len(src)]
     values_items += [98765]

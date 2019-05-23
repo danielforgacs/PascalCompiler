@@ -46,6 +46,8 @@ PAREN_LEFT_SYMBOL = '('
 PAREN_LEFT = 'PAREN_LEFT'
 PAREN_RIGHT_SYMBOL = ')'
 PAREN_RIGHT = 'PAREN_RIGHT'
+SEMICOLON_SYMBOL = ';'
+SEMICOLON = 'SEMICOLON'
 
 DOT_SYMBOL = '.'
 DOT = 'DOT'
@@ -176,6 +178,9 @@ def find_token(src, idx):
     elif src[idx] == DOT_SYMBOL:
         token = Token(DOT, DOT_SYMBOL)
         idx += len(DOT_SYMBOL)
+    elif src[idx] == SEMICOLON_SYMBOL:
+        token = Token(SEMICOLON, SEMICOLON_SYMBOL)
+        idx += len(SEMICOLON_SYMBOL)
     else:
         raise Exception('BAD CHAR FOR TOKEN: "%s", %s' % (src[idx], idx))
 

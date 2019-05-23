@@ -26,7 +26,7 @@ integer: (0|1||3|4|5|6|7|8|9)*
 
 WHITESPACE = ' '
 DIGITS = '0123456789'
-ALPHA_CAPS = 'ABCD----BEGINEND'
+ALPHA_CAPS = 'ABCD^^^^^BEGINEND'
 ALPHA_LOWER = 'abcd'
 
 # Tokens:
@@ -152,30 +152,30 @@ def find_token(src, idx):
     elif src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)
-    elif src[idx] == PLUS_SYMBOL:
-        token = Token(PLUS, PLUS_SYMBOL)
-        idx += 1
-    elif src[idx] == MINUS_SYMBOL:
-        token = Token(MINUS, MINUS_SYMBOL)
-        idx += 1
-    elif src[idx] == PAREN_LEFT_SYMBOL:
-        token = Token(PAREN_LEFT, PAREN_LEFT_SYMBOL)
-        idx += 1
-    elif src[idx] == PAREN_RIGHT_SYMBOL:
-        token = Token(PAREN_RIGHT, PAREN_RIGHT_SYMBOL)
-        idx += 1
-    elif src[idx] == MULT_SYMBOL:
-        token = Token(MULT, MULT_SYMBOL)
-        idx += 1
-    elif src[idx] == DIV_SYMBOL:
-        token = Token(DIV, DIV_SYMBOL)
-        idx += 1
-    elif src[idx] == DOT_SYMBOL:
-        token = Token(DOT, DOT_SYMBOL)
-        idx += 1
     elif src[idx] in ALPHA_CAPS:
         tokentext, idx = find_text(src, idx)
         token = Token(tokentext, tokentext)
+    elif src[idx] == PLUS_SYMBOL:
+        token = Token(PLUS, PLUS_SYMBOL)
+        idx += len(PLUS_SYMBOL)
+    elif src[idx] == MINUS_SYMBOL:
+        token = Token(MINUS, MINUS_SYMBOL)
+        idx += len(MINUS_SYMBOL)
+    elif src[idx] == PAREN_LEFT_SYMBOL:
+        token = Token(PAREN_LEFT, PAREN_LEFT_SYMBOL)
+        idx += len(PAREN_LEFT_SYMBOL)
+    elif src[idx] == PAREN_RIGHT_SYMBOL:
+        token = Token(PAREN_RIGHT, PAREN_RIGHT_SYMBOL)
+        idx += len(PAREN_RIGHT_SYMBOL)
+    elif src[idx] == MULT_SYMBOL:
+        token = Token(MULT, MULT_SYMBOL)
+        idx += len(MULT_SYMBOL)
+    elif src[idx] == DIV_SYMBOL:
+        token = Token(DIV, DIV_SYMBOL)
+        idx += len(DIV_SYMBOL)
+    elif src[idx] == DOT_SYMBOL:
+        token = Token(DOT, DOT_SYMBOL)
+        idx += len(DOT_SYMBOL)
     else:
         raise Exception('BAD CHAR FOR TOKEN: "%s", %s' % (src[idx], idx))
 
@@ -300,6 +300,3 @@ def interpreter(src):
 
 if __name__ == '__main__':
     pass
-
-    print(find_token('BEGIN   ', 0))
-    print(find_token('   END   ', 3))

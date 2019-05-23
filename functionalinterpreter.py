@@ -24,8 +24,10 @@ paren_right: ')'
 integer: (0|1||3|4|5|6|7|8|9)*
 """
 
-DIGITS = '0123456789'
 WHITESPACE = ' '
+DIGITS = '0123456789'
+ALPHA_CAPS = 'ABCD----BEGINEND'
+ALPHA_LOWER = 'abcd'
 
 # Tokens:
 INTEGER = 'INTEGER'
@@ -44,6 +46,17 @@ PAREN_LEFT_SYMBOL = '('
 PAREN_LEFT = 'PAREN_LEFT'
 PAREN_RIGHT_SYMBOL = ')'
 PAREN_RIGHT = 'PAREN_RIGHT'
+
+DOT_SYMBOL = '.'
+DOT = 'DOT'
+
+BEGIN = 'BEGIN'
+END = 'END'
+
+RESERVED_KEYWORDS = [
+    BEGIN,
+    END,
+]
 
 
 
@@ -106,6 +119,19 @@ def find_integer(src, idx):
     return number, idx
 
 
+def find_text(src, idx):
+    result = ''
+    while True:
+        if idx == len(src):
+            break
+        if src[idx] in ALPHA_CAPS:
+            result += src[idx]
+            idx += 1
+        else:
+            break
+    return result, idx
+
+
 def skip_whitespace(src, idx):
     while True:
         if len(src) == idx:
@@ -144,6 +170,12 @@ def find_token(src, idx):
     elif src[idx] == DIV_SYMBOL:
         token = Token(DIV, DIV_SYMBOL)
         idx += 1
+    elif src[idx] == DOT_SYMBOL:
+        token = Token(DOT, DOT_SYMBOL)
+        idx += 1
+    elif src[idx] in ALPHA_CAPS:
+        tokentext, idx = find_text(src, idx)
+        token = Token(tokentext, tokentext)
     else:
         raise Exception('BAD CHAR FOR TOKEN: "%s", %s' % (src[idx], idx))
 
@@ -268,3 +300,6 @@ def interpreter(src):
 
 if __name__ == '__main__':
     pass
+
+    print(find_token('BEGIN   ', 0))
+    print(find_token('   END   ', 3))

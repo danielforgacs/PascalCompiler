@@ -204,6 +204,11 @@ def test_find_token_tokenizes_source():
     values_items += [')']
     tokentypes_items += [fi.PAREN_RIGHT]
 
+    src += '   BEGIN'
+    idxs += [len(src)]
+    values_items += ['BEGIN']
+    tokentypes_items += [fi.BEGIN]
+
     src += '*'
     idxs += [len(src)]
     values_items += ['*']
@@ -219,15 +224,30 @@ def test_find_token_tokenizes_source():
     values_items += [98765]
     tokentypes_items += [fi.INTEGER]
 
+    src += '    END'
+    idxs += [len(src)]
+    values_items += ['END']
+    tokentypes_items += [fi.END]
+
     src += ' +'
     idxs += [len(src)]
     values_items += ['+']
     tokentypes_items += [fi.PLUS]
 
+    src += ' .'
+    idxs += [len(src)]
+    values_items += ['.']
+    tokentypes_items += [fi.DOT]
+
     src += '+'
     idxs += [len(src)]
     values_items += ['+']
     tokentypes_items += [fi.PLUS]
+
+    src += '    END'
+    idxs += [len(src)]
+    values_items += ['END']
+    tokentypes_items += [fi.END]
 
     src += '    *'
     idxs += [len(src)]
@@ -308,6 +328,6 @@ def test_expr_epr_plus_minus_mult_div_paren(src):
 
 if __name__ == '__main__':
     pytest.main([
-        __file__,
+        __file__+'::test_find_token_tokenizes_source',
         # '-s'
     ])

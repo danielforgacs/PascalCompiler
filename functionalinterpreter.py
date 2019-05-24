@@ -151,12 +151,15 @@ def find_token(src, idx):
     if len(src) == idx:
         token = Token(EOF, EOF_SYMBOL)
         idx += 1
+
     elif src[idx] in DIGITS:
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)
+
     elif src[idx] in ALPHA_CAPS:
         tokentext, idx = find_text(src, idx)
         token = Token(tokentext, tokentext)
+
     elif src[idx] == PLUS_SYMBOL:
         token = Token(PLUS, PLUS_SYMBOL)
         idx += len(PLUS_SYMBOL)
@@ -181,6 +184,7 @@ def find_token(src, idx):
     elif src[idx] == SEMICOLON_SYMBOL:
         token = Token(SEMICOLON, SEMICOLON_SYMBOL)
         idx += len(SEMICOLON_SYMBOL)
+
     else:
         raise Exception('BAD CHAR FOR TOKEN: "%s", %s' % (src[idx], idx))
 

@@ -214,6 +214,11 @@ def test_find_token_tokenizes_source():
     values_items += ['BEGIN']
     tokentypes_items += [fi.BEGIN]
 
+    src += '   BEGIN'
+    idxs += [len(src)]
+    values_items += [fi.BEGIN]
+    tokentypes_items += [fi.BEGIN]
+
     src += '    variablename'
     idxs += [len(src)]
     values_items += ['variablename']
@@ -253,6 +258,11 @@ def test_find_token_tokenizes_source():
     idxs += [len(src)]
     values_items += ['.']
     tokentypes_items += [fi.DOT]
+
+    src += '    END'
+    idxs += [len(src)]
+    values_items += [fi.END]
+    tokentypes_items += [fi.END]
 
     src += '+'
     idxs += [len(src)]

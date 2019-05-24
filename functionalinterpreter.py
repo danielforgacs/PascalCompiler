@@ -26,11 +26,12 @@ integer: (0|1||3|4|5|6|7|8|9)*
 
 WHITESPACE = ' '
 DIGITS = '0123456789'
-ALPHA_CAPS = 'ABCD^^^^^BEGINEND'
-ALPHA_LOWER = 'abcd'
+ALPHA_CAPS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+ALPHA_LOWER = 'abcdefghijklmnopqrstuvwxyz'
 
 # Tokens:
 INTEGER = 'INTEGER'
+IDENTIFIER = 'IDENTIFIER'
 
 EOF_SYMBOL = r'\0'
 EOF = 'EOF'
@@ -126,7 +127,7 @@ def find_text(src, idx):
     while True:
         if idx == len(src):
             break
-        if src[idx] in ALPHA_CAPS:
+        if src[idx] in ALPHA_CAPS + ALPHA_LOWER:
             result += src[idx]
             idx += 1
         else:
@@ -156,9 +157,13 @@ def find_token(src, idx):
         number, idx = find_integer(src, idx)
         token = Token(INTEGER, number)
 
-    elif src[idx] in ALPHA_CAPS:
+    elif src[idx] in ALPHA_CAPS + ALPHA_LOWER:
         tokentext, idx = find_text(src, idx)
-        token = Token(tokentext, tokentext)
+        token = Token(IDENTIFIER, tokentext)
+
+        if tokentext in RESERVED_KEYWORDS:
+            token = Token(tokentext, tokentext)
+
 
     elif src[idx] == PLUS_SYMBOL:
         token = Token(PLUS, PLUS_SYMBOL)

@@ -169,6 +169,11 @@ def test_find_token_tokenizes_source():
     values_items += ['-']
     tokentypes_items += [fi.MINUS]
 
+    src += '    variablename'
+    idxs += [len(src)]
+    values_items += ['variablename']
+    tokentypes_items += [fi.IDENTIFIER]
+
     src += ' -'
     idxs += [len(src)]
     values_items += ['-']
@@ -208,6 +213,11 @@ def test_find_token_tokenizes_source():
     idxs += [len(src)]
     values_items += ['BEGIN']
     tokentypes_items += [fi.BEGIN]
+
+    src += '    variablename'
+    idxs += [len(src)]
+    values_items += ['variablename']
+    tokentypes_items += [fi.IDENTIFIER]
 
     src += '*'
     idxs += [len(src)]

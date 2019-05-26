@@ -427,6 +427,27 @@ def nodevisitor(node):
         elif node.op.type_ == MINUS:
             return nodevisitor(node.token) * -1
 
+    elif isinstance(node, Compound):
+        for child in node.children:
+            nodevisitor(child)
+
+    elif isinstance(node, NoOp):
+        pass
+
+    elif isinstance(node, Assign):
+        identifier = node.left.value
+        GLOBAL_SCOPE[identifier] = nodevisitor(node.right)
+
+    elif isinstance(node, Variable):
+        identifier = node.value
+        value = GLOBAL_SCOPE[identifier]
+        return value
+    else:
+        raise Exception('NO NODE TYPE')
+
+
+
+
 
 
 
@@ -450,4 +471,4 @@ BEGIN
     x := 11;
 END.
 """
-    print(parse(src))
+    result = interpreter(src)

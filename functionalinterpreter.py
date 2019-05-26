@@ -24,7 +24,7 @@ paren_right: ')'
 integer: (0|1||3|4|5|6|7|8|9)*
 """
 
-WHITESPACE = ' '
+WHITESPACE = [' ', '\n']
 DIGITS = '0123456789'
 ALPHA_CAPS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 ALPHA_LOWER = 'abcdefghijklmnopqrstuvwxyz'
@@ -110,6 +110,30 @@ class UnaryOp(object):
 
 
 
+class Compound(object):
+    def __init__(self):
+        self.children = []
+
+
+
+class Assign(object):
+    def __init__(self, left, op, right):
+        self.left = left
+        self.op = op
+        self.right = right
+
+
+class Variable(object):
+    def __init__(self, token):
+        self.value = token.value
+        self.token = token
+
+
+
+class NoOp(object):
+    pass
+
+
 
 def find_integer(src, idx):
     result = ''
@@ -139,13 +163,12 @@ def find_text(src, idx):
 
 
 def skip_whitespace(src, idx):
-    while True:
-        if len(src) == idx:
+    while src[idx] in WHITESPACE:
+        idx += 1
+
+        if idx == len(src):
             break
-        if src[idx] == WHITESPACE:
-            idx += 1
-        else:
-            break
+
     return idx
 
 
@@ -230,7 +253,7 @@ def factor(src, idx):
         token, idx = factor(src, idx)
         node = UnaryOp(op, token)
     else:
-        raise Exception('BAD FACTOR TOKEN: %s, %s' % (token, idx))
+        node, idx = variable()
 
     return node, idx
 
@@ -284,8 +307,101 @@ def expr(src, idx):
 
 
 
+
+def program(src, idx):
+    node, idx = compound_statement(src, idx)
+    token, idx = find_token(src, idx)
+    # assert token.type_ == DOT
+
+    return node, idx
+
+
+
+
+def compound_statement(src, idx):
+    # breakpoint()
+    token, idx = find_token(src, idx)
+    # assert token.type_ == BEGIN
+
+    nodes, idx = statement_list(src, idx)
+
+    token, idx = find_token(src, idx)
+    # assert token.type_ == END
+
+    root = Compound()
+    for node in nodes:
+        root.children.append(node)
+
+    return root, idx
+
+
+
+def statement_list(src, idx):
+# statement_list:         statement | statement SEMI statement_list
+    node, idx = statement(src, idx)
+    nodes = [node]
+
+    while True:
+        token, idx = find_token(src, idx)
+
+        if token.type_ != SEMICOLON:
+            break
+
+        node, idx = statement()
+        nodes.append(node)
+
+    return nodes, idx
+
+
+
+
+def statement(src, idx):
+# statement: compound_statement | assignment_statement | empty
+    token, idx = find_token(src, idx)
+
+    if token.type_ == BEGIN:
+        node, idx = compound_statement(src, idx)
+    elif token.type_ == IDENTIFIER:
+        node, idx = assignment_statement(src, idx)
+    else:
+        node = empty()
+
+    return node, idx
+
+
+
+def assignment_statement(src, idx):
+# assignment_statement:   variable ASSIGN expr
+    left, idx = variable(src, idx)
+    token, idx = find_token(src, idx)
+    right, idx = expr(src, idx)
+
+    node = Assign(left, token, right)
+    return node
+
+
+
+
+
+def variable(src, idx):
+    token, idx = find_token(src, idx)
+    node = Variable(token)
+
+    return node
+
+
+
+def empty():
+    return NoOp()
+
+
+
+
+
+
 def parse(src):
-    result, idx = expr(src, 0)
+    # breakpoint()
+    result, idx = program(src, 0)
     return result
 
 
@@ -311,6 +427,27 @@ def nodevisitor(node):
         elif node.op.type_ == MINUS:
             return nodevisitor(node.token) * -1
 
+    elif isinstance(node, Compound):
+        for child in node.children:
+            nodevisitor(child)
+
+    elif isinstance(node, NoOp):
+        pass
+
+    elif isinstance(node, Assign):
+        identifier = node.left.value
+        GLOBAL_SCOPE[identifier] = nodevisitor(node.right)
+
+    elif isinstance(node, Variable):
+        identifier = node.value
+        value = GLOBAL_SCOPE[identifier]
+        return value
+    else:
+        raise Exception('NO NODE TYPE')
+
+
+
+
 
 
 
@@ -322,3 +459,16 @@ def interpreter(src):
 
 if __name__ == '__main__':
     pass
+
+    src = """
+BEGIN
+    BEGIN
+        number := 2;
+        a := number;
+        b := 10 * a + 10 * number / 4;
+        c := a - - b
+    END;
+    x := 11;
+END.
+"""
+    result = interpreter(src)

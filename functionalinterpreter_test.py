@@ -363,6 +363,7 @@ def test_expr_epr_plus_minus_mult_div_paren(src):
 
 if __name__ == '__main__':
     pytest.main([
-        __file__+'::test_find_token_tokenizes_source',
+        # __file__+'::test_find_token_tokenizes_source',
+        __file__,
         # '-s'
     ])

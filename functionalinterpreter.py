@@ -253,7 +253,7 @@ def factor(src, idx):
         token, idx = factor(src, idx)
         node = UnaryOp(op, token)
     else:
-        raise Exception('BAD FACTOR TOKEN: %s, %s' % (token, idx))
+        node, idx = variable()
 
     return node, idx
 
@@ -307,8 +307,101 @@ def expr(src, idx):
 
 
 
+
+def program(src, idx):
+    node, idx = compound_statement(src, idx)
+    token, idx = find_token(src, idx)
+    # assert token.type_ == DOT
+
+    return node, idx
+
+
+
+
+def compound_statement(src, idx):
+    # breakpoint()
+    token, idx = find_token(src, idx)
+    # assert token.type_ == BEGIN
+
+    nodes, idx = statement_list(src, idx)
+
+    token, idx = find_token(src, idx)
+    # assert token.type_ == END
+
+    root = Compound()
+    for node in nodes:
+        root.children.append(node)
+
+    return root, idx
+
+
+
+def statement_list(src, idx):
+# statement_list:         statement | statement SEMI statement_list
+    node, idx = statement(src, idx)
+    nodes = [node]
+
+    while True:
+        token, idx = find_token(src, idx)
+
+        if token.type_ != SEMICOLON:
+            break
+
+        node, idx = statement()
+        nodes.append(node)
+
+    return nodes, idx
+
+
+
+
+def statement(src, idx):
+# statement: compound_statement | assignment_statement | empty
+    token, idx = find_token(src, idx)
+
+    if token.type_ == BEGIN:
+        node, idx = compound_statement(src, idx)
+    elif token.type_ == IDENTIFIER:
+        node, idx = assignment_statement(src, idx)
+    else:
+        node = empty()
+
+    return node, idx
+
+
+
+def assignment_statement(src, idx):
+# assignment_statement:   variable ASSIGN expr
+    left, idx = variable(src, idx)
+    token, idx = find_token(src, idx)
+    right, idx = expr(src, idx)
+
+    node = Assign(left, token, right)
+    return node
+
+
+
+
+
+def variable(src, idx):
+    token, idx = find_token(src, idx)
+    node = Variable(token)
+
+    return node
+
+
+
+def empty():
+    return NoOp()
+
+
+
+
+
+
 def parse(src):
-    result, idx = expr(src, 0)
+    # breakpoint()
+    result, idx = program(src, 0)
     return result
 
 
@@ -345,3 +438,18 @@ def interpreter(src):
 
 if __name__ == '__main__':
     pass
+
+    src = """
+BEGIN
+    BEGIN
+        number := 2;
+        a := number;
+        b := 10 * a + 10 * number / 4;
+        c := a - - b
+    END;
+    x := 11;
+END.
+"""
+    print(parse(src))
+
+    parse('1+1')

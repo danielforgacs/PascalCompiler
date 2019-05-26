@@ -13,10 +13,10 @@ FIND_INTEGERS = [
 ]
 
 EXPR = [
-    ['1', (fi.Num(fi.Token(fi.INTEGER, 1)), 1)],
-    ['12', (fi.Num(fi.Token(fi.INTEGER, 12)), 2)],
-    ['12345', (fi.Num(fi.Token(fi.INTEGER, 12345)), 5)],
-    ['1+1', (fi.Num(fi.Token(fi.INTEGER, 1+1)), 3)],
+    ['1', fi.Num(fi.Token(fi.INTEGER, 1))],
+    ['12', fi.Num(fi.Token(fi.INTEGER, 12))],
+    ['12345', fi.Num(fi.Token(fi.INTEGER, 12345))],
+    # ['1+1', fi.Num(fi.Token(fi.INTEGER, 1+1))],
     # ['1+1', (2, 3)],
     # ['123+456', (123+456, 7)],
     # ['  123   +   456', (123+456, 15)],
@@ -99,6 +99,24 @@ EPR_PLUS_MINUS_MULT_DIV_PAREN = [
 
 
 
+INTERPRETER = [
+    '1+1',
+    '+1',
+    '-1',
+    '++1',
+    '--1',
+    '++++++1',
+    '------1',
+    '+-+-+-1',
+    '-+-+-+1',
+    '(+(-+(-+(-(1)))))',
+    '(-(+-(+-(+(1)))))',
+    ' ( -( + -( +- (  +(   1 ) )  ) ) )',
+    ' ( -( + -( +- (  +(   1 ) )  ) ) ) + (3) * (2)',
+]
+
+
+
 
 def test_find_token_tokenizes_source():
     src = '123'
@@ -120,6 +138,11 @@ def test_find_token_tokenizes_source():
     idxs += [len(src)]
     values_items += ['+']
     tokentypes_items += [fi.PLUS]
+
+    src += ' :='
+    idxs += [len(src)]
+    values_items += [':=']
+    tokentypes_items += [fi.ASSIGN]
 
     src += '+'
     idxs += [len(src)]
@@ -151,6 +174,11 @@ def test_find_token_tokenizes_source():
     values_items += ['-']
     tokentypes_items += [fi.MINUS]
 
+    src += '    variablename'
+    idxs += [len(src)]
+    values_items += ['variablename']
+    tokentypes_items += [fi.IDENTIFIER]
+
     src += ' -'
     idxs += [len(src)]
     values_items += ['-']
@@ -165,6 +193,11 @@ def test_find_token_tokenizes_source():
     idxs += [len(src)]
     values_items += ['(']
     tokentypes_items += [fi.PAREN_LEFT]
+
+    src += '  :='
+    idxs += [len(src)]
+    values_items += [':=']
+    tokentypes_items += [fi.ASSIGN]
 
     src += ' )'
     idxs += [len(src)]
@@ -186,6 +219,21 @@ def test_find_token_tokenizes_source():
     values_items += [')']
     tokentypes_items += [fi.PAREN_RIGHT]
 
+    src += '   BEGIN'
+    idxs += [len(src)]
+    values_items += ['BEGIN']
+    tokentypes_items += [fi.BEGIN]
+
+    src += '   BEGIN'
+    idxs += [len(src)]
+    values_items += [fi.BEGIN]
+    tokentypes_items += [fi.BEGIN]
+
+    src += '    variablename'
+    idxs += [len(src)]
+    values_items += ['variablename']
+    tokentypes_items += [fi.IDENTIFIER]
+
     src += '*'
     idxs += [len(src)]
     values_items += ['*']
@@ -196,20 +244,45 @@ def test_find_token_tokenizes_source():
     values_items += ['/']
     tokentypes_items += [fi.DIV]
 
+    src += ' ;'
+    idxs += [len(src)]
+    values_items += [';']
+    tokentypes_items += [fi.SEMICOLON]
+
     src += '   98765'
     idxs += [len(src)]
     values_items += [98765]
     tokentypes_items += [fi.INTEGER]
+
+    src += '    END'
+    idxs += [len(src)]
+    values_items += ['END']
+    tokentypes_items += [fi.END]
 
     src += ' +'
     idxs += [len(src)]
     values_items += ['+']
     tokentypes_items += [fi.PLUS]
 
+    src += ' .'
+    idxs += [len(src)]
+    values_items += ['.']
+    tokentypes_items += [fi.DOT]
+
+    src += '    END'
+    idxs += [len(src)]
+    values_items += [fi.END]
+    tokentypes_items += [fi.END]
+
     src += '+'
     idxs += [len(src)]
     values_items += ['+']
     tokentypes_items += [fi.PLUS]
+
+    src += '    END'
+    idxs += [len(src)]
+    values_items += ['END']
+    tokentypes_items += [fi.END]
 
     src += '    *'
     idxs += [len(src)]
@@ -242,10 +315,10 @@ def test_find_integer_finds_integers(src, idx, expected):
 
 
 
-@pytest.mark.skip('')
+# @pytest.mark.skip('')
 @pytest.mark.parametrize('src, expected', EXPR)
 def test_expr(src, expected):
-    assert fi.expr(src, 0) == expected
+    assert fi.expr(src, 0) == (expected, len(src))
 
 
 
@@ -281,9 +354,16 @@ def test_expr_epr_plus_minus_mult_div_paren(src):
 
 
 
+@pytest.mark.parametrize('src', INTERPRETER)
+def test_expr_epr_plus_minus_mult_div_paren(src):
+    assert fi.interpreter(src) == eval(src)
+
+
+
 
 if __name__ == '__main__':
     pytest.main([
+        # __file__+'::test_find_token_tokenizes_source',
         __file__,
         # '-s'
     ])

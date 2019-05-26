@@ -24,7 +24,7 @@ paren_right: ')'
 integer: (0|1||3|4|5|6|7|8|9)*
 """
 
-WHITESPACE = ' '
+WHITESPACE = [' ', '\n']
 DIGITS = '0123456789'
 ALPHA_CAPS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 ALPHA_LOWER = 'abcdefghijklmnopqrstuvwxyz'
@@ -163,13 +163,12 @@ def find_text(src, idx):
 
 
 def skip_whitespace(src, idx):
-    while True:
-        if len(src) == idx:
+    while src[idx] in WHITESPACE:
+        idx += 1
+
+        if idx == len(src):
             break
-        if src[idx] == WHITESPACE:
-            idx += 1
-        else:
-            break
+
     return idx
 
 

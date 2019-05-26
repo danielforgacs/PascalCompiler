@@ -110,6 +110,30 @@ class UnaryOp(object):
 
 
 
+class Compound(object):
+    def __init__(self):
+        self.children = []
+
+
+
+class Assign(object):
+    def __init__(self, left, op, right):
+        self.left = left
+        self.op = op
+        self.right = right
+
+
+class Variable(object):
+    def __init__(self, token):
+        self.value = token.value
+        self.token = token
+
+
+
+class NoOp(object):
+    pass
+
+
 
 def find_integer(src, idx):
     result = ''

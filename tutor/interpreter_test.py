@@ -1,217 +1,140 @@
-import interpreter
-import pytest
+import unittest
 
 
-cases_01 = [
-    ['3+5', 3+5],
-    ['0+0', 0],
-    ['9+9', 18],
-]
+class LexerTestCase(unittest.TestCase):
+    def makeLexer(self, text):
+        from interpreter import Lexer
+        lexer = Lexer(text)
+        return lexer
 
-cases_02 = [
-    ['3-5', 3-5],
-    ['0-0', 0],
-    ['9-9', 9-9],
-    ['5-3', 5-3],
-]
+    def test_lexer_integer(self):
+        from interpreter import INTEGER
+        lexer = self.makeLexer('234')
+        token = lexer.get_next_token()
+        self.assertEqual(token.type, INTEGER)
+        self.assertEqual(token.value, 234)
 
-cases_03 = [
-    ['31+5', 31+5],
-    ['12+0', 12],
-    ['5+32', 5+32],
-    ['12345+54321', 12345+54321],
-]
+    def test_lexer_mul(self):
+        from interpreter import MUL
+        lexer = self.makeLexer('*')
+        token = lexer.get_next_token()
+        self.assertEqual(token.type, MUL)
+        self.assertEqual(token.value, '*')
 
-cases_04 = [
-    ['   31+5', 31+5],
-    ['   31   +5', 31+5],
-    ['   31   +   5', 31+5],
-    ['   31   +   5   ', 31+5],
-    ['   31-5', 31-5],
-    ['   31   -5', 31-5],
-    ['   31   -   5', 31-5],
-    ['   31   -   5   ', 31-5],
-]
+    def test_lexer_div(self):
+        from interpreter import DIV
+        lexer = self.makeLexer(' / ')
+        token = lexer.get_next_token()
+        self.assertEqual(token.type, DIV)
+        self.assertEqual(token.value, '/')
 
-cases_05 = [
-    ['0*0', 0*0],
-    ['1*0', 1*0],
-    ['0*1', 0*1],
-    ['1*1', 1*1],
-    ['123*321', 123*321],
-    ['   31*5', 31*5],
-    ['   31   *5', 31*5],
-    ['   31   *   5', 31*5],
-    ['   31   *   5   ', 31*5],
-]
+    def test_lexer_plus(self):
+        from interpreter import PLUS
+        lexer = self.makeLexer('+')
+        token = lexer.get_next_token()
+        self.assertEqual(token.type, PLUS)
+        self.assertEqual(token.value, '+')
 
-cases_06 = [
-    ['0/1', 0/1],
-    ['1/1', 1/1],
-    ['123/321', 123/321],
-    ['   31/5', 31/5],
-    ['   31   /5', 31/5],
-    ['   31   /   5', 31/5],
-    ['   31   /   5   ', 31/5],
-]
+    def test_lexer_minus(self):
+        from interpreter import MINUS
+        lexer = self.makeLexer('-')
+        token = lexer.get_next_token()
+        self.assertEqual(token.type, MINUS)
+        self.assertEqual(token.value, '-')
 
-cases_07 = [
-    ['1+2+3', 1+2+3],
-    ['1+2+3+2+1', 1+2+3+2+1],
-    ['12+23+34+25+16', 12+23+34+25+16],
-    [' 12  +  23  +    34  +25 + 16  ', 12+23+34+25+16],
-    [' 1  + 1  -  1  /  1 * 1 +  1 + 1 - 1  ', 1+1-1/1*1+1+1-1],
-]
+    def test_lexer_lparen(self):
+        from interpreter import LPAREN
+        lexer = self.makeLexer('(')
+        token = lexer.get_next_token()
+        self.assertEqual(token.type, LPAREN)
+        self.assertEqual(token.value, '(')
 
-cases_08 = [
-    ['(1)', 1],
-    ['((1))', 1],
-    ['(((1)))', 1],
-    ['(((1+1)))', 1+1],
-    ['(1+1)', (1+1)],
-    ['(1+1)+1', (1+1)+1],
-    [' ( 1 + 1  )  +   1', (1+1)+1],
-    ['(1*1)+1', (1*1)+1],
-    ['(1*1)/1', (1*1)/1],
-    ['(1*(2+3))/1+(4+(5*6))', (1*(2+3))/1+(4+(5*6))],
-]
+    def test_lexer_rparen(self):
+        from interpreter import RPAREN
+        lexer = self.makeLexer(')')
+        token = lexer.get_next_token()
+        self.assertEqual(token.type, RPAREN)
+        self.assertEqual(token.value, ')')
+
+    def test_lexer_new_tokens(self):
+        from interpreter import ASSIGN, DOT, ID, SEMI, BEGIN, END
+        records = (
+            (':=', ASSIGN, ':='),
+            ('.', DOT, '.'),
+            ('number', ID, 'number'),
+            (';', SEMI, ';'),
+            ('BEGIN', BEGIN, 'BEGIN'),
+            ('END', END, 'END'),
+        )
+        for text, tok_type, tok_val in records:
+            lexer = self.makeLexer(text)
+            token = lexer.get_next_token()
+            self.assertEqual(token.type, tok_type)
+            self.assertEqual(token.value, tok_val)
 
 
+class InterpreterTestCase(unittest.TestCase):
+    def makeInterpreter(self, text):
+        from interpreter import Lexer, Parser, Interpreter
+        lexer = Lexer(text)
+        parser = Parser(lexer)
+        interpreter = Interpreter(parser)
+        return interpreter
 
-# @pytest.mark.skip('')
-@pytest.mark.parametrize('src, expected', cases_01)
-def test_calculator_can_add_single_digits_without_space(src, expected):
-    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
-    result = compiler.interpret()
-    assert result == expected
+    def test_arithmetic_expressions(self):
+        for expr, result in (
+            ('3', 3),
+            ('2 + 7 * 4', 30),
+            ('7 - 8 / 4', 5),
+            ('14 + 2 * 3 - 6 / 2', 17),
+            ('7 + 3 * (10 / (12 / (3 + 1) - 1))', 22),
+            ('7 + 3 * (10 / (12 / (3 + 1) - 1)) / (2 + 3) - 5 - 3 + (8)', 10),
+            ('7 + (((3 + 2)))', 12),
+            ('- 3', -3),
+            ('+ 3', 3),
+            ('5 - - - + - 3', 8),
+            ('5 - - - + - (3 + 4) - +2', 10),
+        ):
+            interpreter = self.makeInterpreter('BEGIN a := %s END.' % expr)
+            interpreter.interpret()
+            globals = interpreter.GLOBAL_SCOPE
+            self.assertEqual(globals['a'], result)
 
+    def test_expression_invalid_syntax1(self):
+        interpreter = self.makeInterpreter('BEGIN a := 10 * ; END.')
+        with self.assertRaises(Exception):
+            interpreter.interpret()
 
+    def test_expression_invalid_syntax2(self):
+        interpreter = self.makeInterpreter('BEGIN a := 1 (1 + 2); END.')
+        with self.assertRaises(Exception):
+            interpreter.interpret()
 
-# @pytest.mark.skip('')
-@pytest.mark.parametrize('src, expected', cases_02)
-def test_calculator_can_subtract_single_digits_without_space(src, expected):
-    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
-    result = compiler.interpret()
-    assert result == expected
+    def test_statements(self):
+        text = """\
+BEGIN
 
+    BEGIN
+        number := 2;
+        a := number;
+        b := 10 * a + 10 * number / 4;
+        c := a - - b
+    END;
 
+    x := 11;
+END.
+"""
+        interpreter = self.makeInterpreter(text)
+        interpreter.interpret()
 
-# @pytest.mark.skip('')
-def test_get_next_token_add():
-    interp = interpreter.Lexer(text='3+5')
-    assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 3)
-    assert interp.get_next_token() == interpreter.Token(interpreter.PLUS, '+')
-    assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 5)
-    assert interp.get_next_token() == interpreter.Token(interpreter.EOF, None)
-
-
-
-# @pytest.mark.skip('')
-def test_get_next_token_subtract():
-    interp = interpreter.Lexer(text='3-5')
-    assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 3)
-    assert interp.get_next_token() == interpreter.Token(interpreter.MINUS, '-')
-    assert interp.get_next_token() == interpreter.Token(interpreter.INTEGER, 5)
-    assert interp.get_next_token() == interpreter.Token(interpreter.EOF, None)
-
-
-
-
-# @pytest.mark.skip('')
-@pytest.mark.parametrize('src, expected', cases_03)
-def test_calculator_can_add_adny_digits_without_space(src, expected):
-    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
-    result = compiler.interpret()
-    assert result == expected
-
-
-
-@pytest.mark.skip('')
-def test_emtpy_string_does_not_crash():
-    assert not interpreter.Interpreter(interpreter.Lexer('')).expr()
-
-
-
-
-# @pytest.mark.skip('')
-@pytest.mark.parametrize('src, expected', cases_04)
-def test_space_is_ok(src, expected):
-    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
-    result = compiler.interpret()
-    assert result == expected
-
-
-
-
-# @pytest.mark.skip('')
-@pytest.mark.parametrize('src, expected', cases_05)
-def test_multiply(src, expected):
-    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
-    result = compiler.interpret()
-    assert result == expected
-
-
-
-
-# @pytest.mark.skip('')
-@pytest.mark.parametrize('src, expected', cases_06)
-def test_div(src, expected):
-    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
-    result = compiler.interpret()
-    assert result == expected
-
-
-
-
-# @pytest.mark.skip('')
-@pytest.mark.parametrize('src, expected', cases_07)
-def test_multiple_op_01(src, expected):
-    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
-    result = compiler.interpret()
-    assert result == expected
-
-
-
-
-# @pytest.mark.skip('')
-@pytest.mark.parametrize('src, expected', cases_08)
-def test_parentheses(src, expected):
-    compiler = interpreter.Interpreter(interpreter.Parser(interpreter.Lexer(src)))
-    result = compiler.interpret()
-    assert result == expected
-
-
-
-
-def test_AST_basics_2_MULT_7_PLUS_3():
-    tkn_int_2 = interpreter.Token(interpreter.INTEGER, 2)
-    tkn_int_3 = interpreter.Token(interpreter.INTEGER, 3)
-    tkn_int_7 = interpreter.Token(interpreter.INTEGER, 7)
-
-    tkn_mult = interpreter.Token(interpreter.MUL, '*')
-    tkn_plus = interpreter.Token(interpreter.MUL, '+')
-
-    num_node_2 = interpreter.Num(token=tkn_int_2)
-    num_node_3 = interpreter.Num(token=tkn_int_3)
-    num_node_7 = interpreter.Num(token=tkn_int_7)
-
-
-    node_mult = interpreter.BinOp(
-        left=num_node_2,
-        op=tkn_mult,
-        right=num_node_3,
-    )
-    node_plus = interpreter.BinOp(
-        left=node_mult,
-        op=tkn_plus,
-        right=num_node_7,
-    )
-
-
+        globals = interpreter.GLOBAL_SCOPE
+        self.assertEqual(len(globals.keys()), 5)
+        self.assertEqual(globals['number'], 2)
+        self.assertEqual(globals['a'], 2)
+        self.assertEqual(globals['b'], 25)
+        self.assertEqual(globals['c'], 27)
+        self.assertEqual(globals['x'], 11)
 
 
 if __name__ == '__main__':
-    pytest.main([
-        __file__,
-        # __file__+'::test_AST_basics_2_MULT_7_PLUS_3',
-    ])
+    unittest.main()

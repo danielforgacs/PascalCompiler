@@ -139,6 +139,11 @@ def test_find_token_tokenizes_source():
     values_items += ['+']
     tokentypes_items += [fi.PLUS]
 
+    src += ' :='
+    idxs += [len(src)]
+    values_items += [':=']
+    tokentypes_items += [fi.ASSIGN]
+
     src += '+'
     idxs += [len(src)]
     values_items += ['+']
@@ -188,6 +193,11 @@ def test_find_token_tokenizes_source():
     idxs += [len(src)]
     values_items += ['(']
     tokentypes_items += [fi.PAREN_LEFT]
+
+    src += '  :='
+    idxs += [len(src)]
+    values_items += [':=']
+    tokentypes_items += [fi.ASSIGN]
 
     src += ' )'
     idxs += [len(src)]

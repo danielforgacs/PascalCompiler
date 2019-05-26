@@ -56,6 +56,9 @@ DOT = 'DOT'
 BEGIN = 'BEGIN'
 END = 'END'
 
+ASSIGN_SYMBOL = ':='
+ASSIGN = 'ASSIGN'
+
 RESERVED_KEYWORDS = [
     BEGIN,
     END,
@@ -164,6 +167,11 @@ def find_token(src, idx):
         if tokentext in RESERVED_KEYWORDS:
             token = Token(tokentext, tokentext)
 
+    elif src[idx] == ASSIGN_SYMBOL[0]:
+        if idx < len(src):
+            if src[idx+1] == ASSIGN_SYMBOL[1]:
+                token = Token(ASSIGN, ASSIGN_SYMBOL)
+                idx += len(ASSIGN_SYMBOL)
 
     elif src[idx] == PLUS_SYMBOL:
         token = Token(PLUS, PLUS_SYMBOL)

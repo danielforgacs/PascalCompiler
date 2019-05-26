@@ -451,5 +451,3 @@ BEGIN
 END.
 """
     print(parse(src))
-
-    parse('1+1')

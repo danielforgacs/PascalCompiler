@@ -100,5 +100,3 @@ def program(src):
 
 if __name__ == '__main__':
     pass
-
-    print(program('1'))

@@ -1,4 +1,5 @@
 EOF = 'EOF'
+INTEGER = 'INTEGER'
 
 
 
@@ -10,4 +11,7 @@ class Token:
 
 
 def find_token(src, idx):
-    return Token(EOF, EOF)
+    if idx == len(src):
+        token = Token(EOF, EOF)
+
+    return token, idx

@@ -24,6 +24,13 @@ FACTOR = [
     ['(((123090))', 123090],
     ['(((((((123090))))))', 123090],
 ]
+NODE_VISITOR = [
+    '1',
+    '12345',
+    '(12345)',
+    '((12345))',
+    '(((((((((12345)))))))))',
+]
 
 
 @pytest.mark.parametrize('src, type_, value', MIMES)
@@ -50,7 +57,15 @@ def test__factor(src, expected):
     assert idx == len(src)
 
 
+@pytest.mark.parametrize('src', NODE_VISITOR)
+def test__node_visitor(src):
+    node, _ = program.factor(src, 0)
+    result = program.node_visitor(node)
+    assert result == eval(src)
+
+
 if __name__ == '__main__':
     pytest.main([
         __file__,
+        '-s'
     ])

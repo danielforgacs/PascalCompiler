@@ -75,3 +75,10 @@ def factor(src, idx):
         rparen, idx = find_token(src, idx)
 
     return node, idx
+
+
+
+
+def node_visitor(node):
+    if isinstance(node, IntNode):
+        return node.value

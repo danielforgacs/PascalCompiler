@@ -63,6 +63,13 @@ def find_token(src, idx):
     return token, idx
 
 
+# exprs: expr PLUS|MINUS expr
+# expr: factors
+# factors: L_PAREN factor R_PAREN
+# factor: INTEGER
+
+
+# expr: factor | (PLUS|MINUS) factor
 # factor: INTEGER | L_PAREN factor R_PAREN
 
 
@@ -82,3 +89,5 @@ def factor(src, idx):
 def node_visitor(node):
     if isinstance(node, IntNode):
         return node.value
+
+

@@ -22,6 +22,13 @@ class IntNode:
         self.value = value
 
 
+class BinOp:
+    def __init__(self, left, op, right):
+        self.left = left
+        self.op = op
+        self.right = right
+
+
 
 def find_integer(src, idx):
     numstr = src[idx]
@@ -86,6 +93,14 @@ def factor(src, idx):
 
 def expr(src, idx):
     node, idx = factor(src, idx)
+    idx0 = idx
+    token, idx = find_token(src, idx)
+
+    if token.type_ == PLUS:
+        rigth, idx = factor(src, idx)
+        node = BinOp(node.value, PLUS, rigth.value)
+    else:
+        idx = idx0
 
     return node, idx
 
@@ -95,6 +110,9 @@ def expr(src, idx):
 def node_visitor(node):
     if isinstance(node, IntNode):
         return node.value
+    if isinstance(node, BinOp):
+        if node.op == PLUS:
+            return node.left + node.right
 
 
 def program(src):
@@ -107,5 +125,5 @@ def program(src):
 if __name__ == '__main__':
     pass
 
-    src = '1'
+    src = '2+3'
     print(program(src))

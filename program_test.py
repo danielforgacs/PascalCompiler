@@ -4,7 +4,7 @@ import pytest
 
 MIMES = [
     ['', program.EOF, program.EOF],
-    # ['1', program.INTEGER, 1],
+    ['1', program.INTEGER, eval('1')],
 ]
 
 

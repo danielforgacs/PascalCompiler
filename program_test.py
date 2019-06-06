@@ -3,13 +3,15 @@ import pytest
 
 
 MIMES = [
-    ['', program.Token(program.EOF, program.EOF)],
+    ['', program.EOF, program.EOF],
 ]
 
 
-@pytest.mark.parametrize('src', MIMES)
-def test__can_find_numbers(src):
-    program.find_token(src, 0)
+@pytest.mark.parametrize('src, toktype, tokvalue', MIMES)
+def test__can_find_numbers(src, toktype, tokvalue):
+    result = program.find_token(src, 0)
+    assert result.toktype == toktype
+    assert result.tokvalue == tokvalue
 
 
 if __name__ == '__main__':

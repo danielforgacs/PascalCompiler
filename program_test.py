@@ -31,6 +31,9 @@ NODE_VISITOR = [
     '((12345))',
     '(((((((((12345)))))))))',
 ]
+PROGRAM = [
+    '1'
+]
 
 
 @pytest.mark.parametrize('src, type_, value', MIMES)
@@ -62,6 +65,12 @@ def test__node_visitor(src):
     node, _ = program.factor(src, 0)
     result = program.node_visitor(node)
     assert result == eval(src)
+
+
+
+@pytest.mark.parametrize('src', PROGRAM)
+def test__program(src):
+    assert program.program(src) == eval(src)
 
 
 if __name__ == '__main__':

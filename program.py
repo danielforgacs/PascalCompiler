@@ -2,6 +2,8 @@ DIGITS = '0123456789'
 
 EOF = 'EOF'
 INTEGER = 'INTEGER'
+PLUS_SYMBOL = '+'
+PLUS = 'PLUS'
 
 
 
@@ -36,6 +38,9 @@ def find_token(src, idx):
     if char in DIGITS:
         num, idx = find_integer(src, idx)
         token = Token(INTEGER, num)
+    elif char == PLUS_SYMBOL:
+        token = Token(PLUS, PLUS_SYMBOL)
+        idx += len(PLUS_SYMBOL)
 
     return token, idx
 

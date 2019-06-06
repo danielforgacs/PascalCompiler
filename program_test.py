@@ -11,7 +11,12 @@ MIMES = [
 FIND_INTEGERS = [
     ['1', 1],
     ['1s', 1],
-    ['12345sssss', 12345],
+    ['12345', 12345],
+]
+FACTOR = [
+    '1',
+    '123',
+    '123090',
 ]
 
 
@@ -29,6 +34,14 @@ def test__find_integer(src, exp):
     num, idx = program.find_integer(src, 0)
     assert num == exp
     assert idx == len(str(exp))
+
+
+
+@pytest.mark.parametrize('src', FACTOR)
+def test__factor(src):
+    result, idx = program.factor(src, 0)
+    assert result == eval(src)
+    assert idx == len(src)
 
 
 if __name__ == '__main__':

@@ -45,3 +45,10 @@ def find_token(src, idx):
     return token, idx
 
 
+# factor: INTEGER
+
+
+def factor(src, idx):
+    token, idx = find_token(src, idx)
+
+    return token.tokvalue, idx

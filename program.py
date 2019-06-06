@@ -12,6 +12,20 @@ class Token:
 
 
 
+def find_integer(src, idx):
+    numstr = src[idx]
+    while True:
+        idx += 1
+        if idx == len(src):
+            break
+        if src[idx] not in DIGITS:
+            break
+        numstr += src[idx]
+    num = int(numstr)
+    return num, idx
+
+
+
 def find_token(src, idx):
     if idx == len(src):
         token = Token(EOF, EOF)
@@ -20,7 +34,9 @@ def find_token(src, idx):
     char = src[idx]
 
     if char in DIGITS:
-        token = Token(INTEGER, int(char))
-        idx += 1
+        num, idx = find_integer(src, idx)
+        token = Token(INTEGER, num)
 
     return token, idx
+
+

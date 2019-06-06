@@ -91,3 +91,14 @@ def node_visitor(node):
         return node.value
 
 
+def program(src):
+    root, _ = factor(src, 0)
+    result = node_visitor(root)
+    return result
+
+
+
+if __name__ == '__main__':
+    pass
+
+    print(program('1'))

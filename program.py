@@ -12,9 +12,14 @@ R_PAREN = 'R_PAREN'
 
 
 class Token:
-    def __init__(self, toktype, tokvalue):
-        self.toktype = toktype
-        self.tokvalue = tokvalue
+    def __init__(self, type_, value):
+        self.type_ = type_
+        self.value = value
+
+
+class IntNode:
+    def __init__(self, value):
+        self.value = value
 
 
 
@@ -63,9 +68,10 @@ def find_token(src, idx):
 
 def factor(src, idx):
     token, idx = find_token(src, idx)
+    node = IntNode(token.value)
 
-    if token.toktype == L_PAREN:
-        token, idx = factor(src, idx)
+    if token.type_ == L_PAREN:
+        node, idx = factor(src, idx)
         rparen, idx = find_token(src, idx)
 
-    return token, idx
+    return node, idx

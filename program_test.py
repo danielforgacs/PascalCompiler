@@ -26,11 +26,11 @@ FACTOR = [
 ]
 
 
-@pytest.mark.parametrize('src, toktype, tokvalue', MIMES)
-def test__can_find_numbers(src, toktype, tokvalue):
+@pytest.mark.parametrize('src, type_, value', MIMES)
+def test__can_find_numbers(src, type_, value):
     token, idx = program.find_token(src, 0)
-    assert token.toktype == toktype
-    assert token.tokvalue == tokvalue
+    assert token.type_ == type_
+    assert token.value == value
     assert idx == len(src)
 
 
@@ -45,8 +45,8 @@ def test__find_integer(src, exp):
 
 @pytest.mark.parametrize('src, expected', FACTOR)
 def test__factor(src, expected):
-    result, idx = program.factor(src, 0)
-    assert result.tokvalue == expected
+    node, idx = program.factor(src, 0)
+    assert node.value == expected
     assert idx == len(src)
 
 

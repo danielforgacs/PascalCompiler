@@ -70,7 +70,7 @@ def find_token(src, idx):
 
 
 # expr: factor | (PLUS|MINUS) factor
-# factor: INTEGER | L_PAREN factor R_PAREN
+# factor: INTEGER | L_PAREN expr R_PAREN
 
 
 def factor(src, idx):
@@ -78,8 +78,14 @@ def factor(src, idx):
     node = IntNode(token.value)
 
     if token.type_ == L_PAREN:
-        node, idx = factor(src, idx)
+        node, idx = expr(src, idx)
         rparen, idx = find_token(src, idx)
+
+    return node, idx
+
+
+def expr(src, idx):
+    node, idx = factor(src, idx)
 
     return node, idx
 
@@ -92,7 +98,7 @@ def node_visitor(node):
 
 
 def program(src):
-    root, _ = factor(src, 0)
+    root, _ = expr(src, 0)
     result = node_visitor(root)
     return result
 
@@ -100,3 +106,6 @@ def program(src):
 
 if __name__ == '__main__':
     pass
+
+    src = '1'
+    print(program(src))

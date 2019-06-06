@@ -16,9 +16,13 @@ FIND_INTEGERS = [
     ['12345', 12345],
 ]
 FACTOR = [
-    '1',
-    '123',
-    '123090',
+    ['1', 1],
+    ['123', 123],
+    ['123090', 123090],
+    ['(123090)', 123090],
+    ['((123090))', 123090],
+    ['(((123090))', 123090],
+    ['(((((((123090))))))', 123090],
 ]
 
 
@@ -39,10 +43,10 @@ def test__find_integer(src, exp):
 
 
 
-@pytest.mark.parametrize('src', FACTOR)
-def test__factor(src):
+@pytest.mark.parametrize('src, expected', FACTOR)
+def test__factor(src, expected):
     result, idx = program.factor(src, 0)
-    assert result == eval(src)
+    assert result.tokvalue == expected
     assert idx == len(src)
 
 

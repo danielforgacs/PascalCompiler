@@ -58,10 +58,14 @@ def find_token(src, idx):
     return token, idx
 
 
-# factor: INTEGER | (L_PAREN|R_PAREN) INTEGER
+# factor: INTEGER | L_PAREN factor R_PAREN
 
 
 def factor(src, idx):
     token, idx = find_token(src, idx)
 
-    return token.tokvalue, idx
+    if token.toktype == L_PAREN:
+        token, idx = factor(src, idx)
+        rparen, idx = find_token(src, idx)
+
+    return token, idx

@@ -4,6 +4,10 @@ EOF = 'EOF'
 INTEGER = 'INTEGER'
 PLUS_SYMBOL = '+'
 PLUS = 'PLUS'
+L_PAREN_SYMBOL = '('
+L_PAREN = 'L_PAREN'
+R_PAREN_SYMBOL = ')'
+R_PAREN = 'R_PAREN'
 
 
 
@@ -38,14 +42,23 @@ def find_token(src, idx):
     if char in DIGITS:
         num, idx = find_integer(src, idx)
         token = Token(INTEGER, num)
+
     elif char == PLUS_SYMBOL:
         token = Token(PLUS, PLUS_SYMBOL)
         idx += len(PLUS_SYMBOL)
 
+    elif char == L_PAREN_SYMBOL:
+        token = Token(L_PAREN, L_PAREN_SYMBOL)
+        idx += len(L_PAREN_SYMBOL)
+
+    elif char == R_PAREN_SYMBOL:
+        token = Token(R_PAREN, R_PAREN_SYMBOL)
+        idx += len(R_PAREN_SYMBOL)
+
     return token, idx
 
 
-# factor: INTEGER
+# factor: INTEGER | (L_PAREN|R_PAREN) INTEGER
 
 
 def factor(src, idx):

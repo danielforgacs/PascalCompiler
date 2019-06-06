@@ -7,6 +7,8 @@ MIMES = [
     ['1', program.INTEGER, eval('1')],
     ['12345', program.INTEGER, eval('12345')],
     ['+', program.PLUS, program.PLUS_SYMBOL],
+    ['(', program.L_PAREN, program.L_PAREN_SYMBOL],
+    [')', program.R_PAREN, program.R_PAREN_SYMBOL],
 ]
 FIND_INTEGERS = [
     ['1', 1],

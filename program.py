@@ -125,7 +125,7 @@ def statement(src, idx):
         if token.type_ != SEMI:
             break
 
-    print(root.nodes)
+    # print(root.nodes)
     return root
 
 
@@ -134,16 +134,21 @@ def statement(src, idx):
 def node_visitor(node):
     if isinstance(node, IntNode):
         print(node.value)
-        return node.value
+        # return node.value
 
     if isinstance(node, BinOp):
         if node.op == PLUS:
             print(node.left + node.right)
-            return node.left + node.right
+            # return node.left + node.right
 
     if isinstance(node, StatementList):
+        # print(node)
+        # print(node.nodes)
+        # print(len(node.nodes))
         for node in node.nodes:
-            return node_visitor(node)
+            # print('--', node)
+            node_visitor(node)
+            # return node_visitor(node)
 
 
 def program(src):
@@ -156,6 +161,6 @@ def program(src):
 if __name__ == '__main__':
     pass
 
-    src = '1;2'
-    # src = '2+3;4+5'
+    src = '1;2;3;4;5'
+    src = '2+3;4+5'
     program(src)

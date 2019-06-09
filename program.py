@@ -31,6 +31,11 @@ class BinOp:
         self.right = right
 
 
+class StatementList:
+    def __init__(self):
+        self.nodes = []
+
+
 
 def find_integer(src, idx):
     numstr = src[idx]
@@ -76,12 +81,7 @@ def find_token(src, idx):
     return token, idx
 
 
-# exprs: expr PLUS|MINUS expr
-# expr: factors
-# factors: L_PAREN factor R_PAREN
-# factor: INTEGER
-
-
+# statement: expr | SEMI expr
 # expr: factor | (PLUS|MINUS) factor
 # factor: INTEGER | L_PAREN expr R_PAREN
 
@@ -112,17 +112,42 @@ def expr(src, idx):
 
 
 
+def statement(src, idx):
+    # statement: expr | SEMI expr
+    root = StatementList()
+
+    while True:
+        node, idx = expr(src, idx)
+        root.nodes.append(node)
+
+        token, idx = find_token(src, idx)
+
+        if token.type_ != SEMI:
+            break
+
+    print(root.nodes)
+    return root
+
+
+
 
 def node_visitor(node):
     if isinstance(node, IntNode):
+        print(node.value)
         return node.value
+
     if isinstance(node, BinOp):
         if node.op == PLUS:
+            print(node.left + node.right)
             return node.left + node.right
+
+    if isinstance(node, StatementList):
+        for node in node.nodes:
+            return node_visitor(node)
 
 
 def program(src):
-    root, _ = expr(src, 0)
+    root = statement(src, 0)
     result = node_visitor(root)
     return result
 
@@ -131,5 +156,6 @@ def program(src):
 if __name__ == '__main__':
     pass
 
-    src = '2;3'
-    print(program(src))
+    src = '1;2'
+    # src = '2+3;4+5'
+    program(src)

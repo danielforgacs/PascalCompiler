@@ -10,24 +10,11 @@
 #
 # EOF (end-of-file) token is used to indicate that
 # there is no more input left for lexical analysis
-
-
-INTEGER = 'INTEGER'
-PLUS = 'PLUS'
-MINUS = 'MINUS'
-MUL = 'MUL'
-DIV = 'DIV'
-LPAREN = '('
-RPAREN = ')'
-ID = 'ID'
-ASSIGN = 'ASSIGN'
-BEGIN = 'BEGIN'
-END = 'END'
-SEMI = 'SEMI'
-DOT = 'DOT'
-EOF = 'EOF'
-
-
+(INTEGER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, ID, ASSIGN,
+ BEGIN, END, SEMI, DOT, EOF) = (
+    'INTEGER', 'PLUS', 'MINUS', 'MUL', 'DIV', '(', ')', 'ID', 'ASSIGN',
+    'BEGIN', 'END', 'SEMI', 'DOT', 'EOF'
+)
 
 
 class Token(object):
@@ -52,14 +39,10 @@ class Token(object):
         return self.__str__()
 
 
-
-
 RESERVED_KEYWORDS = {
     'BEGIN': Token('BEGIN', 'BEGIN'),
     'END': Token('END', 'END'),
 }
-
-
 
 
 class Lexer(object):
@@ -70,37 +53,27 @@ class Lexer(object):
         self.pos = 0
         self.current_char = self.text[self.pos]
 
-
-
     def error(self):
         raise Exception('Invalid character')
-
-
 
     def advance(self):
         """Advance the `pos` pointer and set the `current_char` variable."""
         self.pos += 1
-        if self.pos == len(self.text):
+        if self.pos > len(self.text) - 1:
             self.current_char = None  # Indicates end of input
         else:
             self.current_char = self.text[self.pos]
 
-
-
     def peek(self):
         peek_pos = self.pos + 1
-        if peek_pos == len(self.text):
+        if peek_pos > len(self.text) - 1:
             return None
         else:
             return self.text[peek_pos]
 
-
-
     def skip_whitespace(self):
         while self.current_char is not None and self.current_char.isspace():
             self.advance()
-
-
 
     def integer(self):
         """Return a (multidigit) integer consumed from the input."""
@@ -109,8 +82,6 @@ class Lexer(object):
             result += self.current_char
             self.advance()
         return int(result)
-
-
 
     def _id(self):
         """Handle identifiers and reserved keywords"""
@@ -121,8 +92,6 @@ class Lexer(object):
 
         token = RESERVED_KEYWORDS.get(result, Token(ID, result))
         return token
-
-
 
     def get_next_token(self):
         """Lexical analyzer (also known as scanner or tokenizer)
@@ -184,10 +153,6 @@ class Lexer(object):
         return Token(EOF, None)
 
 
-
-
-
-
 ###############################################################################
 #                                                                             #
 #  PARSER                                                                     #
@@ -241,22 +206,14 @@ class NoOp(AST):
     pass
 
 
-
-
-
-
 class Parser(object):
     def __init__(self, lexer):
         self.lexer = lexer
         # set current token to the first token taken from the input
         self.current_token = self.lexer.get_next_token()
 
-
-
     def error(self):
         raise Exception('Invalid syntax')
-
-
 
     def eat(self, token_type):
         # compare the current token type with the passed token
@@ -268,15 +225,11 @@ class Parser(object):
         else:
             self.error()
 
-
-
     def program(self):
         """program : compound_statement DOT"""
         node = self.compound_statement()
         self.eat(DOT)
         return node
-
-
 
     def compound_statement(self):
         """
@@ -291,8 +244,6 @@ class Parser(object):
             root.children.append(node)
 
         return root
-
-
 
     def statement_list(self):
         """
@@ -312,8 +263,6 @@ class Parser(object):
 
         return results
 
-
-
     def statement(self):
         """
         statement : compound_statement
@@ -328,8 +277,6 @@ class Parser(object):
             node = self.empty()
         return node
 
-
-
     def assignment_statement(self):
         """
         assignment_statement : variable ASSIGN expr
@@ -341,8 +288,6 @@ class Parser(object):
         node = Assign(left, token, right)
         return node
 
-
-
     def variable(self):
         """
         variable : ID
@@ -351,13 +296,9 @@ class Parser(object):
         self.eat(ID)
         return node
 
-
-
     def empty(self):
         """An empty production"""
         return NoOp()
-
-
 
     def expr(self):
         """
@@ -376,8 +317,6 @@ class Parser(object):
 
         return node
 
-
-
     def term(self):
         """term : factor ((MUL | DIV) factor)*"""
         node = self.factor()
@@ -392,8 +331,6 @@ class Parser(object):
             node = BinOp(left=node, op=token, right=self.factor())
 
         return node
-
-
 
     def factor(self):
         """factor : PLUS factor
@@ -422,8 +359,6 @@ class Parser(object):
         else:
             node = self.variable()
             return node
-
-
 
     def parse(self):
         """
@@ -461,10 +396,6 @@ class Parser(object):
         return node
 
 
-
-
-
-
 ###############################################################################
 #                                                                             #
 #  INTERPRETER                                                                #
@@ -477,13 +408,8 @@ class NodeVisitor(object):
         visitor = getattr(self, method_name, self.generic_visit)
         return visitor(node)
 
-
-
     def generic_visit(self, node):
         raise Exception('No visit_{} method'.format(type(node).__name__))
-
-
-
 
 
 class Interpreter(NodeVisitor):
@@ -492,8 +418,6 @@ class Interpreter(NodeVisitor):
 
     def __init__(self, parser):
         self.parser = parser
-
-
 
     def visit_BinOp(self, node):
         if node.op.type == PLUS:
@@ -505,12 +429,8 @@ class Interpreter(NodeVisitor):
         elif node.op.type == DIV:
             return self.visit(node.left) // self.visit(node.right)
 
-
-
     def visit_Num(self, node):
         return node.value
-
-
 
     def visit_UnaryOp(self, node):
         op = node.op.type
@@ -519,19 +439,13 @@ class Interpreter(NodeVisitor):
         elif op == MINUS:
             return -self.visit(node.expr)
 
-
-
     def visit_Compound(self, node):
         for child in node.children:
             self.visit(child)
 
-
-
     def visit_Assign(self, node):
         var_name = node.left.value
         self.GLOBAL_SCOPE[var_name] = self.visit(node.right)
-
-
 
     def visit_Var(self, node):
         var_name = node.value
@@ -541,12 +455,8 @@ class Interpreter(NodeVisitor):
         else:
             return val
 
-
-
     def visit_NoOp(self, node):
         pass
-
-
 
     def interpret(self):
         tree = self.parser.parse()
@@ -555,24 +465,9 @@ class Interpreter(NodeVisitor):
         return self.visit(tree)
 
 
-
-
-
-
-
 def main():
     import sys
-    text = """
-BEGIN
-    BEGIN
-        number := 2;
-        a := number;
-        b := 10 * a + 10 * number / 4;
-        c := a - - b
-    END;
-    x := 11;
-END.
-"""
+    text = open(sys.argv[1], 'r').read()
 
     lexer = Lexer(text)
     parser = Parser(lexer)

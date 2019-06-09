@@ -9,6 +9,7 @@ MIMES = [
     ['+', program.PLUS, program.PLUS_SYMBOL],
     ['(', program.L_PAREN, program.L_PAREN_SYMBOL],
     [')', program.R_PAREN, program.R_PAREN_SYMBOL],
+    [';', program.SEMI, program.SEMI_SYMBOL]
 ]
 FIND_INTEGERS = [
     ['1', 1],

@@ -8,6 +8,8 @@ L_PAREN_SYMBOL = '('
 L_PAREN = 'L_PAREN'
 R_PAREN_SYMBOL = ')'
 R_PAREN = 'R_PAREN'
+SEMI_SYMBOL = ';'
+SEMI = 'SEMI'
 
 
 
@@ -67,6 +69,10 @@ def find_token(src, idx):
         token = Token(R_PAREN, R_PAREN_SYMBOL)
         idx += len(R_PAREN_SYMBOL)
 
+    elif char == SEMI_SYMBOL:
+        token = Token(SEMI, SEMI_SYMBOL)
+        idx += len(SEMI_SYMBOL)
+
     return token, idx
 
 
@@ -125,5 +131,5 @@ def program(src):
 if __name__ == '__main__':
     pass
 
-    src = '2+3'
+    src = '2;3'
     print(program(src))

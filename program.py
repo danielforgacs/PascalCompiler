@@ -142,10 +142,11 @@ def node_visitor(node):
             return node.left + node.right
 
     if isinstance(node, StatementList):
+        results = []
         for node in node.nodes:
-            node_visitor(node)
-            # return node_visitor(node)
+            results.append(node_visitor(node))
 
+        return results
 
 def program(src):
     root = statement(src, 0)
@@ -159,4 +160,7 @@ if __name__ == '__main__':
 
     src = '1;2;3;4;5'
     src = '2+3;4+5'
-    program(src)
+    # src = '1;2;1;2;1'
+    src = '1'
+    src = '1;'
+    print(program(src))

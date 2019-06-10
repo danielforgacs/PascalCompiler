@@ -9,6 +9,7 @@ MIMES = [
     ['+', program.PLUS, program.PLUS_SYMBOL],
     ['(', program.L_PAREN, program.L_PAREN_SYMBOL],
     [')', program.R_PAREN, program.R_PAREN_SYMBOL],
+    [';', program.SEMI, program.SEMI_SYMBOL]
 ]
 FIND_INTEGERS = [
     ['1', 1],
@@ -32,9 +33,14 @@ NODE_VISITOR = [
     '(((((((((12345)))))))))',
 ]
 PROGRAM = [
-    '1',
-    '((((123))))',
-    '2+3',
+    ['1', [1]],
+    ['((((123))))', [123]],
+    ['2+3', [5]],
+    ['1;2', [1, 2]],
+    ['1;2;3;4;5', [1, 2, 3, 4, 5]],
+    ['1+2;2+3;3+4;4+5;5+6', [3, 5, 7, 9, 11]],
+    ['12+(21);(22+31);13+14;((((14))))+15;(((53+61)))',
+    [12+(21), (22+31), 13+14, ((((14))))+15, (((53+61)))]],
 ]
 
 
@@ -70,13 +76,14 @@ def test__node_visitor(src):
 
 
 
-@pytest.mark.parametrize('src', PROGRAM)
-def test__program(src):
-    assert program.program(src) == eval(src)
+@pytest.mark.parametrize('src, expected', PROGRAM)
+def test__program(src, expected):
+    assert program.program(src) == expected
 
 
 if __name__ == '__main__':
     pytest.main([
         __file__,
-        '-s'
+        # '-s',
+        # '-x',
     ])

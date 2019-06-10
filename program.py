@@ -8,6 +8,8 @@ L_PAREN_SYMBOL = '('
 L_PAREN = 'L_PAREN'
 R_PAREN_SYMBOL = ')'
 R_PAREN = 'R_PAREN'
+SEMI_SYMBOL = ';'
+SEMI = 'SEMI'
 
 
 
@@ -27,6 +29,11 @@ class BinOp:
         self.left = left
         self.op = op
         self.right = right
+
+
+class StatementList:
+    def __init__(self):
+        self.nodes = []
 
 
 
@@ -67,15 +74,14 @@ def find_token(src, idx):
         token = Token(R_PAREN, R_PAREN_SYMBOL)
         idx += len(R_PAREN_SYMBOL)
 
+    elif char == SEMI_SYMBOL:
+        token = Token(SEMI, SEMI_SYMBOL)
+        idx += len(SEMI_SYMBOL)
+
     return token, idx
 
 
-# exprs: expr PLUS|MINUS expr
-# expr: factors
-# factors: L_PAREN factor R_PAREN
-# factor: INTEGER
-
-
+# statement: expr | SEMI expr
 # expr: factor | (PLUS|MINUS) factor
 # factor: INTEGER | L_PAREN expr R_PAREN
 
@@ -106,17 +112,44 @@ def expr(src, idx):
 
 
 
+def statement(src, idx):
+    # statement: expr | SEMI expr
+    root = StatementList()
+
+    while True:
+        node, idx = expr(src, idx)
+        root.nodes.append(node)
+
+        token, idx = find_token(src, idx)
+
+        if token.type_ != SEMI:
+            break
+
+    # print(root.nodes)
+    return root
+
+
+
 
 def node_visitor(node):
     if isinstance(node, IntNode):
+        print(node.value)
         return node.value
+
     if isinstance(node, BinOp):
         if node.op == PLUS:
+            print(node.left + node.right)
             return node.left + node.right
 
+    if isinstance(node, StatementList):
+        results = []
+        for node in node.nodes:
+            results.append(node_visitor(node))
+
+        return results
 
 def program(src):
-    root, _ = expr(src, 0)
+    root = statement(src, 0)
     result = node_visitor(root)
     return result
 
@@ -125,5 +158,9 @@ def program(src):
 if __name__ == '__main__':
     pass
 
-    src = '2+3'
+    src = '1;2;3;4;5'
+    src = '2+3;4+5'
+    # src = '1;2;1;2;1'
+    src = '1'
+    src = '1;'
     print(program(src))

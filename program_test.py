@@ -4,11 +4,13 @@ import pytest
 
 SRC_01 = """
 BEGIN
+123
 END.
 """
 
 TOKENS_01 = [
     program.BEGIN_TOKEN,
+    (program.INTEGER, 123),
     program.END_TOKEN,
     program.DOT_TOKEN,
 ]

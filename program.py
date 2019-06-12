@@ -1,8 +1,9 @@
 """
 program: BEGIN compound END DOT
-compound: PASS
+compound: INTEGER
 """
 LETTERS = 'abcdefghijklmnopqurstuvwtxyz' + 'ABCDEFGHIJKLMNOPQURSTUVWTXYZ'
+DIGITS = '0123456789'
 WHITESPACE = ' \n\t'
 
 
@@ -11,6 +12,8 @@ END = 'END'
 DOT_SYMBOL = '.'
 DOT = 'DOT'
 EOF = 'EOF'
+
+INTEGER = 'INTEGER'
 
 
 EOF_TOKEN = (EOF, EOF)
@@ -27,7 +30,12 @@ class ProgramNode:
         self.node = node
 
 class CompundNode:
-    pass
+    def __init__(self, node):
+        self.intnode = node
+
+class IntegerNode:
+    def __init__(self, value):
+        self.value = value
 
 
 
@@ -43,6 +51,20 @@ def find_identifier(src, idx):
             break
         result += char
     return result, idx
+
+
+def find_integer(src, idx):
+    result = src[idx]
+    while True:
+        idx += 1
+        if is_idx_eof(src, idx):
+            break
+        if src[idx] not in DIGITS:
+            break
+        result += src[idx]
+
+    number = int(result)
+    return number, idx
 
 
 def find_token(src, idx):
@@ -69,6 +91,10 @@ def find_token(src, idx):
         token = DOT_TOKEN
         idx += len(DOT_SYMBOL)
 
+    elif char in DIGITS:
+        number, idx = find_integer(src, idx)
+        token = (INTEGER, number)
+
     else:
         raise Exception('CAN`T FIND TOKEN')
 
@@ -77,8 +103,11 @@ def find_token(src, idx):
 
 
 def compound(src, idx):
-    node = CompundNode()
-    return node, idx
+    token, idx = find_token(src, idx)
+    assert token[0] == INTEGER
+    node = IntegerNode(token[1])
+    compnode = CompundNode(node)
+    return compnode, idx
 
 
 
@@ -97,7 +126,10 @@ def program(src, idx):
 
 def nodevisitor(node):
     if isinstance(node, ProgramNode):
-        pass
+        nodevisitor(node.node)
+    elif isinstance(node, CompundNode):
+        print(node.intnode.value)
+
 
 
 
@@ -110,6 +142,7 @@ if __name__ == '__main__':
     idx = 0
     src = """
     BEGIN
+    123
     END.
     """
     nodevisitor(program(src, idx))

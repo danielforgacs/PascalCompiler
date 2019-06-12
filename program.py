@@ -66,22 +66,25 @@ def find_token(src, idx):
 
 
 
-idx = 0
-src = """
-BEGIN
-END.
-"""
-# src = '.'
+if __name__ == '__main__':
+    pass
+
+    idx = 0
+    src = """
+    BEGIN
+    END.
+    """
+    # src = '.'
 
 
 
-t, i = find_token(src, idx)
-print(t)
-t, i = find_token(src, i)
-print(t)
-t, i = find_token(src, i)
-print(t)
-t, i = find_token(src, i)
-print(t)
-print(i)
-print(len(src))
+    t, i = find_token(src, idx)
+    print(t)
+    t, i = find_token(src, i)
+    print(t)
+    t, i = find_token(src, i)
+    print(t)
+    t, i = find_token(src, i)
+    print(t)
+    print(i)
+    print(len(src))

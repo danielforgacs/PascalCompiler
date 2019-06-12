@@ -16,6 +16,7 @@ TOKENS_01 = [
 
 def test__tokenize_01():
     idx = 0
+
     for expectedtoken in TOKENS_01:
         token, idx = program.find_token(SRC_01, idx)
         assert token == expectedtoken

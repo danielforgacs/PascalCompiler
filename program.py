@@ -1,5 +1,6 @@
 """
-program: BEGIN END DOT
+program: BEGIN compound END DOT
+compound: PASS
 """
 LETTERS = 'abcdefghijklmnopqurstuvwtxyz' + 'ABCDEFGHIJKLMNOPQURSTUVWTXYZ'
 WHITESPACE = ' \n\t'
@@ -22,6 +23,10 @@ is_idx_eof = lambda x, y: y == len(x)
 
 
 class ProgramNode:
+    def __init__(self, node):
+        self.node = node
+
+class CompundNode:
     pass
 
 
@@ -71,14 +76,21 @@ def find_token(src, idx):
 
 
 
+def compound(src, idx):
+    node = CompundNode()
+    return node, idx
+
+
+
 def program(src, idx):
     begin, idx = find_token(src, idx)
     assert begin == BEGIN_TOKEN
+    node, idx = compound(src, idx)
     end, idx = find_token(src, idx)
     assert end == END_TOKEN
     dot, idx = find_token(src, idx)
     assert dot == DOT_TOKEN
-    node = ProgramNode()
+    prognode = ProgramNode(compound)
     return node
 
 

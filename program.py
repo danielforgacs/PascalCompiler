@@ -2,12 +2,11 @@ LETTERS = 'abcdefghijklmnopqurstuvwtxyz' + 'ABCDEFGHIJKLMNOPQURSTUVWTXYZ'
 WHITESPACE = ' \n\t'
 
 
-EOF = 'EOF'
 BEGIN = 'BEGIN'
 END = 'END'
 DOT_SYMBOL = '.'
 DOT = 'DOT'
-# IDENTIFIER = 'IDENTIFIER'
+EOF = 'EOF'
 
 
 EOF_TOKEN = (EOF, EOF)

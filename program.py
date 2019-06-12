@@ -1,3 +1,6 @@
+"""
+program: BEGIN END DOT
+"""
 LETTERS = 'abcdefghijklmnopqurstuvwtxyz' + 'ABCDEFGHIJKLMNOPQURSTUVWTXYZ'
 WHITESPACE = ' \n\t'
 
@@ -16,6 +19,11 @@ DOT_TOKEN = (DOT, DOT)
 
 
 is_idx_eof = lambda x, y: y == len(x)
+
+
+class ProgramNode:
+    pass
+
 
 
 def find_identifier(src, idx):
@@ -63,6 +71,24 @@ def find_token(src, idx):
 
 
 
+def program(src, idx):
+    begin, idx = find_token(src, idx)
+    assert begin == BEGIN_TOKEN
+    end, idx = find_token(src, idx)
+    assert end == END_TOKEN
+    dot, idx = find_token(src, idx)
+    assert dot == DOT_TOKEN
+    node = ProgramNode()
+    return node
+
+
+
+def nodevisitor(node):
+    if isinstance(node, ProgramNode):
+        pass
+
+
+
 
 
 
@@ -74,17 +100,4 @@ if __name__ == '__main__':
     BEGIN
     END.
     """
-    # src = '.'
-
-
-
-    t, i = find_token(src, idx)
-    print(t)
-    t, i = find_token(src, i)
-    print(t)
-    t, i = find_token(src, i)
-    print(t)
-    t, i = find_token(src, i)
-    print(t)
-    print(i)
-    print(len(src))
+    nodevisitor(program(src, idx))

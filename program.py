@@ -1,6 +1,7 @@
 """
 program: BEGIN compound END DOT
-compound: INTEGER
+compound: factor | SEMI compound
+factor: INTEGER
 """
 LETTERS = 'abcdefghijklmnopqurstuvwtxyz' + 'ABCDEFGHIJKLMNOPQURSTUVWTXYZ'
 DIGITS = '0123456789'
@@ -12,6 +13,8 @@ END = 'END'
 DOT_SYMBOL = '.'
 DOT = 'DOT'
 EOF = 'EOF'
+SEMI_SYMBOL = ';'
+SEMI = 'SEMI'
 
 INTEGER = 'INTEGER'
 
@@ -19,7 +22,8 @@ INTEGER = 'INTEGER'
 EOF_TOKEN = (EOF, EOF)
 BEGIN_TOKEN = (BEGIN, BEGIN)
 END_TOKEN = (END, END)
-DOT_TOKEN = (DOT, DOT)
+DOT_TOKEN = (DOT, DOT_SYMBOL)
+SEMI_TOKEN = (SEMI, SEMI_SYMBOL)
 
 
 is_idx_eof = lambda x, y: y == len(x)
@@ -30,8 +34,8 @@ class ProgramNode:
         self.node = node
 
 class CompundNode:
-    def __init__(self, node):
-        self.intnode = node
+    def __init__(self):
+        self.nodes = []
 
 class IntegerNode:
     def __init__(self, value):
@@ -95,6 +99,10 @@ def find_token(src, idx):
         number, idx = find_integer(src, idx)
         token = (INTEGER, number)
 
+    elif char == SEMI_SYMBOL:
+        token = SEMI_TOKEN
+        idx += len(SEMI_SYMBOL)
+
     else:
         raise Exception('CAN`T FIND TOKEN')
 
@@ -102,25 +110,38 @@ def find_token(src, idx):
 
 
 
-def compound(src, idx):
+def factor(src, idx):
     token, idx = find_token(src, idx)
     assert token[0] == INTEGER
     node = IntegerNode(token[1])
-    compnode = CompundNode(node)
+    return node, idx
+
+
+
+def compound(src, idx):
+    compnode = CompundNode()
+
+    while True:
+        node, idx = factor(src, idx)
+        if is_idx_eof(src, idx):
+            break
+        compnode.nodes.append(node)
+        token, idx = find_token(src, idx)
+        if token != SEMI_TOKEN:
+            break
+
     return compnode, idx
 
 
 
 def program(src, idx):
     begin, idx = find_token(src, idx)
-    assert begin == BEGIN_TOKEN
-    node, idx = compound(src, idx)
+    compnode, idx = compound(src, idx)
     end, idx = find_token(src, idx)
-    assert end == END_TOKEN
     dot, idx = find_token(src, idx)
-    assert dot == DOT_TOKEN
-    prognode = ProgramNode(compound)
-    return node
+
+    prognode = ProgramNode(compnode)
+    return prognode
 
 
 
@@ -128,7 +149,10 @@ def nodevisitor(node):
     if isinstance(node, ProgramNode):
         nodevisitor(node.node)
     elif isinstance(node, CompundNode):
-        print(node.intnode.value)
+        for cmpnode in node.nodes:
+            print(cmpnode.value)
+    elif isinstance(node, IntegerNode):
+        print(node.value)
 
 
 
@@ -142,7 +166,9 @@ if __name__ == '__main__':
     idx = 0
     src = """
     BEGIN
-    123
+    123;
+    234;
+    678
     END.
     """
     nodevisitor(program(src, idx))

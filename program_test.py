@@ -4,16 +4,18 @@ import pytest
 
 SRC_01 = """
 BEGIN
-123;
-234;
-678
+    123;
+    234;
+    678
 END.
 """
 
 TOKENS_01 = [
     program.BEGIN_TOKEN,
     (program.INTEGER, 123),
+    (program.SEMI, program.SEMI_SYMBOL),
     (program.INTEGER, 234),
+    (program.SEMI, program.SEMI_SYMBOL),
     (program.INTEGER, 678),
     program.END_TOKEN,
     program.DOT_TOKEN,

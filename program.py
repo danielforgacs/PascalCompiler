@@ -29,19 +29,6 @@ SEMI_TOKEN = (SEMI, SEMI_SYMBOL)
 is_idx_eof = lambda x, y: y == len(x)
 
 
-class ProgramNode:
-    def __init__(self, node):
-        self.node = node
-
-class CompundNode:
-    def __init__(self):
-        self.nodes = []
-
-class IntegerNode:
-    def __init__(self, value):
-        self.value = value
-
-
 
 def find_identifier(src, idx):
     char = src[idx]
@@ -110,65 +97,6 @@ def find_token(src, idx):
 
 
 
-def factor(src, idx):
-    token, idx = find_token(src, idx)
-    assert token[0] == INTEGER
-    node = IntegerNode(token[1])
-    return node, idx
-
-
-
-def compound(src, idx):
-    compnode = CompundNode()
-
-    while True:
-        node, idx = factor(src, idx)
-        if is_idx_eof(src, idx):
-            break
-        compnode.nodes.append(node)
-        token, idx = find_token(src, idx)
-        if token != SEMI_TOKEN:
-            break
-
-    return compnode, idx
-
-
-
-def program(src, idx):
-    begin, idx = find_token(src, idx)
-    compnode, idx = compound(src, idx)
-    end, idx = find_token(src, idx)
-    dot, idx = find_token(src, idx)
-
-    prognode = ProgramNode(compnode)
-    return prognode
-
-
-
-def nodevisitor(node):
-    if isinstance(node, ProgramNode):
-        nodevisitor(node.node)
-    elif isinstance(node, CompundNode):
-        for cmpnode in node.nodes:
-            print(cmpnode.value)
-    elif isinstance(node, IntegerNode):
-        print(node.value)
-
-
-
-
-
-
 
 if __name__ == '__main__':
     pass
-
-    idx = 0
-    src = """
-    BEGIN
-    123;
-    234;
-    678
-    END.
-    """
-    nodevisitor(program(src, idx))

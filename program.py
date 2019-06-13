@@ -1,8 +1,3 @@
-"""
-program: BEGIN compound END DOT
-compound: factor | SEMI compound
-factor: INTEGER
-"""
 LETTERS = 'abcdefghijklmnopqurstuvwtxyz' + 'ABCDEFGHIJKLMNOPQURSTUVWTXYZ'
 DIGITS = '0123456789'
 WHITESPACE = ' \n\t'
@@ -97,6 +92,34 @@ def find_token(src, idx):
 
 
 
+"""
+program: BEGIN END DOT
+"""
+
+
+def program(src, idx):
+    begin, idx = find_token(src, idx)
+    assert begin == BEGIN_TOKEN
+    end, idx = find_token(src, idx)
+    assert end == END_TOKEN
+    dot, idx = find_token(src, idx)
+    assert dot == DOT_TOKEN
+
+    node = None
+
+    return node
+
+
+
+def nodevisitor(node):
+    pass
+
+
 
 if __name__ == '__main__':
     pass
+
+    src = """
+BEGIN END.
+"""
+    nodevisitor(program(src, 0))

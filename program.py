@@ -99,25 +99,47 @@ def peek_token(src, idx):
 
 """
 program: compound DOT
-compound: BEGIN compound END
+compound: BEGIN factor END | compound
+factor: INTEGER | PASS
 """
 
-class CompoundNode(object):
+class CompoundNode:
     def __init__(self):
         self.nodes = []
 
 
+class IntegerNode:
+    def __init__(self, value):
+        self.value = value
+
+
+class NoOp:
+    pass
+
+
+def factor(src, idx):
+    node = NoOp()
+
+    if peek_token(src, idx)[0] == INTEGER:
+        token, idx = find_token(src, idx)
+        node = IntegerNode(token[1])
+
+
+    return node, idx
+
+
+
 def compound(src, idx):
-    node = None
+    begin, idx = find_token(src, idx)
+    assert begin == BEGIN_TOKEN
 
-    while peek_token(src, idx) == BEGIN_TOKEN:
-        begin, idx = find_token(src, idx)
-        assert begin == BEGIN_TOKEN
+    if peek_token(src, idx) == BEGIN_TOKEN:
+        node, idx = compound(src, idx)
+    else:
+        node, idx = factor(src, idx)
 
-        node, idx =  compound(src, idx)
-
-        end, idx = find_token(src, idx)
-        assert end == END_TOKEN
+    end, idx = find_token(src, idx)
+    assert end == END_TOKEN
 
     return node, idx
 
@@ -125,12 +147,9 @@ def compound(src, idx):
 def program(src, idx):
     compounds = CompoundNode()
 
-    while True:
+    while peek_token(src, idx) == BEGIN_TOKEN:
         node, idx = compound(src, idx)
         compounds.nodes.append(node)
-
-        if peek_token(src, idx) != BEGIN_TOKEN:
-            break
 
     dot, idx = find_token(src, idx)
     assert dot == DOT_TOKEN
@@ -144,6 +163,9 @@ def nodevisitor(node):
         for item in node.nodes:
             nodevisitor(item)
 
+    elif isinstance(node, IntegerNode):
+        print(node.value)
+
 
 
 if __name__ == '__main__':
@@ -155,15 +177,49 @@ END.
     """
     nodevisitor(program(src, 0))
 
+    src = """
+BEGIN
+    123
+END.
+    """
+    nodevisitor(program(src, 0))
+
 
     src = """
 BEGIN
 END
 BEGIN
+    234
 END
 BEGIN
 END
 BEGIN
+    312
+END.
+    """
+    nodevisitor(program(src, 0))
+
+    src = """
+BEGIN
+END
+BEGIN
+    11111
+END
+BEGIN
+    BEGIN
+        BEGIN
+            BEGIN
+            END
+        END
+    END
+END
+BEGIN
+    BEGIN
+        3333
+    END
+END
+BEGIN
+    22222
 END.
     """
     nodevisitor(program(src, 0))
@@ -201,7 +257,7 @@ BEGIN
     END
 END.
 """
-    nodevisitor(program(src, 0))
+    # nodevisitor(program(src, 0))
 
 
 

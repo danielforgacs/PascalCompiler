@@ -92,6 +92,12 @@ def find_token(src, idx):
 
 
 
+def peek_token(src, idx):
+    token, _ = find_token(src, idx)
+    return token
+
+
+
 """
 program: BEGIN compound END DOT
 compound: BEGIN END
@@ -106,11 +112,7 @@ def compound(src, idx):
     begin, idx = find_token(src, idx)
     assert begin == BEGIN_TOKEN
 
-    idx0 = idx
-    token, idx = find_token(src, idx)
-    idx = idx0
-
-    if token == BEGIN_TOKEN:
+    if peek_token(src, idx) == BEGIN_TOKEN:
         node, idx = compound(src, idx)
 
     end, idx = find_token(src, idx)
@@ -126,10 +128,7 @@ def program(src, idx):
     assert begin == BEGIN_TOKEN
 
     while True:
-        idx0 = idx
-        begin, idx = find_token(src, idx)
-        idx = idx0
-        if begin != BEGIN_TOKEN:
+        if peek_token(src, idx) != BEGIN_TOKEN:
             break
         node, idx = compound(src, idx)
         compounds.nodes.append(node)

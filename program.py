@@ -91,7 +91,6 @@ def find_token(src, idx):
     return token, idx
 
 
-
 def peek_token(src, idx):
     token, _ = find_token(src, idx)
     return token
@@ -99,8 +98,8 @@ def peek_token(src, idx):
 
 
 """
-program: BEGIN compound END DOT
-compound: BEGIN END
+program: compound DOT
+compound: BEGIN compound END | None
 """
 
 class CompoundNode(object):
@@ -109,34 +108,34 @@ class CompoundNode(object):
 
 
 def compound(src, idx):
-    begin, idx = find_token(src, idx)
-    assert begin == BEGIN_TOKEN
+    node = None
 
-    if peek_token(src, idx) == BEGIN_TOKEN:
-        node, idx = compound(src, idx)
+    while peek_token(src, idx) == BEGIN_TOKEN:
+        begin, idx = find_token(src, idx)
+        assert begin == BEGIN_TOKEN
 
-    end, idx = find_token(src, idx)
-    assert end == END_TOKEN
+        node, idx =  compound(src, idx)
 
-    return src, idx
+        end, idx = find_token(src, idx)
+        assert end == END_TOKEN
+
+    return node, idx
 
 
 def program(src, idx):
     compounds = CompoundNode()
 
-    begin, idx = find_token(src, idx)
-    assert begin == BEGIN_TOKEN
-
-    while peek_token(src, idx) == BEGIN_TOKEN:
+    while True:
         node, idx = compound(src, idx)
         compounds.nodes.append(node)
 
-    end, idx = find_token(src, idx)
-    assert end == END_TOKEN
+        if peek_token(src, idx) != BEGIN_TOKEN:
+            break
+
     dot, idx = find_token(src, idx)
     assert dot == DOT_TOKEN
 
-    return node
+    return compounds
 
 
 
@@ -147,6 +146,26 @@ def nodevisitor(node):
 
 if __name__ == '__main__':
     pass
+
+    src = """
+BEGIN
+END.
+    """
+    nodevisitor(program(src, 0))
+
+
+    src = """
+BEGIN
+END
+BEGIN
+END
+BEGIN
+END
+BEGIN
+END.
+    """
+    nodevisitor(program(src, 0))
+
 
     src = """
 BEGIN
@@ -181,3 +200,6 @@ BEGIN
 END.
 """
     nodevisitor(program(src, 0))
+
+
+

@@ -136,7 +136,7 @@ def compound(src, idx):
         assert begin == BEGIN_TOKEN
         node, idx = compound(src, idx)
         end, idx = find_token(src, idx)
-        assert end == END_TOKEN
+        assert end == END_TOKEN, idx
     else:
         node, idx = factor(src, idx)
 
@@ -221,6 +221,7 @@ BEGIN
     BEGIN
         BEGIN
             BEGIN
+                34
             END
         END
     END

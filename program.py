@@ -88,6 +88,7 @@ def find_token(src, idx):
     else:
         raise Exception('CAN`T FIND TOKEN')
 
+    # print('::idx:%s' % idx)
     return token, idx
 
 
@@ -130,21 +131,22 @@ def factor(src, idx):
 
 
 def compound(src, idx):
-    begin, idx = find_token(src, idx)
-    assert begin == BEGIN_TOKEN
-
     if peek_token(src, idx) == BEGIN_TOKEN:
+        begin, idx = find_token(src, idx)
+        assert begin == BEGIN_TOKEN
         node, idx = compound(src, idx)
+        end, idx = find_token(src, idx)
+        assert end == END_TOKEN
     else:
         node, idx = factor(src, idx)
-
-    end, idx = find_token(src, idx)
-    assert end == END_TOKEN
 
     return node, idx
 
 
 def program(src, idx):
+    """
+    program: . | BEGIN compounds END.
+    """
     compounds = CompoundNode()
 
     while peek_token(src, idx) == BEGIN_TOKEN:
@@ -166,6 +168,12 @@ def nodevisitor(node):
     elif isinstance(node, IntegerNode):
         print(node.value)
 
+    elif isinstance(node, NoOp):
+        pass
+
+    else:
+        raise Exception('UNKNOWN NODE: %s' % node)
+
 
 
 if __name__ == '__main__':
@@ -179,7 +187,7 @@ END.
 
     src = """
 BEGIN
-    123
+    1
 END.
     """
     nodevisitor(program(src, 0))
@@ -188,13 +196,15 @@ END.
     src = """
 BEGIN
 END
-BEGIN
-    234
-END
+
 BEGIN
 END
+
 BEGIN
-    312
+END
+
+BEGIN
+    2
 END.
     """
     nodevisitor(program(src, 0))
@@ -202,9 +212,11 @@ END.
     src = """
 BEGIN
 END
+
 BEGIN
-    11111
+    3
 END
+
 BEGIN
     BEGIN
         BEGIN
@@ -213,13 +225,15 @@ BEGIN
         END
     END
 END
+
 BEGIN
     BEGIN
-        3333
+        4
     END
 END
+
 BEGIN
-    22222
+    5
 END.
     """
     nodevisitor(program(src, 0))
@@ -234,6 +248,7 @@ BEGIN
                     BEGIN
                         BEGIN
                             BEGIN
+                                987654321
                             END
                         END
                     END
@@ -241,23 +256,26 @@ BEGIN
             END
         END
     END
+
     BEGIN
         BEGIN
         END
     END
+
     BEGIN
         BEGIN
             BEGIN
             END
         END
     END
+
     BEGIN
         BEGIN
         END
     END
 END.
 """
-    # nodevisitor(program(src, 0))
+    nodevisitor(program(src, 0))
 
 
 

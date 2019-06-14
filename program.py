@@ -127,9 +127,7 @@ def program(src, idx):
     begin, idx = find_token(src, idx)
     assert begin == BEGIN_TOKEN
 
-    while True:
-        if peek_token(src, idx) != BEGIN_TOKEN:
-            break
+    while peek_token(src, idx) == BEGIN_TOKEN:
         node, idx = compound(src, idx)
         compounds.nodes.append(node)
 

@@ -140,7 +140,9 @@ def program(src, idx):
 
 
 def nodevisitor(node):
-    pass
+    if isinstance(node, CompoundNode):
+        for item in node.nodes:
+            nodevisitor(item)
 
 
 

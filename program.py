@@ -93,19 +93,42 @@ def find_token(src, idx):
 
 
 """
-program: BEGIN END DOT
+program: BEGIN compound END DOT
+compound: BEGIN END
 """
 
+class CompoundNode(object):
+    def __init__(self):
+        self.nodes = []
 
-def program(src, idx):
+
+def compound(src, idx):
     begin, idx = find_token(src, idx)
     assert begin == BEGIN_TOKEN
     end, idx = find_token(src, idx)
     assert end == END_TOKEN
+    return src, idx
+
+
+def program(src, idx):
+    compounds = CompoundNode()
+
+    begin, idx = find_token(src, idx)
+    assert begin == BEGIN_TOKEN
+
+    while True:
+        idx0 = idx
+        begin, idx = find_token(src, idx)
+        idx = idx0
+        if begin != BEGIN_TOKEN:
+            break
+        node, idx = compound(src, idx)
+        compounds.nodes.append(node)
+
+    end, idx = find_token(src, idx)
+    assert end == END_TOKEN
     dot, idx = find_token(src, idx)
     assert dot == DOT_TOKEN
-
-    node = None
 
     return node
 
@@ -120,6 +143,15 @@ if __name__ == '__main__':
     pass
 
     src = """
-BEGIN END.
+BEGIN
+    BEGIN
+    END
+    BEGIN
+    END
+    BEGIN
+    END
+    BEGIN
+    END
+END.
 """
     nodevisitor(program(src, 0))

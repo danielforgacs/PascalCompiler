@@ -99,7 +99,7 @@ def peek_token(src, idx):
 
 """
 program: compound DOT
-compound: BEGIN compound END | None
+compound: BEGIN compound END
 """
 
 class CompoundNode(object):

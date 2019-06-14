@@ -35,6 +35,66 @@ def test__tokenize_01():
 
 
 
+def test__program_01():
+    src = """
+BEGIN
+END.
+        """
+    program.nodevisitor(program.program(src, 0))
+
+
+def test__program_02():
+    src = """
+BEGIN
+END
+BEGIN
+END
+BEGIN
+END
+BEGIN
+END.
+    """
+    program.nodevisitor(program.program(src, 0))
+
+
+def test__program_03():
+    src = """
+BEGIN
+    BEGIN
+        BEGIN
+            BEGIN
+                BEGIN
+                    BEGIN
+                        BEGIN
+                            BEGIN
+                            END
+                        END
+                    END
+                END
+            END
+        END
+    END
+    BEGIN
+        BEGIN
+        END
+    END
+    BEGIN
+        BEGIN
+            BEGIN
+            END
+        END
+    END
+    BEGIN
+        BEGIN
+        END
+    END
+END.
+    """
+    program.nodevisitor(program.program(src, 0))
+
+
+
+
 if __name__ == '__main__':
     pytest.main([
         __file__,

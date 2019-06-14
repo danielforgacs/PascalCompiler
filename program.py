@@ -105,8 +105,17 @@ class CompoundNode(object):
 def compound(src, idx):
     begin, idx = find_token(src, idx)
     assert begin == BEGIN_TOKEN
+
+    idx0 = idx
+    token, idx = find_token(src, idx)
+    idx = idx0
+
+    if token == BEGIN_TOKEN:
+        node, idx = compound(src, idx)
+
     end, idx = find_token(src, idx)
     assert end == END_TOKEN
+
     return src, idx
 
 
@@ -145,12 +154,32 @@ if __name__ == '__main__':
     src = """
 BEGIN
     BEGIN
+        BEGIN
+            BEGIN
+                BEGIN
+                    BEGIN
+                        BEGIN
+                            BEGIN
+                            END
+                        END
+                    END
+                END
+            END
+        END
     END
     BEGIN
+        BEGIN
+        END
     END
     BEGIN
+        BEGIN
+            BEGIN
+            END
+        END
     END
     BEGIN
+        BEGIN
+        END
     END
 END.
 """

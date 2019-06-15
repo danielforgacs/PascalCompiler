@@ -161,6 +161,7 @@ def program(src, idx):
 
 
 def nodevisitor(node):
+    print('::visit:%s::' % node)
     if isinstance(node, CompoundNode):
         for item in node.nodes:
             nodevisitor(item)
@@ -184,102 +185,4 @@ BEGIN
 END.
     """
     nodevisitor(program(src, 0))
-
-    src = """
-BEGIN
-    1
-END.
-    """
-    nodevisitor(program(src, 0))
-
-
-    src = """
-BEGIN
-END
-
-BEGIN
-END
-
-BEGIN
-END
-
-BEGIN
-    2
-END.
-    """
-    nodevisitor(program(src, 0))
-
-    src = """
-BEGIN
-END
-
-BEGIN
-    3
-END
-
-BEGIN
-    BEGIN
-        BEGIN
-            BEGIN
-                34
-            END
-        END
-    END
-END
-
-BEGIN
-    BEGIN
-        4
-    END
-    END
-        444
-    BEGIN
-END
-
-BEGIN
-    5
-END.
-    """
-    nodevisitor(program(src, 0))
-
-
-    src = """
-BEGIN
-    BEGIN
-        BEGIN
-            BEGIN
-                BEGIN
-                    BEGIN
-                        BEGIN
-                            BEGIN
-                                987654321
-                            END
-                        END
-                    END
-                END
-            END
-        END
-    END
-
-    BEGIN
-        BEGIN
-        END
-    END
-
-    BEGIN
-        BEGIN
-            BEGIN
-            END
-        END
-    END
-
-    BEGIN
-        BEGIN
-        END
-    END
-END.
-"""
-    nodevisitor(program(src, 0))
-
-
 

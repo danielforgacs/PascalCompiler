@@ -133,10 +133,10 @@ def factor(src, idx):
 def compound(src, idx):
     if peek_token(src, idx) == BEGIN_TOKEN:
         begin, idx = find_token(src, idx)
-        assert begin == BEGIN_TOKEN
+        assert begin == BEGIN_TOKEN, (begin, idx)
         node, idx = compound(src, idx)
         end, idx = find_token(src, idx)
-        assert end == END_TOKEN, idx
+        assert end == END_TOKEN, (end, idx)
     else:
         node, idx = factor(src, idx)
 
@@ -154,7 +154,7 @@ def program(src, idx):
         compounds.nodes.append(node)
 
     dot, idx = find_token(src, idx)
-    assert dot == DOT_TOKEN
+    assert dot == DOT_TOKEN, (dot, idx)
 
     return compounds
 
@@ -231,6 +231,9 @@ BEGIN
     BEGIN
         4
     END
+    END
+        444
+    BEGIN
 END
 
 BEGIN

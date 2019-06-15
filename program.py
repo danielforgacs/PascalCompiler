@@ -88,7 +88,7 @@ def find_token(src, idx):
     else:
         raise Exception('CAN`T FIND TOKEN')
 
-    # print('::idx:%s' % idx)
+    # print('::%s:%s::' % (token, idx))
     return token, idx
 
 

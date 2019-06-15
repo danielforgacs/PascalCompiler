@@ -97,16 +97,9 @@ def peek_token(src, idx):
     return token
 
 
-
 """
-program: compound DOT
-compound: BEGIN factor END | compound
-factor: INTEGER | PASS
+factor: INTEGER
 """
-
-class CompoundNode:
-    def __init__(self):
-        self.nodes = []
 
 
 class IntegerNode:
@@ -114,76 +107,27 @@ class IntegerNode:
         self.value = value
 
 
-class NoOp:
-    pass
-
-
 def factor(src, idx):
-    """
-    factor: INTEGER | compound
-    """
-    node = NoOp()
-
-    if peek_token(src, idx)[0] == INTEGER:
-        token, idx = find_token(src, idx)
-        node = IntegerNode(token[1])
-
-    elif peek_token(src, idx) == BEGIN_TOKEN:
-        node, idx = compound(src, idx)
-
-
-    print('\tfactor', node)
+    integertoken, idx = find_token(src, idx)
+    assert integertoken[0] == INTEGER, (src, idx)
+    node = IntegerNode(integertoken[1])
     return node, idx
-
-
-
-def compound(src, idx):
-    """
-    compound: BEGIN (factor|compound) END
-    compound: BEGIN factor END | compound
-    """
-    while peek_token(src, idx) == BEGIN_TOKEN:
-        begin, idx = find_token(src, idx)
-        assert begin == BEGIN_TOKEN, (begin, idx)
-        node, idx = factor(src, idx)
-        end, idx = find_token(src, idx)
-        assert end == END_TOKEN, (end, idx)
-
-    print('\tcompound', node)
-    return node, idx
-
-
-def program(src, idx):
-    """
-    program: DOT | compounds DOT
-    """
-    compounds = CompoundNode()
-
-    while peek_token(src, idx) == BEGIN_TOKEN:
-        node, idx = compound(src, idx)
-        compounds.nodes.append(node)
-
-    dot, idx = find_token(src, idx)
-    assert dot == DOT_TOKEN, (dot, idx)
-
-    return compounds
 
 
 
 def nodevisitor(node):
-    print('::visit:%s::' % node)
-    if isinstance(node, CompoundNode):
-        for item in node.nodes:
-            nodevisitor(item)
-
-    elif isinstance(node, IntegerNode):
+    if isinstance(node, IntegerNode):
         print(node.value)
-
-    elif isinstance(node, NoOp):
-        pass
-
     else:
-        raise Exception('UNKNOWN NODE: %s' % node)
+        raise Exception('UNKNOWN NODE')
+
+
+
+def interpreter(src):
+    root, _ = factor(src, 0)
+    nodevisitor(root)
+
+
 
 
 
@@ -191,18 +135,7 @@ if __name__ == '__main__':
     pass
 
     src = """
-BEGIN
-    BEGIN
-        BEGIN
-            1
-        END
-    END
-    BEGIN
-        BEGIN
-            2
-        END
-    END
-END.
+123
     """
-    nodevisitor(program(src, 0))
+    interpreter(src)
 

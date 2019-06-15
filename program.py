@@ -94,10 +94,11 @@ def find_token(src, idx):
 
 def peek_token(src, idx):
     token, _ = find_token(src, idx)
-    return token
+    return token[0]
 
 
 """
+program: factor | SEMI factor
 factor: INTEGER
 """
 
@@ -106,25 +107,48 @@ class IntegerNode:
     def __init__(self, value):
         self.value = value
 
+class ListNode:
+    def __init__(self):
+        self.nodes = []
+
+
 
 def factor(src, idx):
     integertoken, idx = find_token(src, idx)
-    assert integertoken[0] == INTEGER, (src, idx)
     node = IntegerNode(integertoken[1])
+
     return node, idx
+
+
+def program(src, idx):
+    nodelist = ListNode()
+
+    while True:
+        intnode, idx = factor(src, idx)
+        assert isinstance(intnode, IntegerNode)
+        nodelist.nodes.append(intnode)
+        token, idx = find_token(src, idx)
+        if token[0] != SEMI:
+            break
+
+    return nodelist, idx
+
 
 
 
 def nodevisitor(node):
     if isinstance(node, IntegerNode):
         print(node.value)
+    elif isinstance(node, ListNode):
+        for item in node.nodes:
+            nodevisitor(item)
     else:
         raise Exception('UNKNOWN NODE')
 
 
 
 def interpreter(src):
-    root, _ = factor(src, 0)
+    root, _ = program(src, 0)
     nodevisitor(root)
 
 
@@ -135,7 +159,8 @@ if __name__ == '__main__':
     pass
 
     src = """
-123
+123;
+234
     """
     interpreter(src)
 

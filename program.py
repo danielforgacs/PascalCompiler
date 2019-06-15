@@ -119,33 +119,43 @@ class NoOp:
 
 
 def factor(src, idx):
+    """
+    factor: INTEGER | compound
+    """
     node = NoOp()
 
     if peek_token(src, idx)[0] == INTEGER:
         token, idx = find_token(src, idx)
         node = IntegerNode(token[1])
 
+    elif peek_token(src, idx) == BEGIN_TOKEN:
+        node, idx = compound(src, idx)
 
+
+    print('\tfactor', node)
     return node, idx
 
 
 
 def compound(src, idx):
-    if peek_token(src, idx) == BEGIN_TOKEN:
+    """
+    compound: BEGIN (factor|compound) END
+    compound: BEGIN factor END | compound
+    """
+    while peek_token(src, idx) == BEGIN_TOKEN:
         begin, idx = find_token(src, idx)
         assert begin == BEGIN_TOKEN, (begin, idx)
-        node, idx = compound(src, idx)
+        node, idx = factor(src, idx)
         end, idx = find_token(src, idx)
         assert end == END_TOKEN, (end, idx)
-    else:
-        node, idx = factor(src, idx)
 
+    print('\tcompound', node)
     return node, idx
 
 
 def program(src, idx):
     """
-    program: . | BEGIN compounds END.
+    program: DOT | compounds DOT
     """
     compounds = CompoundNode()
 
@@ -182,6 +192,16 @@ if __name__ == '__main__':
 
     src = """
 BEGIN
+    BEGIN
+        BEGIN
+            1
+        END
+    END
+    BEGIN
+        BEGIN
+            2
+        END
+    END
 END.
     """
     nodevisitor(program(src, 0))

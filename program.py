@@ -99,9 +99,9 @@ def peek_token(src, idx):
 
 
 """
-program:    BEGIN END DOT
-            | SEMI factor
+program:    BEGIN END DOT EOF
             | factor
+            | SEMI factor
 factor: INTEGER
 """
 

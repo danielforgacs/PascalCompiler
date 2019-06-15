@@ -68,6 +68,7 @@ def find_token(src, idx):
 
     if char in LETTERS:
         identifier, idx = find_identifier(src, idx)
+
         if identifier == BEGIN:
             token = BEGIN_TOKEN
         elif identifier == END:
@@ -98,7 +99,9 @@ def peek_token(src, idx):
 
 
 """
-program: factor | SEMI factor
+program:    BEGIN END DOT
+            | SEMI factor
+            | factor
 factor: INTEGER
 """
 
@@ -123,16 +126,24 @@ def factor(src, idx):
 def program(src, idx):
     nodelist = ListNode()
 
+    begin, idx = find_token(src, idx)
+    assert begin == BEGIN_TOKEN
+
     while True:
         intnode, idx = factor(src, idx)
         assert isinstance(intnode, IntegerNode), (intnode, idx)
         nodelist.nodes.append(intnode)
-        token, idx = find_token(src, idx)
-        if token[0] != SEMI:
+        if peek_token(src, idx) == SEMI:
+            semi, idx = find_token(src, idx)
+        else:
             break
 
+    end, idx = find_token(src, idx)
+    assert end == END_TOKEN, (end, idx)
+    dot, idx = find_token(src, idx)
+    assert dot == DOT_TOKEN, (dot, idx)
     eof, idx = find_token(src, idx)
-    assert eof[0] == EOF, (eof, idx)
+    assert eof == EOF_TOKEN, (eof, idx)
 
     return nodelist, idx
 
@@ -162,8 +173,10 @@ if __name__ == '__main__':
     pass
 
     src = """
-123;
-234
+BEGIN
+    123;
+    234
+END.
     """
     interpreter(src)
 

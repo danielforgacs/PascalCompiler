@@ -175,7 +175,9 @@ if __name__ == '__main__':
     src = """
 BEGIN
     123;
-    234
+    234;
+
+    12211212; 873
 END.
     """
     interpreter(src)

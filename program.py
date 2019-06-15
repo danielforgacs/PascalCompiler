@@ -125,11 +125,14 @@ def program(src, idx):
 
     while True:
         intnode, idx = factor(src, idx)
-        assert isinstance(intnode, IntegerNode)
+        assert isinstance(intnode, IntegerNode), (intnode, idx)
         nodelist.nodes.append(intnode)
         token, idx = find_token(src, idx)
         if token[0] != SEMI:
             break
+
+    eof, idx = find_token(src, idx)
+    assert eof[0] == EOF, (eof, idx)
 
     return nodelist, idx
 

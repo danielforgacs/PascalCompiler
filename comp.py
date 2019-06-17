@@ -35,10 +35,21 @@ def lex(filecontents):
             tok = ""
 
     print(tokens)
+    return tokens
+
+
+def parse(toks):
+    i = 0 # +instruction counter
+
+    while i < len(toks):
+        print(i)
+        i += 1
+
 
 def run(src):
     data = open_file(src)
-    lex(data)
+    toks = lex(data)
+    parse(toks)
 
 
 if __name__ == '__main__':

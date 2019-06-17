@@ -14,6 +14,8 @@ def lex(filecontents):
         if tok == " ":
             if state == 0:
                 tok = ""
+        elif tok == "\n":
+            tok = ""
         elif tok == "PRINT":
             print('found: PRINT')
             tokens.append("PRINT")
@@ -27,6 +29,7 @@ def lex(filecontents):
                 tokens.append("STRING:"+string)
                 string = ""
                 state = 0
+                tok = ""
         elif state == 1:
             string += tok
             tok = ""
@@ -41,5 +44,8 @@ def run(src):
 if __name__ == '__main__':
     pass
 
-    src = '''PRINT "Hello world"'''
+    src = '''
+PRINT "Hello world"
+PRINT "blabl kjdhsf"
+'''
     run(src)

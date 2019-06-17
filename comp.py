@@ -17,7 +17,7 @@ def lex(filecontents):
         elif tok == "\n":
             tok = ""
         elif tok == "PRINT":
-            print('found: PRINT')
+            # print('found: PRINT')
             tokens.append("PRINT")
             tok = ""
         elif tok == "\"":
@@ -25,7 +25,7 @@ def lex(filecontents):
                 state = 1
             elif state == 1:
                 string += '"'
-                print('found: STRING: %s' % string)
+                # print('found: STRING: %s' % string)
                 tokens.append("STRING:"+string)
                 string = ""
                 state = 0
@@ -34,7 +34,7 @@ def lex(filecontents):
             string += tok
             tok = ""
 
-    print(tokens)
+    # print(tokens)
     return tokens
 
 
@@ -42,8 +42,9 @@ def parse(toks):
     i = 0 # +instruction counter
 
     while i < len(toks):
-        print(i)
-        i += 1
+        if  toks[i] + " " + toks[i+1][0:6] == "PRINT STRING":
+            print(toks[i+1][7:])
+        i += 2
 
 
 def run(src):
@@ -58,5 +59,6 @@ if __name__ == '__main__':
     src = '''
 PRINT "Hello world"
 PRINT "blabl kjdhsf"
+PRINT "blak, 34rf 3rjhfg skjdh"
 '''
     run(src)

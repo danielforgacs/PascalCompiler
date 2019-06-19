@@ -11,14 +11,19 @@ INTEGER = 'INTEGER'
 
 DOT_SYMBOL, DOT = '.', 'DOT'
 SEMI_SYMBOL, SEMI = ';', 'SEMI'
+PLUS_SYMBOL, PLUS = '+', 'PLUS'
+MINUS_SYMBOL, MINUS = '-', 'MINUS'
 
 
 BEGIN_TOKEN = (BEGIN, BEGIN)
 END_TOKEN = (END, END)
 EOF_TOKEN = (EOF, EOF)
 
+
 DOT_TOKEN = (DOT, DOT_SYMBOL)
 SEMI_TOKEN = (SEMI, SEMI_SYMBOL)
+PLUS_TOKEN = (PLUS, PLUS_SYMBOL)
+MINUS_TOKEN = (MINUS, MINUS_SYMBOL)
 
 
 is_idx_eof = lambda x, y: y == len(x)
@@ -93,6 +98,14 @@ def find_token(src, idx):
         token = SEMI_TOKEN
         idx += len(SEMI_SYMBOL)
 
+    elif char == PLUS_SYMBOL:
+        token = PLUS_TOKEN
+        idx += len(PLUS_SYMBOL)
+
+    elif char == MINUS_SYMBOL:
+        token = MINUS_TOKEN
+        idx += len(MINUS_SYMBOL)
+
     else:
         raise Exception('CAN`T FIND TOKEN')
 
@@ -130,8 +143,15 @@ def factor(src, idx):
 if __name__ == '__main__':
     pass
 
+    idx = 0
     src = """
-24+6
+24
 """
 
-    print(factor(src, 0))
+
+    while True:
+        try:
+            token, idx = factor(src, idx)
+            print(token)
+        except Exception as error:
+            break

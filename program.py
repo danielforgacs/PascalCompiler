@@ -116,13 +116,13 @@ def find_token(src, idx):
 
 def peek_token(src, idx):
     token, _ = find_token(src, idx)
-    return token[0]
+    return token
 
 
 
 
 """
-term: factor (PLU   )
+term: factor ((PLUL|MINUS) factor)
 factor: INTEGER
 """
 
@@ -130,9 +130,24 @@ factor: INTEGER
 
 
 def factor(src, idx):
-    integertoken, idx = find_token(src, idx)
+    token, idx = find_token(src, idx)
+    assert token[0] == INTEGER
+    value = token [1]
 
-    return integertoken, idx
+    return value, idx
+
+
+
+
+def term(src, idx):
+    value, idx = factor(src, idx)
+
+    while peek_token(src, idx) in [PLUS_TOKEN]:
+        token, idx = find_token(src, idx)
+        rightvalue, idx = factor(src, idx)
+        value += rightvalue
+
+    return value, idx
 
 
 
@@ -145,13 +160,13 @@ if __name__ == '__main__':
 
     idx = 0
     src = """
-24
+24+2+4+100+10
 """
 
 
     while True:
         try:
-            token, idx = factor(src, idx)
+            token, idx = term(src, idx)
             print(token)
         except Exception as error:
             break

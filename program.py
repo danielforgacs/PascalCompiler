@@ -160,13 +160,18 @@ if __name__ == '__main__':
 
     idx = 0
     src = """
-24+2+4+100+10
+24 + 2 + 4 + 100 + 10 - 25 - 50  + 75
 """
 
+    token, _ = term(src, idx)
+    print(token)
+    print(eval(src))
+
+    print('-'*79)
 
     while True:
         try:
-            token, idx = term(src, idx)
+            token, idx = find_token(src, idx)
             print(token)
         except Exception as error:
             break

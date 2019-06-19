@@ -5,23 +5,25 @@ WHITESPACE = ' \n\t'
 
 BEGIN = 'BEGIN'
 END = 'END'
-DOT_SYMBOL = '.'
-DOT = 'DOT'
 EOF = 'EOF'
-SEMI_SYMBOL = ';'
-SEMI = 'SEMI'
-
 INTEGER = 'INTEGER'
 
 
-EOF_TOKEN = (EOF, EOF)
+DOT_SYMBOL, DOT = '.', 'DOT'
+SEMI_SYMBOL, SEMI = ';', 'SEMI'
+
+
 BEGIN_TOKEN = (BEGIN, BEGIN)
 END_TOKEN = (END, END)
+EOF_TOKEN = (EOF, EOF)
+
 DOT_TOKEN = (DOT, DOT_SYMBOL)
 SEMI_TOKEN = (SEMI, SEMI_SYMBOL)
 
 
 is_idx_eof = lambda x, y: y == len(x)
+
+
 
 
 
@@ -39,6 +41,9 @@ def find_identifier(src, idx):
     return result, idx
 
 
+
+
+
 def find_integer(src, idx):
     result = src[idx]
     while True:
@@ -51,6 +56,8 @@ def find_integer(src, idx):
 
     number = int(result)
     return number, idx
+
+
 
 
 def find_token(src, idx):
@@ -89,8 +96,9 @@ def find_token(src, idx):
     else:
         raise Exception('CAN`T FIND TOKEN')
 
-    # print('::%s:%s::' % (token, idx))
     return token, idx
+
+
 
 
 def peek_token(src, idx):
@@ -98,70 +106,22 @@ def peek_token(src, idx):
     return token[0]
 
 
+
+
 """
-program:    BEGIN [factor (SEMI factor)*] END DOT EOF
-factor:     INTEGER
+term: factor (PLU   )
+factor: INTEGER
 """
 
-
-class IntegerNode:
-    def __init__(self, value):
-        self.value = value
-
-class ListNode:
-    def __init__(self):
-        self.nodes = []
 
 
 
 def factor(src, idx):
     integertoken, idx = find_token(src, idx)
-    node = IntegerNode(integertoken[1])
 
-    return node, idx
-
-
-def program(src, idx):
-    nodelist = ListNode()
-
-    begin, idx = find_token(src, idx)
-    assert begin == BEGIN_TOKEN
-
-    while True:
-        intnode, idx = factor(src, idx)
-        assert isinstance(intnode, IntegerNode), (intnode, idx)
-        nodelist.nodes.append(intnode)
-        if peek_token(src, idx) == SEMI:
-            semi, idx = find_token(src, idx)
-        else:
-            break
-
-    end, idx = find_token(src, idx)
-    assert end == END_TOKEN, (end, idx)
-    dot, idx = find_token(src, idx)
-    assert dot == DOT_TOKEN, (dot, idx)
-    eof, idx = find_token(src, idx)
-    assert eof == EOF_TOKEN, (eof, idx)
-
-    return nodelist, idx
+    return integertoken, idx
 
 
-
-
-def nodevisitor(node):
-    if isinstance(node, IntegerNode):
-        print(node.value)
-    elif isinstance(node, ListNode):
-        for item in node.nodes:
-            nodevisitor(item)
-    else:
-        raise Exception('UNKNOWN NODE')
-
-
-
-def interpreter(src):
-    root, _ = program(src, 0)
-    nodevisitor(root)
 
 
 
@@ -171,12 +131,7 @@ if __name__ == '__main__':
     pass
 
     src = """
-BEGIN
-    123;
-    234;
+24+6
+"""
 
-    12211212; 873
-END.
-    """
-    interpreter(src)
-
+    print(factor(src, 0))

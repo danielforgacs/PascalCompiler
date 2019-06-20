@@ -148,16 +148,24 @@ def peek_token(src, idx):
 """
 term: expr ((PLUL | MINUS) expr)*
 expr: factor ((MULT | DIV) factor)*
-factor: INTEGER
+factor: INTEGER | L_PAREN expr R_PAREN
 """
 
 
 
 
 def factor(src, idx):
-    token, idx = find_token(src, idx)
-    assert token[0] == INTEGER
-    value = token [1]
+    nexttoken = peek_token(src, idx)
+
+    if nexttoken[0] == INTEGER:
+        token, idx = find_token(src, idx)
+        value = token[1]
+
+    elif nexttoken == L_PAREN_TOKEN:
+        lparen, idx = find_token(src, idx)
+        value, idx = term(src, idx)
+        rparen, idx = find_token(src, idx)
+        assert rparen == R_PAREN_TOKEN, rparen
 
     return value, idx
 
@@ -207,7 +215,7 @@ if __name__ == '__main__':
 
     idx = 0
     src = """2*24+2+4+100+10-25-50+75*4/2"""
-    src = """((2)+3)"""
+    src = """((2)+3)*(2+3)+2*24+2+4+100+10-25-50+75*(4/2)"""
 
     print(src)
     print('-'*79)

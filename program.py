@@ -207,6 +207,10 @@ if __name__ == '__main__':
 
     idx = 0
     src = """2*24+2+4+100+10-25-50+75*4/2"""
+    src = """((2)+3)"""
+
+    print(src)
+    print('-'*79)
 
     token, _ = term(src, idx)
     print(token)
@@ -217,6 +221,6 @@ if __name__ == '__main__':
     while True:
         try:
             token, idx = find_token(src, idx)
-            print(token)
+            print(token[0].ljust(10), token[1])
         except Exception as error:
             break

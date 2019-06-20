@@ -1,166 +1,210 @@
+LETTERS = 'abcdefghijklmnopqurstuvwtxyz' + 'ABCDEFGHIJKLMNOPQURSTUVWTXYZ'
 DIGITS = '0123456789'
+WHITESPACE = ' \n\t'
 
+
+BEGIN = 'BEGIN'
+END = 'END'
 EOF = 'EOF'
 INTEGER = 'INTEGER'
-PLUS_SYMBOL = '+'
-PLUS = 'PLUS'
-L_PAREN_SYMBOL = '('
-L_PAREN = 'L_PAREN'
-R_PAREN_SYMBOL = ')'
-R_PAREN = 'R_PAREN'
-SEMI_SYMBOL = ';'
-SEMI = 'SEMI'
+
+
+DOT_SYMBOL, DOT = '.', 'DOT'
+SEMI_SYMBOL, SEMI = ';', 'SEMI'
+PLUS_SYMBOL, PLUS = '+', 'PLUS'
+MINUS_SYMBOL, MINUS = '-', 'MINUS'
+MULT_SYMBOL, MULT = '*', 'MULT'
+DIV_SYMBOL, DIV = '/', 'DIV'
+
+
+BEGIN_TOKEN = (BEGIN, BEGIN)
+END_TOKEN = (END, END)
+EOF_TOKEN = (EOF, EOF)
+
+
+DOT_TOKEN = (DOT, DOT_SYMBOL)
+SEMI_TOKEN = (SEMI, SEMI_SYMBOL)
+PLUS_TOKEN = (PLUS, PLUS_SYMBOL)
+MINUS_TOKEN = (MINUS, MINUS_SYMBOL)
+MULT_TOKEN = (MULT, MULT_SYMBOL)
+DIV_TOKEN = (DIV, DIV_SYMBOL)
+
+
+is_idx_eof = lambda x, y: y == len(x)
 
 
 
-class Token:
-    def __init__(self, type_, value):
-        self.type_ = type_
-        self.value = value
 
 
-class IntNode:
-    def __init__(self, value):
-        self.value = value
+def find_identifier(src, idx):
+    char = src[idx]
+    result = char
+    while True:
+        idx += 1
+        if is_idx_eof(src, idx):
+            break
+        char = src[idx]
+        if char not in LETTERS:
+            break
+        result += char
+    return result, idx
 
 
-class BinOp:
-    def __init__(self, left, op, right):
-        self.left = left
-        self.op = op
-        self.right = right
-
-
-class StatementList:
-    def __init__(self):
-        self.nodes = []
 
 
 
 def find_integer(src, idx):
-    numstr = src[idx]
+    result = src[idx]
     while True:
         idx += 1
-        if idx == len(src):
+        if is_idx_eof(src, idx):
             break
         if src[idx] not in DIGITS:
             break
-        numstr += src[idx]
-    num = int(numstr)
-    return num, idx
+        result += src[idx]
+
+    number = int(result)
+    return number, idx
+
 
 
 
 def find_token(src, idx):
-    if idx == len(src):
-        token = Token(EOF, EOF)
-        return token, idx
+    if is_idx_eof(src, idx):
+        idx += 1
+        return EOF_TOKEN, idx
 
     char = src[idx]
 
-    if char in DIGITS:
-        num, idx = find_integer(src, idx)
-        token = Token(INTEGER, num)
+    while char in WHITESPACE:
+        idx += 1
+        if is_idx_eof(src, idx):
+            return EOF_TOKEN, idx
+        char = src[idx]
 
-    elif char == PLUS_SYMBOL:
-        token = Token(PLUS, PLUS_SYMBOL)
-        idx += len(PLUS_SYMBOL)
+    if char in LETTERS:
+        identifier, idx = find_identifier(src, idx)
 
-    elif char == L_PAREN_SYMBOL:
-        token = Token(L_PAREN, L_PAREN_SYMBOL)
-        idx += len(L_PAREN_SYMBOL)
+        if identifier == BEGIN:
+            token = BEGIN_TOKEN
+        elif identifier == END:
+            token = END_TOKEN
 
-    elif char == R_PAREN_SYMBOL:
-        token = Token(R_PAREN, R_PAREN_SYMBOL)
-        idx += len(R_PAREN_SYMBOL)
+    elif char == DOT_SYMBOL:
+        token = DOT_TOKEN
+        idx += len(DOT_SYMBOL)
+
+    elif char in DIGITS:
+        number, idx = find_integer(src, idx)
+        token = (INTEGER, number)
 
     elif char == SEMI_SYMBOL:
-        token = Token(SEMI, SEMI_SYMBOL)
+        token = SEMI_TOKEN
         idx += len(SEMI_SYMBOL)
+
+    elif char == PLUS_SYMBOL:
+        token = PLUS_TOKEN
+        idx += len(PLUS_SYMBOL)
+
+    elif char == MINUS_SYMBOL:
+        token = MINUS_TOKEN
+        idx += len(MINUS_SYMBOL)
+
+    elif char == MULT_SYMBOL:
+        token = MULT_TOKEN
+        idx += len(MULT_SYMBOL)
+
+    elif char == DIV_SYMBOL:
+        token = DIV_TOKEN
+        idx += len(DIV_SYMBOL)
+
+    else:
+        raise Exception('CAN`T FIND TOKEN')
 
     return token, idx
 
 
-# statement: expr | SEMI expr
-# expr: factor | (PLUS|MINUS) factor
-# factor: INTEGER | L_PAREN expr R_PAREN
+
+
+def peek_token(src, idx):
+    token, _ = find_token(src, idx)
+    return token
+
+
+
+
+"""
+term: expr ((PLUL | MINUS) expr)*
+expr: factor ((MULT | DIV) factor)*
+factor: INTEGER
+"""
+
+
 
 
 def factor(src, idx):
     token, idx = find_token(src, idx)
-    node = IntNode(token.value)
+    assert token[0] == INTEGER
+    value = token [1]
 
-    if token.type_ == L_PAREN:
-        node, idx = expr(src, idx)
-        rparen, idx = find_token(src, idx)
+    return value, idx
 
-    return node, idx
+
+
 
 
 def expr(src, idx):
-    node, idx = factor(src, idx)
-    idx0 = idx
-    token, idx = find_token(src, idx)
+    value, idx = factor(src, idx)
 
-    if token.type_ == PLUS:
-        rigth, idx = factor(src, idx)
-        node = BinOp(node.value, PLUS, rigth.value)
-    else:
-        idx = idx0
-
-    return node, idx
-
-
-
-def statement(src, idx):
-    # statement: expr | SEMI expr
-    root = StatementList()
-
-    while True:
-        node, idx = expr(src, idx)
-        root.nodes.append(node)
-
+    while peek_token(src, idx) in [MULT_TOKEN, DIV_TOKEN]:
         token, idx = find_token(src, idx)
+        rightvalue, idx = factor(src, idx)
 
-        if token.type_ != SEMI:
-            break
+        if token == MULT_TOKEN:
+            value *= rightvalue
+        else:
+            value /= rightvalue
 
-    # print(root.nodes)
-    return root
+    return value, idx
 
 
 
 
-def node_visitor(node):
-    if isinstance(node, IntNode):
-        print(node.value)
-        return node.value
+def term(src, idx):
+    value, idx = expr(src, idx)
 
-    if isinstance(node, BinOp):
-        if node.op == PLUS:
-            print(node.left + node.right)
-            return node.left + node.right
+    while peek_token(src, idx) in [PLUS_TOKEN, MINUS_TOKEN]:
+        token, idx = find_token(src, idx)
+        rightvalue, idx = expr(src, idx)
 
-    if isinstance(node, StatementList):
-        results = []
-        for node in node.nodes:
-            results.append(node_visitor(node))
+        if token == PLUS_TOKEN:
+            value += rightvalue
+        else:
+            value -= rightvalue
 
-        return results
+    return value, idx
 
-def program(src):
-    root = statement(src, 0)
-    result = node_visitor(root)
-    return result
+
+
+
 
 
 
 if __name__ == '__main__':
     pass
 
-    src = '1;2;3;4;5'
-    src = '2+3;4+5'
-    # src = '1;2;1;2;1'
-    src = '1'
-    src = '1;'
-    print(program(src))
+    idx = 0
+    src = """2*24+2+4+100+10-25-50+75*4/2"""
+
+    token, _ = term(src, idx)
+    print(token)
+    print(eval(src))
+
+    print('-'*79)
+
+    while True:
+        try:
+            token, idx = find_token(src, idx)
+            print(token)
+        except Exception as error:
+            break

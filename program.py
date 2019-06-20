@@ -152,13 +152,35 @@ def factor(src, idx):
 
 
 
-def term(src, idx):
+
+def expr(src, idx):
     value, idx = factor(src, idx)
 
-    while peek_token(src, idx) in [PLUS_TOKEN]:
+    while peek_token(src, idx) in [MULT_TOKEN, DIV_TOKEN]:
         token, idx = find_token(src, idx)
         rightvalue, idx = factor(src, idx)
-        value += rightvalue
+
+        if token == MULT_TOKEN:
+            value *= rightvalue
+        else:
+            value /= rightvalue
+
+    return value, idx
+
+
+
+
+def term(src, idx):
+    value, idx = expr(src, idx)
+
+    while peek_token(src, idx) in [PLUS_TOKEN, MINUS_TOKEN]:
+        token, idx = find_token(src, idx)
+        rightvalue, idx = expr(src, idx)
+
+        if token == PLUS_TOKEN:
+            value += rightvalue
+        else:
+            value -= rightvalue
 
     return value, idx
 
@@ -172,9 +194,7 @@ if __name__ == '__main__':
     pass
 
     idx = 0
-    src = """
-2 * 24 + 2 + 4 + 100 + 10 - 25 - 50  + 75
-"""
+    src = """2*24+2+4+100+10-25-50+75*4/2"""
 
     token, _ = term(src, idx)
     print(token)

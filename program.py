@@ -15,6 +15,8 @@ PLUS_SYMBOL, PLUS = '+', 'PLUS'
 MINUS_SYMBOL, MINUS = '-', 'MINUS'
 MULT_SYMBOL, MULT = '*', 'MULT'
 DIV_SYMBOL, DIV = '/', 'DIV'
+L_PAREN_SYMBOL, L_PAREN = '(', 'LPAREN'
+R_PAREN_SYMBOL, R_PAREN = ')', 'RPAREN'
 
 
 BEGIN_TOKEN = (BEGIN, BEGIN)
@@ -28,6 +30,8 @@ PLUS_TOKEN = (PLUS, PLUS_SYMBOL)
 MINUS_TOKEN = (MINUS, MINUS_SYMBOL)
 MULT_TOKEN = (MULT, MULT_SYMBOL)
 DIV_TOKEN = (DIV, DIV_SYMBOL)
+L_PAREN_TOKEN = (L_PAREN, L_PAREN_SYMBOL)
+R_PAREN_TOKEN = (R_PAREN, R_PAREN_SYMBOL)
 
 
 is_idx_eof = lambda x, y: y == len(x)
@@ -117,6 +121,14 @@ def find_token(src, idx):
     elif char == DIV_SYMBOL:
         token = DIV_TOKEN
         idx += len(DIV_SYMBOL)
+
+    elif char == L_PAREN_SYMBOL:
+        token = L_PAREN_TOKEN
+        idx += len(L_PAREN_SYMBOL)
+
+    elif char == R_PAREN_SYMBOL:
+        token = R_PAREN_TOKEN
+        idx += len(L_PAREN_SYMBOL)
 
     else:
         raise Exception('CAN`T FIND TOKEN')

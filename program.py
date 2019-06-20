@@ -13,6 +13,8 @@ DOT_SYMBOL, DOT = '.', 'DOT'
 SEMI_SYMBOL, SEMI = ';', 'SEMI'
 PLUS_SYMBOL, PLUS = '+', 'PLUS'
 MINUS_SYMBOL, MINUS = '-', 'MINUS'
+MULT_SYMBOL, MULT = '*', 'MULT'
+DIV_SYMBOL, DIV = '/', 'DIV'
 
 
 BEGIN_TOKEN = (BEGIN, BEGIN)
@@ -24,6 +26,8 @@ DOT_TOKEN = (DOT, DOT_SYMBOL)
 SEMI_TOKEN = (SEMI, SEMI_SYMBOL)
 PLUS_TOKEN = (PLUS, PLUS_SYMBOL)
 MINUS_TOKEN = (MINUS, MINUS_SYMBOL)
+MULT_TOKEN = (MULT_SYMBOL, MULT)
+DIV_TOKEN = (DIV_SYMBOL, DIV)
 
 
 is_idx_eof = lambda x, y: y == len(x)
@@ -106,6 +110,14 @@ def find_token(src, idx):
         token = MINUS_TOKEN
         idx += len(MINUS_SYMBOL)
 
+    elif char == MULT_SYMBOL:
+        token = MULT_TOKEN
+        idx += len(MULT_SYMBOL)
+
+    elif char == DIV_SYMBOL:
+        token = DIV_TOKEN
+        idx += len(DIV_SYMBOL)
+
     else:
         raise Exception('CAN`T FIND TOKEN')
 
@@ -122,7 +134,8 @@ def peek_token(src, idx):
 
 
 """
-term: factor ((PLUL|MINUS) factor)
+term: factor ((PLUL | MINUS) factor)*
+expr: factor ((MULT | DIV) factor)*
 factor: INTEGER
 """
 
@@ -160,7 +173,7 @@ if __name__ == '__main__':
 
     idx = 0
     src = """
-24 + 2 + 4 + 100 + 10 - 25 - 50  + 75
+2 * 24 + 2 + 4 + 100 + 10 - 25 - 50  + 75
 """
 
     token, _ = term(src, idx)

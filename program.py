@@ -143,10 +143,19 @@ def peek_token(src, idx):
     return token
 
 
-# Nodes:
+# Nodes ---------------------------------------------------:
+
+
 class NumNode:
     def __init__(self, token):
         self.value = token[1]
+
+
+class BinOp:
+    def __init__(self, left, op, right):
+        self.left = left
+        self.op = op
+        self.right = right
 
 
 
@@ -165,54 +174,46 @@ def factor(src, idx):
 
     if nexttoken[0] == INTEGER:
         token, idx = find_token(src, idx)
-        value = token[1]
+        node = NumNode(token)
 
     elif nexttoken == L_PAREN_TOKEN:
         lparen, idx = find_token(src, idx)
-        value, idx = expr(src, idx)
+        node, idx = expr(src, idx)
         rparen, idx = find_token(src, idx)
         assert rparen == R_PAREN_TOKEN, rparen
 
-    return value, idx
+    return node, idx
 
 
 
 
 
 def term(src, idx):
-    value, idx = factor(src, idx)
+    node, idx = factor(src, idx)
 
     while peek_token(src, idx) in [MULT_TOKEN, DIV_TOKEN]:
         op, idx = find_token(src, idx)
-        rightvalue, idx = factor(src, idx)
+        rightnode, idx = factor(src, idx)
+        node = BinOp(node, op, rightnode)
 
-        if op == MULT_TOKEN:
-            value *= rightvalue
-        else:
-            value /= rightvalue
-
-    return value, idx
+    return node, idx
 
 
 
 
 def expr(src, idx):
-    value, idx = term(src, idx)
+    node, idx = term(src, idx)
 
     while peek_token(src, idx) in [PLUS_TOKEN, MINUS_TOKEN]:
         op, idx = find_token(src, idx)
         rightvalue, idx = term(src, idx)
+        node = BinOp(node, op, rightvalue)
 
-        if op == PLUS_TOKEN:
-            value += rightvalue
-        else:
-            value -= rightvalue
-
-    return value, idx
+    return node, idx
 
 
 
-
+# AST -------------------------------------------------------------------------
 
 
 

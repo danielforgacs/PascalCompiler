@@ -134,7 +134,7 @@ def peek_token(src, idx):
 
 
 """
-term: factor ((PLUL | MINUS) factor)*
+term: expr ((PLUL | MINUS) expr)*
 expr: factor ((MULT | DIV) factor)*
 factor: INTEGER
 """

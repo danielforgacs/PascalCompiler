@@ -15,6 +15,8 @@ PLUS_SYMBOL, PLUS = '+', 'PLUS'
 MINUS_SYMBOL, MINUS = '-', 'MINUS'
 MULT_SYMBOL, MULT = '*', 'MULT'
 DIV_SYMBOL, DIV = '/', 'DIV'
+L_PAREN_SYMBOL, L_PAREN = '(', 'LPAREN'
+R_PAREN_SYMBOL, R_PAREN = ')', 'RPAREN'
 
 
 BEGIN_TOKEN = (BEGIN, BEGIN)
@@ -28,6 +30,8 @@ PLUS_TOKEN = (PLUS, PLUS_SYMBOL)
 MINUS_TOKEN = (MINUS, MINUS_SYMBOL)
 MULT_TOKEN = (MULT, MULT_SYMBOL)
 DIV_TOKEN = (DIV, DIV_SYMBOL)
+L_PAREN_TOKEN = (L_PAREN, L_PAREN_SYMBOL)
+R_PAREN_TOKEN = (R_PAREN, R_PAREN_SYMBOL)
 
 
 is_idx_eof = lambda x, y: y == len(x)
@@ -118,6 +122,14 @@ def find_token(src, idx):
         token = DIV_TOKEN
         idx += len(DIV_SYMBOL)
 
+    elif char == L_PAREN_SYMBOL:
+        token = L_PAREN_TOKEN
+        idx += len(L_PAREN_SYMBOL)
+
+    elif char == R_PAREN_SYMBOL:
+        token = R_PAREN_TOKEN
+        idx += len(L_PAREN_SYMBOL)
+
     else:
         raise Exception('CAN`T FIND TOKEN')
 
@@ -134,18 +146,26 @@ def peek_token(src, idx):
 
 
 """
-term: expr ((PLUL | MINUS) expr)*
-expr: factor ((MULT | DIV) factor)*
-factor: INTEGER
+expr: term ((PLUL | MINUS) term)*
+term: factor ((MULT | DIV) factor)*
+factor: INTEGER | L_PAREN expr R_PAREN
 """
 
 
 
 
 def factor(src, idx):
-    token, idx = find_token(src, idx)
-    assert token[0] == INTEGER
-    value = token [1]
+    nexttoken = peek_token(src, idx)
+
+    if nexttoken[0] == INTEGER:
+        token, idx = find_token(src, idx)
+        value = token[1]
+
+    elif nexttoken == L_PAREN_TOKEN:
+        lparen, idx = find_token(src, idx)
+        value, idx = expr(src, idx)
+        rparen, idx = find_token(src, idx)
+        assert rparen == R_PAREN_TOKEN, rparen
 
     return value, idx
 
@@ -153,14 +173,14 @@ def factor(src, idx):
 
 
 
-def expr(src, idx):
+def term(src, idx):
     value, idx = factor(src, idx)
 
     while peek_token(src, idx) in [MULT_TOKEN, DIV_TOKEN]:
-        token, idx = find_token(src, idx)
+        op, idx = find_token(src, idx)
         rightvalue, idx = factor(src, idx)
 
-        if token == MULT_TOKEN:
+        if op == MULT_TOKEN:
             value *= rightvalue
         else:
             value /= rightvalue
@@ -170,14 +190,14 @@ def expr(src, idx):
 
 
 
-def term(src, idx):
-    value, idx = expr(src, idx)
+def expr(src, idx):
+    value, idx = term(src, idx)
 
     while peek_token(src, idx) in [PLUS_TOKEN, MINUS_TOKEN]:
-        token, idx = find_token(src, idx)
-        rightvalue, idx = expr(src, idx)
+        op, idx = find_token(src, idx)
+        rightvalue, idx = term(src, idx)
 
-        if token == PLUS_TOKEN:
+        if op == PLUS_TOKEN:
             value += rightvalue
         else:
             value -= rightvalue
@@ -195,6 +215,10 @@ if __name__ == '__main__':
 
     idx = 0
     src = """2*24+2+4+100+10-25-50+75*4/2"""
+    src = """((2)+3)*(2+3)+2*24+2+4+100+10-25-50+75*(4/2)"""
+
+    print(src)
+    print('-'*79)
 
     token, _ = term(src, idx)
     print(token)
@@ -205,6 +229,6 @@ if __name__ == '__main__':
     while True:
         try:
             token, idx = find_token(src, idx)
-            print(token)
+            print(token[0].ljust(10), token[1])
         except Exception as error:
             break

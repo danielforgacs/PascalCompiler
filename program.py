@@ -146,8 +146,8 @@ def peek_token(src, idx):
 
 
 """
-term: expr ((PLUL | MINUS) expr)*
-expr: factor ((MULT | DIV) factor)*
+expr: term ((PLUL | MINUS) term)*
+term: factor ((MULT | DIV) factor)*
 factor: INTEGER | L_PAREN expr R_PAREN
 """
 
@@ -163,7 +163,7 @@ def factor(src, idx):
 
     elif nexttoken == L_PAREN_TOKEN:
         lparen, idx = find_token(src, idx)
-        value, idx = term(src, idx)
+        value, idx = expr(src, idx)
         rparen, idx = find_token(src, idx)
         assert rparen == R_PAREN_TOKEN, rparen
 
@@ -173,7 +173,7 @@ def factor(src, idx):
 
 
 
-def expr(src, idx):
+def term(src, idx):
     value, idx = factor(src, idx)
 
     while peek_token(src, idx) in [MULT_TOKEN, DIV_TOKEN]:
@@ -190,12 +190,12 @@ def expr(src, idx):
 
 
 
-def term(src, idx):
-    value, idx = expr(src, idx)
+def expr(src, idx):
+    value, idx = term(src, idx)
 
     while peek_token(src, idx) in [PLUS_TOKEN, MINUS_TOKEN]:
         op, idx = find_token(src, idx)
-        rightvalue, idx = expr(src, idx)
+        rightvalue, idx = term(src, idx)
 
         if op == PLUS_TOKEN:
             value += rightvalue

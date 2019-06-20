@@ -169,10 +169,10 @@ def expr(src, idx):
     value, idx = factor(src, idx)
 
     while peek_token(src, idx) in [MULT_TOKEN, DIV_TOKEN]:
-        token, idx = find_token(src, idx)
+        op, idx = find_token(src, idx)
         rightvalue, idx = factor(src, idx)
 
-        if token == MULT_TOKEN:
+        if op == MULT_TOKEN:
             value *= rightvalue
         else:
             value /= rightvalue
@@ -186,10 +186,10 @@ def term(src, idx):
     value, idx = expr(src, idx)
 
     while peek_token(src, idx) in [PLUS_TOKEN, MINUS_TOKEN]:
-        token, idx = find_token(src, idx)
+        op, idx = find_token(src, idx)
         rightvalue, idx = expr(src, idx)
 
-        if token == PLUS_TOKEN:
+        if op == PLUS_TOKEN:
             value += rightvalue
         else:
             value -= rightvalue

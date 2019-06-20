@@ -143,6 +143,12 @@ def peek_token(src, idx):
     return token
 
 
+# Nodes:
+class NumNode:
+    def __init__(self, token):
+        self.value = token[1]
+
+
 
 
 """

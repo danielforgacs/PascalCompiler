@@ -151,6 +151,12 @@ class NumNode:
         self.value = token[1]
 
 
+class UnaryOp:
+    def __init__(self, op, node):
+        self.op = op
+        self.node = node
+
+
 class BinOp:
     def __init__(self, left, op, right):
         self.left = left
@@ -161,9 +167,9 @@ class BinOp:
 
 
 """
-expr: term ((PLUL | MINUS) term)*
+expr: term ((PLUS | MINUS) term)*
 term: factor ((MULT | DIV) factor)*
-factor: INTEGER | L_PAREN expr R_PAREN
+factor: INTEGER | L_PAREN expr R_PAREN | (PLUS | MINUS) factor
 """
 
 
@@ -175,6 +181,11 @@ def factor(src, idx):
     if nexttoken[0] == INTEGER:
         token, idx = find_token(src, idx)
         node = NumNode(token)
+
+    elif nexttoken in [MINUS_TOKEN, PLUS_TOKEN]:
+        op, idx = find_token(src, idx)
+        operand, idx = factor(src, idx)
+        node = UnaryOp(op, operand)
 
     elif nexttoken == L_PAREN_TOKEN:
         lparen, idx = find_token(src, idx)
@@ -220,6 +231,13 @@ def expr(src, idx):
 def nodevisitor(node):
     if isinstance(node, NumNode):
         result = node.value
+
+    elif isinstance(node, UnaryOp):
+        if node.op == MINUS_TOKEN:
+            result = 0 - nodevisitor(node.node)
+        else:
+            result = nodevisitor(node.node)
+
     elif isinstance(node, BinOp):
         if node.op == PLUS:
             result = nodevisitor(node.left) + nodevisitor(node.right)
@@ -248,7 +266,8 @@ if __name__ == '__main__':
 
     idx = 0
     src = """2*24+2+4+100+10-25-50+75*4/2"""
-    src = """((2)+3)*(2+3)+2*24+2+4+100+10-25-50+75*(4/2)"""
+    src = """((2)+3)*(2+--3)+2*24-+-+-+ +2+4+100+10-25-50+75*(4/2)"""
+    # src = """-(1+1)"""
 
     print(src)
     print('-'*79)

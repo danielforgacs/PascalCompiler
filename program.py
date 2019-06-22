@@ -143,6 +143,21 @@ def peek_token(src, idx):
     return token
 
 
+# Nodes ---------------------------------------------------:
+
+
+class NumNode:
+    def __init__(self, token):
+        self.value = token[1]
+
+
+class BinOp:
+    def __init__(self, left, op, right):
+        self.left = left
+        self.op = op[0]
+        self.right = right
+
+
 
 
 """
@@ -159,52 +174,70 @@ def factor(src, idx):
 
     if nexttoken[0] == INTEGER:
         token, idx = find_token(src, idx)
-        value = token[1]
+        node = NumNode(token)
 
     elif nexttoken == L_PAREN_TOKEN:
         lparen, idx = find_token(src, idx)
-        value, idx = expr(src, idx)
+        node, idx = expr(src, idx)
         rparen, idx = find_token(src, idx)
         assert rparen == R_PAREN_TOKEN, rparen
 
-    return value, idx
+    return node, idx
 
 
 
 
 
 def term(src, idx):
-    value, idx = factor(src, idx)
+    node, idx = factor(src, idx)
 
     while peek_token(src, idx) in [MULT_TOKEN, DIV_TOKEN]:
         op, idx = find_token(src, idx)
-        rightvalue, idx = factor(src, idx)
+        rightnode, idx = factor(src, idx)
+        node = BinOp(node, op, rightnode)
 
-        if op == MULT_TOKEN:
-            value *= rightvalue
-        else:
-            value /= rightvalue
-
-    return value, idx
+    return node, idx
 
 
 
 
 def expr(src, idx):
-    value, idx = term(src, idx)
+    node, idx = term(src, idx)
 
     while peek_token(src, idx) in [PLUS_TOKEN, MINUS_TOKEN]:
         op, idx = find_token(src, idx)
         rightvalue, idx = term(src, idx)
+        node = BinOp(node, op, rightvalue)
 
-        if op == PLUS_TOKEN:
-            value += rightvalue
-        else:
-            value -= rightvalue
-
-    return value, idx
+    return node, idx
 
 
+
+# AST -------------------------------------------------------------------------
+
+
+
+def nodevisitor(node):
+    if isinstance(node, NumNode):
+        result = node.value
+    elif isinstance(node, BinOp):
+        if node.op == PLUS:
+            result = nodevisitor(node.left) + nodevisitor(node.right)
+        elif node.op == MINUS:
+            result = nodevisitor(node.left) - nodevisitor(node.right)
+        elif node.op == MULT:
+            result = nodevisitor(node.left) * nodevisitor(node.right)
+        elif node.op == DIV:
+            result = nodevisitor(node.left) / nodevisitor(node.right)
+
+    return result
+
+
+
+
+def interprer(src):
+    rootnode, _ = expr(src, 0)
+    return nodevisitor(rootnode)
 
 
 
@@ -220,15 +253,16 @@ if __name__ == '__main__':
     print(src)
     print('-'*79)
 
-    token, _ = term(src, idx)
-    print(token)
+    print(interprer(src))
     print(eval(src))
+
+    assert interprer(src) == eval(src), 'RESULT DOESN`T MATCH EVAL!'
 
     print('-'*79)
 
-    while True:
-        try:
-            token, idx = find_token(src, idx)
-            print(token[0].ljust(10), token[1])
-        except Exception as error:
-            break
+    # while True:
+    #     try:
+    #         token, idx = find_token(src, idx)
+    #         print(token[0].ljust(10), token[1])
+    #     except Exception as error:
+    #         break

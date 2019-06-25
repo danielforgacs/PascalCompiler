@@ -182,6 +182,15 @@ class BinOpNode:
         self.right = right
 
 
+class AssignNode:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    def __repr__(self):
+        suprep = super().__repr__()
+        return '<[%s][%s][%s]>' % (self.left, self.right, suprep)
+
+
 
 
 """
@@ -276,6 +285,9 @@ def term(src, idx):
 
 
 def expr(src, idx):
+    """
+    expr: term ((PLUS | MINUS) term)*
+    """
     node, idx = term(src, idx)
 
     while peek_token(src, idx) in [PLUS_TOKEN, MINUS_TOKEN]:
@@ -296,7 +308,13 @@ def assignment_statement(src, idx):
     """
     assignment_statement: variable ASSIGN expr
     """
-    pass
+    left, idx = variable(src, idx)
+    token, idx = find_token(src, idx)
+    right, idx = expr(src, idx)
+
+    node = AssignNode(left, right)
+
+    return node, src
 
 
 
@@ -307,7 +325,8 @@ def statement(src, idx):
                | assignment_statement
                | empty
     """
-    pass
+    node, idx = assignment_statement(src, idx)
+    return node, idx
 
 
 
@@ -317,7 +336,8 @@ def statement_list(src, idx):
     statement_list: statement
                     | statement SEMI statement_list
     """
-    pass
+    node, idx = statement(src, idx)
+    return node, idx
 
 
 
@@ -326,7 +346,8 @@ def compound_statement(src, idx):
     """
     compound_statement: BEGIN statement_list END
     """
-    pass
+    node, idx = statement_list(src, idx)
+    return node, idx
 
 
 
@@ -335,7 +356,8 @@ def program(src, idx):
     """
     program: compound_statement DOT
     """
-    pass
+    node, idx = compound_statement(src, idx)
+    return node, idx
 
 
 
@@ -369,13 +391,21 @@ def nodevisitor(node):
     elif isinstance(node, VariableNode):
         result = None
 
+    elif isinstance(node, AssignNode):
+        print(node)
+        result = None
+
+    else:
+        print(node)
+
+
     return result
 
 
 
 
 def interprer(src):
-    rootnode, _ = expr(src, 0)
+    rootnode, _ = program(src, 0)
     return nodevisitor(rootnode)
 
 
@@ -390,7 +420,7 @@ if __name__ == '__main__':
     src = """((2)+3)*(2+--3)+2*24-+-+-+ +2+4+100+10-25-50+75*(4/2)"""
     # src = """-(1+1)"""
     src = """
-    x :=
+    x := 123
     """
 
     print(src)

@@ -162,11 +162,16 @@ class VariableNode:
     def __init__(self, idtoken):
         self.name = idtoken[1]
 
+    def __repr__(self):
+        return '<[%s][%s]>' % (self.name, super().__repr__())
 
 
 class NumNode:
     def __init__(self, token):
         self.value = token[1]
+
+    def __repr__(self):
+        return '<[%s][%s]>' % (self.value, super().__repr__())
 
 
 class UnaryOpNode:
@@ -180,6 +185,9 @@ class BinOpNode:
         self.left = left
         self.op = op[0]
         self.right = right
+    def __repr__(self):
+        suprep = super().__repr__()
+        return '<[%s][%s][%s]>' % (self.left, self.right, suprep)
 
 
 class AssignNode:

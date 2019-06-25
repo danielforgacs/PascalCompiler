@@ -362,16 +362,19 @@ if __name__ == '__main__':
     src = """2*24+2+4+100+10-25-50+75*4/2"""
     src = """((2)+3)*(2+--3)+2*24-+-+-+ +2+4+100+10-25-50+75*(4/2)"""
     # src = """-(1+1)"""
+    src = """
+    x
+    """
 
     print(src)
     print('-'*79)
 
-    print(interprer(src))
-    print(eval(src))
+    interprer(src)
+    # print(eval(src))
 
-    assert interprer(src) == eval(src), 'RESULT DOESN`T MATCH EVAL!'
+    # assert interprer(src) == eval(src), 'RESULT DOESN`T MATCH EVAL!'
 
-    print('-'*79)
+    # print('-'*79)
 
     # while True:
     #     try:

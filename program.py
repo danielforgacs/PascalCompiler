@@ -194,8 +194,23 @@ variable: ID
 
 
 
+def variable(src, idx):
+    """
+    variable: ID
+    """
+    pass
+
+
+
 
 def factor(src, idx):
+    """
+    factor: PLUS factor
+            | MINUS factor
+            | INTEGER
+            | LPAREN expr RPAREN
+            | variable
+    """
     nexttoken = peek_token(src, idx)
 
     if nexttoken[0] == INTEGER:
@@ -220,6 +235,10 @@ def factor(src, idx):
 
 
 def term(src, idx):
+    """
+    term: factor ((MUL | DIV) factor)*
+    """
+
     node, idx = factor(src, idx)
 
     while peek_token(src, idx) in [MULT_TOKEN, DIV_TOKEN]:
@@ -241,6 +260,61 @@ def expr(src, idx):
         node = BinOp(node, op, rightvalue)
 
     return node, idx
+
+
+
+def empty(src, idx):
+    pass
+
+
+
+def assignment_statement(src, idx):
+    """
+    assignment_statement: variable ASSIGN expr
+    """
+    pass
+
+
+
+
+def statement(src, idx):
+    """
+    statement: compound_statement
+               | assignment_statement
+               | empty
+    """
+    pass
+
+
+
+
+def statement_list(src, idx):
+    """
+    statement_list: statement
+                    | statement SEMI statement_list
+    """
+    pass
+
+
+
+
+def compound_statement(src, idx):
+    """
+    compound_statement: BEGIN statement_list END
+    """
+    pass
+
+
+
+
+def program(src, idx):
+    """
+    program: compound_statement DOT
+    """
+    pass
+
+
+
 
 
 

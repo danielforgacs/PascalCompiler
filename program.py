@@ -18,6 +18,9 @@ MULT_SYMBOL, MULT = '*', 'MULT'
 DIV_SYMBOL, DIV = '/', 'DIV'
 L_PAREN_SYMBOL, L_PAREN = '(', 'LPAREN'
 R_PAREN_SYMBOL, R_PAREN = ')', 'RPAREN'
+COLON_SYMBOL, COLON = ':', 'COLON'
+EQUAL_SYMBOL, EQUAL = '=', 'EQUAL'
+ASSIGN_SYMBOL, ASSIGN = ':=', 'ASSIGN'
 
 
 BEGIN_TOKEN = (BEGIN, BEGIN)
@@ -33,6 +36,7 @@ MULT_TOKEN = (MULT, MULT_SYMBOL)
 DIV_TOKEN = (DIV, DIV_SYMBOL)
 L_PAREN_TOKEN = (L_PAREN, L_PAREN_SYMBOL)
 R_PAREN_TOKEN = (R_PAREN, R_PAREN_SYMBOL)
+ASSIGN_TOKEN = (ASSIGN, ASSIGN_SYMBOL)
 
 
 is_idx_eof = lambda x, y: y == len(x)
@@ -132,6 +136,11 @@ def find_token(src, idx):
     elif char == R_PAREN_SYMBOL:
         token = R_PAREN_TOKEN
         idx += len(L_PAREN_SYMBOL)
+
+    elif char == COLON_SYMBOL:
+        if src[idx+1] == EQUAL_SYMBOL:
+            token = ASSIGN_TOKEN
+            idx += len(ASSIGN_SYMBOL)
 
     else:
         raise Exception('CAN`T FIND TOKEN')
@@ -381,7 +390,7 @@ if __name__ == '__main__':
     src = """((2)+3)*(2+--3)+2*24-+-+-+ +2+4+100+10-25-50+75*(4/2)"""
     # src = """-(1+1)"""
     src = """
-    x
+    x :=
     """
 
     print(src)

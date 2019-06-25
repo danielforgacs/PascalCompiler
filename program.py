@@ -376,6 +376,11 @@ def program(src, idx):
 
 
 
+class Globals:
+    variables = {}
+
+
+
 def nodevisitor(node):
     if isinstance(node, NumNode):
         result = node.value
@@ -401,6 +406,7 @@ def nodevisitor(node):
 
     elif isinstance(node, AssignNode):
         print(node)
+        Globals.variables[node.left.name] = nodevisitor(node.right)
         result = None
 
     else:
@@ -428,13 +434,14 @@ if __name__ == '__main__':
     src = """((2)+3)*(2+--3)+2*24-+-+-+ +2+4+100+10-25-50+75*(4/2)"""
     # src = """-(1+1)"""
     src = """
-    x := 123
+    x := 12+45
     """
 
     print(src)
     print('-'*79)
 
     interprer(src)
+    print(Globals.variables)
     # print(eval(src))
 
     # assert interprer(src) == eval(src), 'RESULT DOESN`T MATCH EVAL!'

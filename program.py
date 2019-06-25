@@ -7,6 +7,7 @@ BEGIN = 'BEGIN'
 END = 'END'
 EOF = 'EOF'
 INTEGER = 'INTEGER'
+ID = 'ID'
 
 
 DOT_SYMBOL, DOT = '.', 'DOT'
@@ -93,6 +94,8 @@ def find_token(src, idx):
             token = BEGIN_TOKEN
         elif identifier == END:
             token = END_TOKEN
+        else:
+            token = (ID, identifier)
 
     elif char == DOT_SYMBOL:
         token = DOT_TOKEN
@@ -144,6 +147,12 @@ def peek_token(src, idx):
 
 
 # Nodes ---------------------------------------------------:
+
+
+class VariableNode:
+    def __init__(self, idtoken):
+        self.name = idtoken[1]
+
 
 
 class NumNode:
@@ -198,7 +207,10 @@ def variable(src, idx):
     """
     variable: ID
     """
-    pass
+    idtoken, idx = find_token(src, idx)
+    node = VariableNode(idtoken)
+
+    return node, idx
 
 
 
@@ -216,6 +228,9 @@ def factor(src, idx):
     if nexttoken[0] == INTEGER:
         token, idx = find_token(src, idx)
         node = NumNode(token)
+
+    elif nexttoken[0] == ID:
+        node, idx = variable(src, idx)
 
     elif nexttoken in [MINUS_TOKEN, PLUS_TOKEN]:
         op, idx = find_token(src, idx)
@@ -341,6 +356,9 @@ def nodevisitor(node):
             result = nodevisitor(node.left) * nodevisitor(node.right)
         elif node.op == DIV:
             result = nodevisitor(node.left) / nodevisitor(node.right)
+
+    elif isinstance(node, VariableNode):
+        result = None
 
     return result
 

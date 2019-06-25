@@ -160,13 +160,13 @@ class NumNode:
         self.value = token[1]
 
 
-class UnaryOp:
+class UnaryOpNode:
     def __init__(self, op, node):
         self.op = op
         self.node = node
 
 
-class BinOp:
+class BinOpNode:
     def __init__(self, left, op, right):
         self.left = left
         self.op = op[0]
@@ -235,7 +235,7 @@ def factor(src, idx):
     elif nexttoken in [MINUS_TOKEN, PLUS_TOKEN]:
         op, idx = find_token(src, idx)
         operand, idx = factor(src, idx)
-        node = UnaryOp(op, operand)
+        node = UnaryOpNode(op, operand)
 
     elif nexttoken == L_PAREN_TOKEN:
         lparen, idx = find_token(src, idx)
@@ -259,7 +259,7 @@ def term(src, idx):
     while peek_token(src, idx) in [MULT_TOKEN, DIV_TOKEN]:
         op, idx = find_token(src, idx)
         rightnode, idx = factor(src, idx)
-        node = BinOp(node, op, rightnode)
+        node = BinOpNode(node, op, rightnode)
 
     return node, idx
 
@@ -272,7 +272,7 @@ def expr(src, idx):
     while peek_token(src, idx) in [PLUS_TOKEN, MINUS_TOKEN]:
         op, idx = find_token(src, idx)
         rightvalue, idx = term(src, idx)
-        node = BinOp(node, op, rightvalue)
+        node = BinOpNode(node, op, rightvalue)
 
     return node, idx
 
@@ -341,13 +341,13 @@ def nodevisitor(node):
     if isinstance(node, NumNode):
         result = node.value
 
-    elif isinstance(node, UnaryOp):
+    elif isinstance(node, UnaryOpNode):
         if node.op == MINUS_TOKEN:
             result = 0 - nodevisitor(node.node)
         else:
             result = nodevisitor(node.node)
 
-    elif isinstance(node, BinOp):
+    elif isinstance(node, BinOpNode):
         if node.op == PLUS:
             result = nodevisitor(node.left) + nodevisitor(node.right)
         elif node.op == MINUS:

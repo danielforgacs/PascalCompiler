@@ -389,6 +389,9 @@ def program(src, idx):
     program: compound_statement DOT
     """
     node, idx = compound_statement(src, idx)
+    dot, idx = find_token(src, idx)
+    assert dot == DOT_TOKEN
+
     return node, idx
 
 
@@ -469,7 +472,7 @@ BEGIN
 x := 12+45;
 y := 12*32;
 z := 12*(32+(-23))
-END
+END.
 """
 
     print(src)

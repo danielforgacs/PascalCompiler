@@ -199,6 +199,10 @@ class AssignNode:
         return '<[%s][%s][%s]>' % (self.left, self.right, suprep)
 
 
+class CompoundNode():
+    pass
+
+
 
 
 """
@@ -322,7 +326,7 @@ def assignment_statement(src, idx):
 
     node = AssignNode(left, right)
 
-    return node, src
+    return node, idx
 
 
 
@@ -344,8 +348,16 @@ def statement_list(src, idx):
     statement_list: statement
                     | statement SEMI statement_list
     """
+    nodes = []
     node, idx = statement(src, idx)
-    return node, idx
+    nodes += [node]
+
+    while peek_token(src, idx) == SEMI_TOKEN:
+        semi, idx = find_token(src, idx)
+        node, idx = statement(src, idx)
+        nodes += [node]
+
+    return nodes, idx
 
 
 
@@ -354,7 +366,17 @@ def compound_statement(src, idx):
     """
     compound_statement: BEGIN statement_list END
     """
-    node, idx = statement_list(src, idx)
+    begin, idx = find_token(src, idx)
+    assert begin == BEGIN_TOKEN
+
+    nodelist, idx = statement_list(src, idx)
+
+    end, idx = find_token(src, idx)
+    assert end == END_TOKEN
+
+    node = CompoundNode()
+    node.children = nodelist
+
     return node, idx
 
 
@@ -405,9 +427,16 @@ def nodevisitor(node):
         result = None
 
     elif isinstance(node, AssignNode):
-        print(node)
+        # print(node)
         Globals.variables[node.left.name] = nodevisitor(node.right)
         result = None
+
+    elif isinstance(node, CompoundNode):
+        for child in node.children:
+            nodevisitor(child)
+
+        result = None
+
 
     else:
         print(node)
@@ -434,8 +463,12 @@ if __name__ == '__main__':
     src = """((2)+3)*(2+--3)+2*24-+-+-+ +2+4+100+10-25-50+75*(4/2)"""
     # src = """-(1+1)"""
     src = """
-    x := 12+45
-    """
+BEGIN
+x := 12+45;
+y := 12*32;
+z := 12*(32+(-23))
+END
+"""
 
     print(src)
     print('-'*79)

@@ -349,13 +349,15 @@ def statement_list(src, idx):
                     | statement SEMI statement_list
     """
     nodes = []
-    node, idx = statement(src, idx)
-    nodes += [node]
 
-    while peek_token(src, idx) == SEMI_TOKEN:
-        semi, idx = find_token(src, idx)
+    while True:
         node, idx = statement(src, idx)
         nodes += [node]
+
+        if peek_token(src, idx) != SEMI_TOKEN:
+            break
+
+        semi, idx = find_token(src, idx)
 
     return nodes, idx
 

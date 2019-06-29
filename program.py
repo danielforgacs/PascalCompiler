@@ -429,10 +429,9 @@ def nodevisitor(node):
             result = nodevisitor(node.left) / nodevisitor(node.right)
 
     elif isinstance(node, VariableNode):
-        result = None
+        result = Globals.variables[node.name]
 
     elif isinstance(node, AssignNode):
-        # print(node)
         Globals.variables[node.left.name] = nodevisitor(node.right)
         result = None
 
@@ -463,20 +462,19 @@ def interprer(src):
 if __name__ == '__main__':
     pass
 
-    idx = 0
-    src = """2*24+2+4+100+10-25-50+75*4/2"""
-    src = """((2)+3)*(2+--3)+2*24-+-+-+ +2+4+100+10-25-50+75*(4/2)"""
+    # idx = 0
+    # src = """2*24+2+4+100+10-25-50+75*4/2"""
+    # src = """((2)+3)*(2+--3)+2*24-+-+-+ +2+4+100+10-25-50+75*(4/2)"""
     # src = """-(1+1)"""
     src = """
 BEGIN
-x := 12+45;
-y := 12*32;
-z := 12*(32+(-23))
+x := 2;
+y := x+x
 END.
 """
 
-    print(src)
-    print('-'*79)
+    # print(src)
+    # print('-'*79)
 
     interprer(src)
     print(Globals.variables)

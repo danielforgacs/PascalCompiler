@@ -199,7 +199,12 @@ class AssignNode:
         return '<[%s][%s][%s]>' % (self.left, self.right, suprep)
 
 
-class CompoundNode():
+class CompoundNode:
+    pass
+
+
+
+class PassNode:
     pass
 
 
@@ -337,7 +342,17 @@ def statement(src, idx):
                | assignment_statement
                | empty
     """
-    node, idx = assignment_statement(src, idx)
+    if peek_token(src, idx) == BEGIN_TOKEN:
+        # begin, idx = find_token(src, idx)
+        node, idx = compound_statement(src, idx)
+        # end, idx = find_token(src, idx)
+
+    elif peek_token(src, idx)[0] == ID:
+        node, idx = assignment_statement(src, idx)
+
+    else:
+        node= PassNode()
+
     return node, idx
 
 
@@ -441,10 +456,11 @@ def nodevisitor(node):
 
         result = None
 
+    elif isinstance(node, PassNode):
+        result = None
 
     else:
         print(node)
-
 
     return result
 
@@ -468,10 +484,30 @@ if __name__ == '__main__':
     # src = """-(1+1)"""
     src = """
 BEGIN
-x := 2;
-y := x+x
+    BEGIN
+        x := 2;
+        y := x+x;
+    END;
+
+    z := x * y + (3 + - 2) * 4;
+
+    BEGIN
+        BEGIN
+
+        END;
+
+        xx := 2;
+        yy := x+x;
+    END;
+    zz := (xx * yy + (3 + - 2) * 4) + z
 END.
 """
+#     src = """
+# BEGIN
+#     BEGIN
+#     END;
+# END.
+# """
 
     # print(src)
     # print('-'*79)
